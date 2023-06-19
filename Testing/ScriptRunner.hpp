@@ -11,7 +11,7 @@
 
 #include <fstream>
 #include <sstream>
-#include "AppController.hpp"
+#include "../Controller/AppController.hpp"
 
 namespace ECE141 {
 

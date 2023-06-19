@@ -10,7 +10,7 @@
 #include <memory>
 #include <vector>
 #include "AppController.hpp"
-#include "Tokenizer.hpp"
+#include "../Utilities/Tokenizer/Tokenizer.hpp"
 
 namespace ECE141 {
   

@@ -13,8 +13,8 @@
 #include <map>
 #include <algorithm>
 
-#include "TestManually.hpp"
-#include "TestAutomatic.hpp"
+#include "../Relational-Database/Testing/TestManually.hpp"
+#include "../Relational-Database/Testing/TestAutomatic.hpp"
 
 //----------------------------------------------
 

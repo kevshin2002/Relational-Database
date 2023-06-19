@@ -9,9 +9,9 @@
 #ifndef TestAutomatic_h
 #define TestAutomatic_h
 
-#include "AppController.hpp"
+#include "../Controller/AppController.hpp"
 #include "ScriptRunner.hpp"
-#include "Errors.hpp"
+#include "../Misc/Types/Errors.hpp"
 #include <sstream>
 #include <vector>
 #include <functional>

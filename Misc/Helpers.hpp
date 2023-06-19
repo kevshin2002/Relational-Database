@@ -10,8 +10,8 @@
 #ifndef Helpers_h
 #define Helpers_h
 
-#include "BasicTypes.hpp"
-#include "keywords.hpp"
+#include "Types/BasicTypes.hpp"
+#include "Types/keywords.hpp"
 #include <algorithm>
 
 namespace ECE141 {

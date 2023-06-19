@@ -10,9 +10,10 @@
 #define Config_h
 #include <sstream>
 #include "Timer.hpp"
+#include <filesystem>
 
 namespace ECE141 {
-
+  
   enum class CacheType : int {block=0, rows, views};
 
   struct Config {

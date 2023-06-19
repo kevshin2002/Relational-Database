@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
-#include "keywords.hpp"
+#include "../../Misc/Types/keywords.hpp"
 #include "Scanner.hpp"
 
 namespace ECE141 {

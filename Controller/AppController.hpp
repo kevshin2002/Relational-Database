@@ -10,9 +10,9 @@
 #define AppController_hpp
 
 #include <stdio.h>
-#include "Config.hpp"
-#include "Errors.hpp"
-#include "View.hpp"
+#include "../Utilities/Config.hpp"
+#include "../Misc/Types/Errors.hpp"
+#include "../Views/View.hpp"
 
 namespace ECE141 {
 

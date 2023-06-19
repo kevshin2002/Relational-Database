@@ -11,7 +11,7 @@
 #define TestManually_h
 
 #include <sstream>
-#include "AppController.hpp"
+#include "../Relational-Database/Controller/AppController.hpp"
 
 using namespace ECE141;
 
