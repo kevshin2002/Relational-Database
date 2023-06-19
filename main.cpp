@@ -21,7 +21,6 @@
 int main(int argc, const char * argv[]) {
         
   srand(static_cast<uint32_t>(time(0)));
-    
   if(argc>1) {
     
     ECE141::TestAutomatic theTests;

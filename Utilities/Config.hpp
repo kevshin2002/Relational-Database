@@ -19,13 +19,14 @@ namespace ECE141 {
   struct Config {
 
     static const char* getDBExtension() {return ".db";}
+    static const std::string getDirectoryPath() { return std::filesystem::current_path().string(); }
 
     static const std::string getStoragePath() {
         
       #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
         
         //STUDENT: If you're on windows, return a path to folder on your machine...
-        return std::filesystem::temp_directory_path().string();
+        return Config::getDirectoryPath() + "/Files";
       
       #elif __APPLE__ || defined __linux__ || defined __unix__
 
@@ -33,10 +34,9 @@ namespace ECE141 {
               
       #endif
     }
-    
     static std::string getDBPath(const std::string &aDBName) {
       std::ostringstream theStream;
-      theStream << Config::getStoragePath() << "/" << aDBName << ".db";
+      theStream << Config::getStoragePath() << "/" << aDBName << Config::getDBExtension();
       return theStream.str();
     }
       
@@ -46,7 +46,7 @@ namespace ECE141 {
     }
     
     static std::string getVersion() {return "0.1";}
-    static std::string getMembers() {return "???";}
+    static std::string getMembers() {return "Author: Kevin Shin";}
 
   };
 

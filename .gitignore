@@ -26,3 +26,21 @@ x64/Debug/Relational Database.vcxproj.FileListAbsolute.txt
 x64/Debug/Tokenizer.obj
 x64/Debug/vc143.idb
 x64/Debug/vc143.pdb
+.vs/Relational Database/FileContentIndex/00086c97-0984-4ef2-84a3-f493a8d114cd.vsidx
+.vs/Relational Database/FileContentIndex/11e7baf1-e5ac-4a8a-a419-a6bc8edd93e2.vsidx
+.vs/Relational Database/FileContentIndex/a9c71132-ef24-4ed6-a13c-59b093a4ddc4.vsidx
+.vs/Relational Database/v17/ipch/AutoPCH/837dc90980431b7e/APPCONTROLLER.ipch
+.vs/Relational Database/v17/ipch/AutoPCH/8fc93c186422100d/TOKENIZER.ipch
+.vs/Relational Database/v17/ipch/AutoPCH/bd96ed1d5a9efd9c/MAIN.ipch
+x64/Debug/Relation.A65C7731.tlog/CL.read.1.tlog
+x64/Debug/Relation.A65C7731.tlog/CL.write.1.tlog
+x64/Debug/Relation.A65C7731.tlog/link.command.1.tlog
+x64/Debug/Relation.A65C7731.tlog/link.read.1.tlog
+x64/Debug/Relation.A65C7731.tlog/link.write.1.tlog
+x64/Debug/Relational Database.exe
+x64/Debug/Relational Database.exe.recipe
+x64/Debug/Relational Database.ilk
+x64/Debug/Relational Database.pdb
+x64/Debug/AppController.obj
+x64/Debug/main.obj
+*.vsidx
