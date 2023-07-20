@@ -19,6 +19,10 @@ namespace ECE141 {
       float_type='F', int_type='I', varchar_type='V',
   };
 
+  enum class CommandType {
+      basic_command = 'B', db_command = 'D', sql_command = 'S', unknown_command = 'U'
+  };
+
   using OptString = std::optional<std::string_view>;
 
 }

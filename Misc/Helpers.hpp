@@ -10,7 +10,6 @@
 #ifndef Helpers_h
 #define Helpers_h
 
-#include "Types/BasicTypes.hpp"
 #include "Types/keywords.hpp"
 #include <algorithm>
 
@@ -54,7 +53,13 @@ namespace ECE141 {
     std::make_pair("max", 30),
     std::make_pair("min", 40)
   };
-  
+  static std::map<Keywords, CommandType> kwToCommandType = {
+            std::make_pair(Keywords::about_kw, CommandType::basic_command),
+            std::make_pair(Keywords::version_kw, CommandType::basic_command),
+            std::make_pair(Keywords::quit_kw, CommandType::basic_command),
+            // std::make_pair(Keywords::help_kw, CommandType::basic_command),
+  };
+
   //This (incomplete) map binds keyword-string to Keyword (token)...
   static std::map<std::string_view,  Keywords> gDictionary = {
     std::make_pair("about",     Keywords::about_kw),
@@ -171,6 +176,12 @@ namespace ECE141 {
       }
     }
     
+    static CommandType kwToType(Keywords aType) {
+        return kwToCommandType.count(aType) ?
+            kwToCommandType[aType] :
+            CommandType::unknown_command;
+    }
+
     static const char* keywordToString(Keywords aType) {
       switch(aType) {
         case Keywords::boolean_kw:    return "bool";

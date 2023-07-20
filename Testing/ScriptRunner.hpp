@@ -44,7 +44,20 @@ namespace ECE141 {
             aView.show(anOutput);
             anOutput << std::endl;
           });
-          if(!theResult) {
+
+          /*
+          Ask Professor Rick regarding this block of code.
+          Is this error handling necessary?
+          The handle input handles all input cases, which also deals with errors.
+          This is too general and we can't get into the specifics.
+          For useful state, specificity is required, so it would make sense to be within app controller.
+          
+          Is there a way to get stateness without being specific?
+          AppController can contain an ErrorProcessor.
+          There are errors within the app so it makes sense for AppController to have an ErrorProcessor.
+          
+          */
+          if(!theResult) { 
             anOutput << "Error: " << app.getError(theResult).value() << "\n";
           }
         }

@@ -6,11 +6,8 @@
 //  Copyright © 2018-2023 rick gessner. All rights reserved.
 //
 
-#include <iostream>
-#include <memory>
-#include <vector>
 #include "AppController.hpp"
-#include "../Utilities/Tokenizer/Tokenizer.hpp"
+
 
 namespace ECE141 {
   
@@ -27,6 +24,14 @@ namespace ECE141 {
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize();
     
+    /*
+    if tokenize.validate() == true
+    command factory (tokenizer) -> creates different commands
+    COR recognize pure virtual interface - make it into statements
+    statements - execute
+
+    
+    */
     while (theResult && theTokenizer.more()) {      
       //how will we handle this input?
       theResult=Errors::unknownCommand;
@@ -34,26 +39,7 @@ namespace ECE141 {
     return theResult;
   }
 
-  OptString AppController::getError(StatusResult &aResult) const {
-
-    static std::map<ECE141::Errors, std::string_view> theMessages = {
-      {Errors::illegalIdentifier, "Illegal identifier"},
-      {Errors::unknownIdentifier, "Unknown identifier"},
-      {Errors::databaseExists, "Database exists"},
-      {Errors::tableExists, "Table Exists"},
-      {Errors::syntaxError, "Syntax Error"},
-      {Errors::unknownCommand, "Unknown command"},
-      {Errors::unknownDatabase,"Unknown database"},
-      {Errors::unknownTable,   "Unknown table"},
-      {Errors::unknownError,   "Unknown error"}
-    };
-
-    std::string_view theMessage="Unknown Error";
-    if(theMessages.count(aResult.error)) {
-      theMessage=theMessages[aResult.error];
-    }
-    return theMessage;
-  }
+  OptString AppController::getError(StatusResult &aResult) {return errorProc.getView(aResult);}
 
 
 

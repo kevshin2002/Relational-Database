@@ -10,9 +10,11 @@
 #define AppController_hpp
 
 #include <stdio.h>
+#include <memory>
 #include "../Utilities/Config.hpp"
-#include "../Misc/Types/Errors.hpp"
-#include "../Views/View.hpp"
+#include "../Utilities/Tokenizer/Tokenizer.hpp"
+#include "Processor/ErrorProcessor.hpp"
+#include "../Database/Database.hpp"
 
 namespace ECE141 {
 
@@ -27,9 +29,13 @@ namespace ECE141 {
                                       ViewListener aViewer);
             bool          isRunning() const {return running;}
 
-            OptString     getError(StatusResult &aResult) const;
+            OptString     getError(StatusResult &aResult);
     
     bool running;
+
+  protected:
+      UniqueDB db;
+      ErrorProcessor errorProc;
   };
   
 }
