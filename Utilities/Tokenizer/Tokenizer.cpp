@@ -8,11 +8,10 @@
 
 
 #include "Tokenizer.hpp"
-#include "../../Misc/Helpers.hpp"
+#include "../Helpers.hpp"
 #include <exception>
 
 namespace ECE141 {
-  
 
   bool isWhitespace(char aChar) {
     static const char* theWS = " \t\r\n\b";

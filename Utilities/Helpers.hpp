@@ -10,7 +10,7 @@
 #ifndef Helpers_h
 #define Helpers_h
 
-#include "Types/keywords.hpp"
+#include "../Misc/Types/keywords.hpp"
 #include <algorithm>
 
 namespace ECE141 {
@@ -53,11 +53,18 @@ namespace ECE141 {
     std::make_pair("max", 30),
     std::make_pair("min", 40)
   };
-  static std::map<Keywords, CommandType> kwToCommandType = {
-            std::make_pair(Keywords::about_kw, CommandType::basic_command),
-            std::make_pair(Keywords::version_kw, CommandType::basic_command),
-            std::make_pair(Keywords::quit_kw, CommandType::basic_command),
-            // std::make_pair(Keywords::help_kw, CommandType::basic_command),
+  static std::map<Keywords, CommandType> KWToCmdType = {
+    std::make_pair(Keywords::about_kw, CommandType::basic_command),
+    std::make_pair(Keywords::version_kw, CommandType::basic_command),
+    std::make_pair(Keywords::quit_kw, CommandType::basic_command),
+    //std::make_pair(Keywords::help_kw, CommandType::basic_command),
+  };
+
+  static std::map<Keywords, StatementType> statements = {
+    std::make_pair(Keywords::about_kw, StatementType::about),
+    std::make_pair(Keywords::version_kw, StatementType::version),
+    std::make_pair(Keywords::quit_kw, StatementType::quit),
+    //std::make_pair(Keywords::help_kw, CommandType::basic_command),
   };
 
   //This (incomplete) map binds keyword-string to Keyword (token)...
@@ -176,10 +183,16 @@ namespace ECE141 {
       }
     }
     
-    static CommandType kwToType(Keywords aType) {
-        return kwToCommandType.count(aType) ?
-            kwToCommandType[aType] :
+    static CommandType KWToCmd(Keywords aKWType) {
+        return KWToCmdType.count(aKWType) ?
+            KWToCmdType[aKWType] :
             CommandType::unknown_command;
+    }
+
+    static StatementType KWToStatement(Keywords aKWType) {
+        return statements.count(aKWType) ?
+            statements[aKWType] :
+            StatementType::unknown;
     }
 
     static const char* keywordToString(Keywords aType) {
@@ -238,7 +251,6 @@ namespace ECE141 {
       }
       return false;
     }
-
  /*      
   static ECE141::Keywords gJoinTypes[]={
     ECE141::Keywords::cross_kw,ECE141::Keywords::full_kw, ECE141::Keywords::inner_kw,

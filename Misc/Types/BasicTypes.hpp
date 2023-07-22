@@ -23,6 +23,10 @@ namespace ECE141 {
       basic_command = 'B', db_command = 'D', sql_command = 'S', unknown_command = 'U'
   };
 
+  enum class StatementType {
+      about = 'a', version = 'v', help = 'h', quit = 'q', unknown = 'u'
+  };
+
   using OptString = std::optional<std::string_view>;
 
 }

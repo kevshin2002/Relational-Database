@@ -67,6 +67,7 @@ namespace ECE141 {
     
     //command related...
     unknownCommand=3000,
+    noSemicolon,
     invalidCommand,
     
     //general purpose...

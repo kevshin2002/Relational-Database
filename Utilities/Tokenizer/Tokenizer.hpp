@@ -23,7 +23,7 @@ namespace ECE141 {
   enum class TokenType {
     function, identifier, keyword, number, operators, timedate, punctuation, string, unknown
   };
-  
+  const size_t ONE_SEMICOLON = 1;
   //-----------------
   
   struct Token {
@@ -42,14 +42,14 @@ namespace ECE141 {
   };
  
   //-----------------
-  
+
   class Tokenizer : public Scanner {
   public:
     Tokenizer(std::istream &anInputStream);
     
     StatusResult  tokenize();
     Token&        tokenAt(size_t anOffset);
-
+    std::vector<Token>& getTokens() { return tokens; }
     Token&        current();
     bool          more() {return index<size();}
     bool          next(int anOffset=1);

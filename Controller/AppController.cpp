@@ -23,7 +23,20 @@ namespace ECE141 {
                                         ViewListener aViewer){
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize();
-    
+    CommandFactory cmdFac(theTokenizer);
+    if (hasSemicolon(theTokenizer, theResult)) {
+        cmdFac.transform();
+        while (theResult && theTokenizer.more()) {
+            //how will we handle this input?
+            theResult = Errors::unknownCommand;
+        }
+    }
+
+    if (theResult.error != Errors::noSemicolon) {
+        emptyCache();
+        //cmdProc.deleteCommands();
+    }
+    return theResult;
     /*
     if tokenize.validate() == true
     command factory (tokenizer) -> creates different commands
@@ -32,13 +45,20 @@ namespace ECE141 {
 
     
     */
-    while (theResult && theTokenizer.more()) {      
-      //how will we handle this input?
-      theResult=Errors::unknownCommand;
-    }
+    
     return theResult;
   }
-
+  StatusResult AppController::hasSemicolon(Tokenizer& aTokenizer, StatusResult& aResult) {
+      Token theLastToken = aTokenizer.getTokens().back();
+      aResult = Errors::noSemicolon;
+      cache.insert(cache.end(), aTokenizer.getTokens().begin(), aTokenizer.getTokens().end());
+      if (ONE_SEMICOLON == std::count(theLastToken.data.begin(), theLastToken.data.end(), ';')) {
+          aResult = Errors::noError;
+          cache.pop_back();
+          aTokenizer.getTokens() = cache;
+      }
+      return aResult;
+  }
   OptString AppController::getError(StatusResult &aResult) {return errorProc.getView(aResult);}
 
 

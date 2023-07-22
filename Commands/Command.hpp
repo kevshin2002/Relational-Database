@@ -13,16 +13,22 @@
 #include "../Utilities/Tokenizer/Tokenizer.hpp"
 
 namespace ECE141 {
-	class Command {
-	public:
-		virtual ~Command() {}
-		CommandType& getType() { return type; }
-		std::vector<Token>& getTokens() { return tokens; }
-
-	protected:
-		CommandType type;
+	struct CmdQuery {
+		Token marker;
 		std::vector<Token> tokens;
 	};
+	struct Command {
+		Command(CommandType aCmdType) : type(aCmdType) {}
+
+		virtual ~Command() {}
+		CommandType& getType() { return type; }
+		Token& getMarker() { return query.marker; }
+		std::vector<Token>& getTokens() { return query.tokens; }
+
+		CommandType type;
+		CmdQuery query;
+	};
+	using Commands = std::vector<Command>;
 
 }
 
