@@ -25,7 +25,7 @@ namespace ECE141 {
   };
 
   using ViewListener = std::function<void(View &aView)>;
-
+  using UniqueView = std::unique_ptr<View>;
 }
 
 #endif /* View_h */

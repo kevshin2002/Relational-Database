@@ -1,6 +1,6 @@
 //
 //  Timer.hpp
-//  RGAssignment1
+//  Database
 //
 //  Created by rick gessner on 3/30/23.
 //  Copyright © 2018-2023 rick gessner. All rights reserved.
@@ -16,21 +16,29 @@
 
 class Timer {
 protected:
-  using clock_t = std::chrono::high_resolution_clock;
-  using second_t = std::chrono::duration<double, std::ratio<1> >;
-  
-  std::chrono::time_point<clock_t>  started;
+    using clock_t = std::chrono::high_resolution_clock;
+    using second_t = std::chrono::duration<double, std::ratio<1> >;
+
 public:
-  
-  Timer() : started(clock_t::now()) {}
-  
-  void reset() {
-    started = clock_t::now();
-  }
-    
-  double elapsed() const {
-    return std::chrono::duration_cast<second_t>(clock_t::now() - started).count();
-  }
+
+    using Marker = std::chrono::time_point<clock_t>;
+
+    Timer() : _started(now()) {}
+
+    Marker started() const { return _started; }
+    Marker now() const { return clock_t::now(); }
+    Marker getCheckpoint() const { return _checkpoint; }
+    Timer& reset() { _started = now(); return *this; }
+    Timer& checkpoint() { _checkpoint = now(); return *this; }
+
+    double elapsed() const { return elapsed(_started); }
+    double elapsed(const Marker& aStart) const {
+        return std::chrono::duration_cast<second_t>(clock_t::now() - aStart).count();
+    }
+
+protected:
+    Marker _started;
+    Marker _checkpoint;
 };
 
 #endif /* Timer_h */

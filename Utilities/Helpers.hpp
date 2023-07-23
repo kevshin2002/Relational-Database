@@ -227,6 +227,17 @@ namespace ECE141 {
         default: return false;
       }
     }
+
+    static bool isCmd(Keywords aKeyword) {
+        switch (aKeyword) {
+        case Keywords::about_kw:
+        case Keywords::version_kw:
+        case Keywords::help_kw:
+        case Keywords::quit_kw:
+            return true;
+        default: return false;
+        }
+    }
         
     static Operators toOperator(std::string aString) {
       auto theIter = gOperators.find(aString);

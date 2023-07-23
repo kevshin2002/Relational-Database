@@ -16,7 +16,6 @@
 #include "../Utilities/Helpers.hpp"
 
 namespace ECE141 {
-	using BasicCalls = std::map<StatementType, std::function<UniqueStatement()>>;
 	class BasicFactory : public Creational::AbstractFactory<StatementType, UniqueStatement>{
 	public:
 		BasicFactory() {
@@ -32,9 +31,16 @@ namespace ECE141 {
 			return theFactory;
 		}
 
-		UniqueStatement produce(Command& aCommand) {
-			StatementType theType = Helpers::KWToStatement(aCommand.getMarker().keyword);
-			return create(theType, NULL); // bad practice to put NULL but for sake of completion
+		UniqueStatement produce(StatusResult& aResult, Command& aCommand) {
+			UniqueStatement theStatement;
+			StatementType theType;
+			aResult = Errors::invalidCommand;
+			if (aCommand.getTokens().size() == static_cast<size_t>(Quantity::one)) {
+				theType = Helpers::KWToStatement(aCommand.getCmdType());
+				theStatement = create(theType);
+				aResult = theType == StatementType::quit ? Errors::userTerminated : Errors::noError;
+			}
+			return theStatement;
 		}
 	};
 }

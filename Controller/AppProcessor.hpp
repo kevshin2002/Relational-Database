@@ -10,13 +10,15 @@
 #define AppProcessor_hpp
 
 #include "../Statements/Statement.hpp"
+#include "../View/ViewGenerator.hpp"
 
 namespace ECE141 {
 	struct AppProcessor {
-		StatusResult virtual process(Statement& aStatement) = 0;
+		UniqueView virtual process(UniqueStatement& aStatement) = 0;
 	};
+	using UniqueAppProc = std::unique_ptr<AppProcessor>;
 }
 
 
 
-#endif // ErrorProcessor_hpp
+#endif // AppProcessor_hpp

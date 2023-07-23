@@ -18,15 +18,15 @@
 namespace ECE141 {
 	class FactoryRouter {
 	public:
-		UniqueStatement route(Command& aCommand) {
+		UniqueStatement route(StatusResult& aResult, Command& aCommand) {
 			auto callable = routes.find(aCommand.getType());
-			return callable != routes.end() ? callable->second(aCommand) : nullptr;
+			return callable != routes.end() ? callable->second(aResult, aCommand) : nullptr;
 		}
 
 	protected:
-		using RouteCalls = std::map <CommandType, std::function<UniqueStatement(Command&)>>;
+		using RouteCalls = std::map <CommandType, std::function<UniqueStatement(StatusResult&, Command&)>>;
 		RouteCalls routes {
-			{CommandType::basic_command, [&](Command& aCommand) { return BasicFactory::getInstance().produce(aCommand); }} 
+			{CommandType::basic_command, [](StatusResult& aResult, Command& aCommand) { return BasicFactory::getInstance().produce(aResult, aCommand); }} 
 		};
 
 		// What if we add more types of commands?

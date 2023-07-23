@@ -11,13 +11,15 @@
 
 #include <stdio.h>
 #include "../Utilities/Config.hpp"
+#include "Processors/CommandProcessors/BasicProcessor.hpp"
 #include "Processors/ErrorProcessor.hpp"
 #include "../Factories/CommandFactory.hpp"
+#include "Routers/FactoryRouter.hpp"
 #include "../Database/Database.hpp"
 
 namespace ECE141 {
   using TokenCache = std::vector<Token>;
-  class AppController{
+  class AppController {
   public:
     
     AppController(std::ostream &anOutput);
@@ -34,6 +36,7 @@ namespace ECE141 {
 
   protected:
       UniqueDB db;
+      AppProcessor &appProc = BasicProcessor::getInstance();
       ErrorProcessor errorProc;
       TokenCache cache;
   };

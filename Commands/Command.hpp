@@ -13,23 +13,20 @@
 #include "../Utilities/Tokenizer/Tokenizer.hpp"
 
 namespace ECE141 {
-	struct CmdQuery {
-		Token marker;
-		std::vector<Token> tokens;
-	};
 	struct Command {
-		Command(CommandType aCmdType) : type(aCmdType) {}
+		Command() : type(CommandType::unknown_command) {}
+		Command(CommandType aCmdType, const std::vector<Token>& aTokenList) : type(aCmdType), tokens(aTokenList) {}
 
 		virtual ~Command() {}
 		CommandType& getType() { return type; }
-		Token& getMarker() { return query.marker; }
-		std::vector<Token>& getTokens() { return query.tokens; }
+		Keywords& getCmdType() { return tokens.front().keyword; }
+		std::vector<Token>& getTokens() { return tokens; }
 
 		CommandType type;
-		CmdQuery query;
+		std::vector<Token> tokens;
 	};
 	using Commands = std::vector<Command>;
-
+	using CmdCreate = std::pair<CommandType, std::vector<Token>>;
 }
 
 #endif // Command.hpp

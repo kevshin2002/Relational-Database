@@ -16,9 +16,10 @@
 namespace ECE141 {
 	class Statement {
 	public:
+		Statement() : type(StatementType::unknown) {}
 		Statement(StatementType aType) : type(aType) {}
+		StatementType& getType() { return type; }
 		virtual ~Statement() {}
-		virtual StatusResult execute() = 0;
 	protected:
 		StatementType type;
 	};

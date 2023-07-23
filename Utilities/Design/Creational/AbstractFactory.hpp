@@ -26,7 +26,7 @@ namespace Creational {
             if (it != factory.end()) {
                 return it->second(std::forward<Arguments>(args)...);
             }
-            return nullptr;
+            return FactoryValue();
         }
     protected:
 

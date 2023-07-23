@@ -64,7 +64,7 @@ namespace ECE141 {
       std::string theScript{"about;"};
       std::stringstream theInput(theScript);
       return doScriptTest(theInput, anOutput, [&](const std::string &aBuffer) {
-        return matches(aBuffer, {{"about",5},{"Authors:",20}});
+        return matches(aBuffer, {{"about;",5},{"Authors:",10}});
       });
     } //about
 
@@ -92,7 +92,7 @@ namespace ECE141 {
       std::string theScript{"quit;"};
       std::stringstream theInput(theScript);
       return doScriptTest(theInput, anOutput, [&](const std::string &aBuffer) {
-        return matches(aBuffer, {{"quit",4},{"DB::141 is shutting down",24}});
+        return matches(aBuffer, {{"quit;",4},{"DB::141 is shutting down",24}});
       });
     } //quit
     
@@ -102,7 +102,7 @@ namespace ECE141 {
       std::string theScript{"version;"};
       std::stringstream theInput(theScript);
       return doScriptTest(theInput,anOutput,[&](const std::string &aBuffer) {
-        return matches(aBuffer, {{"version",7}, {"Version:",10}});
+        return matches(aBuffer, {{"version;",7}, {"Version:",10}});
       });
     }
     

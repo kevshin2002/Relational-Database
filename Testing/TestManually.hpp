@@ -30,13 +30,17 @@ bool doManualTesting() {
         theResult=theApp.handleInput(theStream, [&](View &aView) {
           aView.show(std::cout);
           std::cout << "\nElapsed: " << std::fixed
-            << Config::getTimer().elapsed() << std::endl;
+            << Config::getTimer().elapsed() << "\n" <<  std::endl;
         });
         if(theResult==Errors::userTerminated) {
           running=false;
         }
         else if(!theResult) {
-          std::cout << "Error: " << theApp.getError(theResult).value() << "\n";
+            OptString errView = theApp.getError(theResult);
+            if (errView.has_value())
+                std::cout << errView.value();
+            std::cout << "\nElapsed: " << std::fixed
+                << Config::getTimer().elapsed() << "\n" << std::endl;
         }
       }
     }

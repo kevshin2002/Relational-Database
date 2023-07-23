@@ -26,7 +26,10 @@ namespace ECE141 {
   enum class StatementType {
       about = 'a', version = 'v', help = 'h', quit = 'q', unknown = 'u'
   };
-
+  
+  enum class Quantity : size_t {
+      one = 1, all = 5000
+  };
   using OptString = std::optional<std::string_view>;
 
 }

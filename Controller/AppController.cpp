@@ -21,20 +21,26 @@ namespace ECE141 {
   //build a tokenizer, tokenize input, ask processors to handle...
   StatusResult AppController::handleInput(std::istream &anInput,
                                         ViewListener aViewer){
+    Timer& theTimer = Config::getTimer().checkpoint();
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize();
     CommandFactory cmdFac(theTokenizer);
     if (hasSemicolon(theTokenizer, theResult)) {
-        cmdFac.transform();
-        while (theResult && theTokenizer.more()) {
-            //how will we handle this input?
-            theResult = Errors::unknownCommand;
+        cmdFac.factorize();
+        FactoryRouter facRouter;
+        while (theResult && cmdFac.more()) {
+            UniqueStatement Statement = facRouter.route(theResult, cmdFac.getCmd());
+            if (theResult || theResult.error == Errors::userTerminated) {
+                UniqueView theView = appProc.process(Statement);
+                aViewer(*theView);
+            }
+            cmdFac.deleteCmds(Quantity::one);
         }
     }
 
-    if (theResult.error != Errors::noSemicolon) {
+    if (theResult.error != Errors::noSemicolon && theResult.error != Errors::userTerminated) {
         emptyCache();
-        //cmdProc.deleteCommands();
+        cmdFac.deleteCmds(Quantity::all);
     }
     return theResult;
     /*
@@ -52,14 +58,19 @@ namespace ECE141 {
       Token theLastToken = aTokenizer.getTokens().back();
       aResult = Errors::noSemicolon;
       cache.insert(cache.end(), aTokenizer.getTokens().begin(), aTokenizer.getTokens().end());
-      if (ONE_SEMICOLON == std::count(theLastToken.data.begin(), theLastToken.data.end(), ';')) {
+      if (static_cast<size_t>(Quantity::one) == std::count(theLastToken.data.begin(), theLastToken.data.end(), ';')) {
           aResult = Errors::noError;
           cache.pop_back();
           aTokenizer.getTokens() = cache;
       }
       return aResult;
   }
-  OptString AppController::getError(StatusResult &aResult) {return errorProc.getView(aResult);}
+  OptString AppController::getError(StatusResult &aResult) {
+      OptString optString = std::nullopt;
+      if (aResult.error != Errors::noSemicolon)
+          optString = errorProc.getView(aResult);
+      return optString;
+  }
 
 
 

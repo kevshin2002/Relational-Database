@@ -14,18 +14,19 @@
 #include "../../Misc/Types/Errors.hpp"
 
 namespace ECE141 {
-	class ErrorView {
+	class ErrorView : public View {
 	public:
 		OptString createView(StatusResult& aStatus) {
-			view.emplace("Unknown Error");
-			if (theErrors.count(aStatus.error)) {
-				 view = theErrors[aStatus.error];
-			}
+			view = theErrors.count(aStatus.error) ? theErrors[aStatus.error] : "Unknown Error";
 			return view;
 		}
 
 		OptString getView() const {return view;}
 
+		bool    show(std::ostream& aStream) {
+			aStream << view.value();
+			return true;
+		}
 	protected:
 		OptString view;
 
@@ -42,7 +43,8 @@ namespace ECE141 {
 			{Errors::unknownError,   "Error 9: Unknown error"},
 			{Errors::invalidAttribute, "Error 10: Invalid Attribute"},
 			{Errors::unknownType, "Error 11: Unknown Type"},
-			{Errors::unexpectedValue, "Error 12: Illegal length value"}
+			{Errors::unexpectedValue, "Error 12: Illegal length value"},
+			{Errors::invalidCommand, "Error 13: Invalid command"},
 		};
 		
 	};

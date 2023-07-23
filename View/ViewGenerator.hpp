@@ -14,6 +14,7 @@
 //#include "DBView.hpp"
 //#include "TableView.hpp"
 //#include "StringView.hpp"
+#include "Views/BasicView.hpp"
 #include "Views/ErrorView.hpp" 
 
 namespace ECE141 {
@@ -33,6 +34,10 @@ namespace ECE141 {
 		//	stringView.createView(aCommand);
 		//	return stringView;
 		//}
+		static BasicView generate_basic(BasicView& aView, UniqueStatement& aStatement) {
+			aView.createView(*aStatement);
+			return aView;
+		}
 		static ErrorView& generate_error(ErrorView& aView, StatusResult& aStatus) {
 			aView.createView(aStatus);
 			return aView;

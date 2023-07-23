@@ -23,7 +23,6 @@ namespace ECE141 {
   enum class TokenType {
     function, identifier, keyword, number, operators, timedate, punctuation, string, unknown
   };
-  const size_t ONE_SEMICOLON = 1;
   //-----------------
   
   struct Token {
