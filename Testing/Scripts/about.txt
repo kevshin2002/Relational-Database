@@ -1,0 +1,146 @@
+# Test standalone commands
+about;
+version;
+help;
+quit;
+
+# Test valid command with leading/trailing spaces
+ about ;
+ version ;
+ help ;
+ quit ;
+
+# Test command with trailing text until semicolon is spotted
+about version help quit;
+about version help quit;version;help;about;
+version help about;version;about;quit;
+help about version;help;version;quit;
+
+# Test valid command with leading/trailing text until semicolon is spotted
+ about version help quit ;
+ version help about about ; quit ;
+ help version about version ; quit ;
+ about help version help ; quit ;
+
+# Test command without semicolon, then a semicolon later
+about version 
+help quit;
+
+about version 
+help;
+
+about version 
+quit;
+
+# Test multiple lines command with semicolon on the last line
+about
+version
+help
+quit;
+
+# Test multiple commands with semicolon on the last line
+about version
+help quit;
+
+about version 
+help 
+quit;
+
+# Test valid command followed by invalid command then a semicolon
+about invalidCommand; 
+version invalidCommand; 
+help invalidCommand; 
+quit invalidCommand;
+
+# Test valid commands with semicolon appearing in later lines
+about 
+version;
+help 
+quit;
+
+about
+invalidCommand;
+
+
+# Test valid and invalid commands together
+about;version;help;invalidCommand;quit;
+
+# Test command with extra semicolons
+about;;;;
+version;;;;;
+help;;;;;
+quit;;;;
+
+# Test all valid commands together
+about;version;help;quit;
+
+# Test all valid commands together with spaces 
+ about ; version ; help ; quit ;
+
+# Test "quit" not being the last command (invalid)
+quit;about;
+quit;version;
+quit;help;
+
+# Test commands with additional text (invalid)
+about extra;
+version 1.2;
+help me;
+quit now;
+
+# Test case sensitivity (assuming case does not matter)
+ABOUT;
+VERSION;
+HELP;
+QUIT;
+
+# Test valid commands with mixed case
+AbOuT;
+vErSiOn;
+HeLp;
+QuIt;
+
+# Test valid commands with special characters (invalid)
+about@;
+version$;
+help#;
+quit%;
+
+# Test commands with numbers (invalid)
+about1;
+version2;
+help3;
+quit4;
+
+# Test valid commands missing some characters (invalid)
+bout;
+versin;
+hel;
+uit;
+
+# Test commands without letters (invalid)
+;;;;;
+;
+;
+;
+
+# Test with more than one valid command at once, with 'quit' last
+about;version;help;quit;
+help;version;about;quit;
+version;help;about;quit;
+
+# Test with more than one valid command at once, 'quit' not last (invalid)
+about;version;quit;help;
+help;version;quit;about;
+version;quit;help;about;
+
+# Test commands with interspersed spaces (invalid)
+a b o u t;
+v e r s i o n;
+h e l p;
+q u i t;
+
+# Test 'quit' command with additional commands following (invalid)
+quit;version;
+quit;help;
+quit;about;
