@@ -16,14 +16,11 @@
 namespace ECE141 {
 	class Statement {
 	public:
-		Statement() : type(StatementType::unknown) {}
-		Statement(StatementType aType) : type(aType) {}
-		StatementType& getType() { return type; }
 		virtual ~Statement() {}
+		StatusResult virtual parse(Tokenizer& aTokenizer) = 0;
 	protected:
 		StatementType type;
 	};
-	using UniqueStatement = std::unique_ptr<Statement>;
 }
 
 #endif // Statement.hpp

@@ -58,19 +58,7 @@ namespace ECE141 {
     std::make_pair("max", 30),
     std::make_pair("min", 40)
   };
-  static std::map<Keywords, CommandType> KWToCmdType = {
-    std::make_pair(Keywords::about_kw, CommandType::basic_command),
-    std::make_pair(Keywords::version_kw, CommandType::basic_command),
-    std::make_pair(Keywords::quit_kw, CommandType::basic_command),
-    std::make_pair(Keywords::help_kw, CommandType::basic_command),
-  };
-
-  static std::map<Keywords, StatementType> statements = {
-    std::make_pair(Keywords::about_kw, StatementType::about),
-    std::make_pair(Keywords::version_kw, StatementType::version),
-    std::make_pair(Keywords::quit_kw, StatementType::quit),
-    std::make_pair(Keywords::help_kw, StatementType::help),
-  };
+ 
 
   //This (incomplete) map binds keyword-string to Keyword (token)...
   static std::map<std::string_view,  Keywords> gDictionary = {
@@ -197,18 +185,7 @@ namespace ECE141 {
         case DataTypes::varchar_type:   return "varchar";
       }
     }
-    
-    static CommandType KWToCmd(Keywords aKWType) {
-        return KWToCmdType.count(aKWType) ?
-            KWToCmdType[aKWType] :
-            CommandType::unknown_command;
-    }
 
-    static StatementType KWToStatement(Keywords aKWType) {
-        return statements.count(aKWType) ?
-            statements[aKWType] :
-            StatementType::unknown;
-    }
 
     static const char* keywordToString(Keywords aType) {
       switch(aType) {

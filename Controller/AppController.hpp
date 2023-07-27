@@ -11,14 +11,12 @@
 
 #include <stdio.h>
 #include "../Utilities/Config.hpp"
-#include "Processors/CommandProcessors/BasicProcessor.hpp"
-#include "Processors/ErrorProcessor.hpp"
-#include "../Factories/CommandFactory.hpp"
-#include "Routers/FactoryRouter.hpp"
 #include "../Database/Database.hpp"
+#include "../Utilities/Tokenizer/Tokenizer.hpp"
+#include "../Statements/Statement.hpp"
+#include "../View/Views/StringView.hpp"
 
 namespace ECE141 {
-  using TokenCache = std::vector<Token>;
   class AppController {
   public:
     
@@ -26,19 +24,19 @@ namespace ECE141 {
     virtual ~AppController();
 
       //app api...    
-    virtual StatusResult  handleInput(std::istream &anInput,  ViewListener aViewer);
-    StatusResult          hasSemicolon(Tokenizer& aTokenizer, StatusResult& aResult);
-            bool          isRunning() const {return running;}
-            void          emptyCache() { cache.clear(); }
-            OptString     getError(StatusResult &aResult);
-
-    bool running;
+    virtual StatusResult      handleInput(std::istream &anInput,  ViewListener aViewer);
+    virtual bool              isProcessable(Keywords& aKeyword) const;
+    virtual AppController*    findHandler(Tokenizer& aTokenizer);
+    virtual StatusResult      run(Statement* aStatement, ViewListener aViewer);
+    virtual Statement*        makeStatement(Tokenizer& aTokenizer, AppController* anAppController);
 
   protected:
+    bool                      isRunning() const {return running;}
+    OptString                 getError(StatusResult& aResult) const;
+
+      bool running;
       UniqueDB db;
-      AppProcessor &appProc = BasicProcessor::getInstance();
-      ErrorProcessor errorProc;
-      TokenCache cache;
+      AppController* next;
   };
   
 }
