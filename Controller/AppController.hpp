@@ -22,7 +22,7 @@ namespace ECE141 {
   class AppController {
   public:
     
-    AppController(std::ostream &anOutput);
+    AppController();
     virtual ~AppController();
 
       //app api...    

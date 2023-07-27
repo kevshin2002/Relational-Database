@@ -1,6 +1,6 @@
 //
 //  TestManually.hpp
-//  PA1
+//  Database
 //
 //  Created by rick gessner on 3/30/23.
 //  Copyright © 2018-2023 rick gessner. All rights reserved.
@@ -11,41 +11,42 @@
 #define TestManually_h
 
 #include <sstream>
-#include "../Relational-Database/Controller/AppController.hpp"
+#include "../Controller/AppController.hpp"
 
 using namespace ECE141;
 
 bool doManualTesting() {
-  ECE141::AppController   theApp(std::cout);
-  ECE141::StatusResult  theResult{};
+  ECE141::AppController   theApp;
+  ECE141::StatusResult    theResult{};
 
   std::string theUserInput;
-  bool running=true;
-  do {
+
+  while(theApp.isRunning()) {
     std::cout << "\n> ";
     if(std::getline(std::cin, theUserInput)) {
       if(theUserInput.length()) {
-        Config::getTimer().reset();
+        auto theTimer=Config::getTimer();
+        auto theStart=theTimer.now();
         std::stringstream theStream(theUserInput);
         theResult=theApp.handleInput(theStream, [&](View &aView) {
           aView.show(std::cout);
           std::cout << "\nElapsed: " << std::fixed
-            << Config::getTimer().elapsed() << "\n" <<  std::endl;
+            << theTimer.elapsed(theStart);
+          std::cout << std::endl;
         });
-        if(theResult==Errors::userTerminated) {
-          running=false;
-        }
-        else if(!theResult) {
-            OptString errView = theApp.getError(theResult);
-            if (errView.has_value())
-                std::cout << errView.value();
-            std::cout << "\nElapsed: " << std::fixed
-                << Config::getTimer().elapsed() << "\n" << std::endl;
-        }
+      }
+      if (theResult == Errors::userTerminated) {
+          theApp.running = false;
+      }
+      else if (!theResult) {
+          OptString errView = theApp.getError(theResult);
+          if (errView.has_value())
+              std::cout << errView.value();
+          std::cout << "\nElapsed: " << std::fixed
+              << Config::getTimer().elapsed() << "\n" << std::endl;
       }
     }
   }
-  while (running);
   return theResult;
 }
 

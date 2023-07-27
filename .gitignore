@@ -45,3 +45,4 @@ x64/Debug/AppController.obj
 x64/Debug/main.obj
 *.vsidx
 *.ipch
+*.obj

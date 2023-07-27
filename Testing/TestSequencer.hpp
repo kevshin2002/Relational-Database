@@ -1,6 +1,6 @@
 //
 //  TestSequencer.hpp
-//  RG_PA1
+//  Database
 //
 //  Created by rick gessner on 3/30/23.
 //  Copyright © 2018-2023 rick gessner. All rights reserved.
@@ -10,8 +10,8 @@
 #ifndef TestSequencer_h
 #define TestSequencer_h
 
-#include "Tokenizer.hpp"
-#include "keywords.hpp"
+#include "../Utilities/Tokenizer/Tokenizer.hpp"
+#include "../Misc/Types/keywords.hpp"
 #include <initializer_list>
 
 namespace ECE141 {
@@ -27,7 +27,7 @@ namespace ECE141 {
       TestSequencer &seq;
     };
     
-    TestSequencer& nextIs(const KWList &aList) {
+    TestSequencer& nextIs(const KWList &aList, bool autoSkip=false) {
       if(state) {
         std::vector<Keywords> theList{aList};
         int thePos{0};
@@ -38,9 +38,7 @@ namespace ECE141 {
             break;
           }
         }
-        if(state) {
-          return skip(theList.size());
-        }
+        if(state && autoSkip) {return skip(theList.size());}
       }
       return *this;
     }
@@ -52,6 +50,20 @@ namespace ECE141 {
     TestSequencer& getNumber(int &aValue) {
       Token &theToken=tokenizer.current();
       aValue=std::stoi(theToken.data);
+      return *this;
+    }
+    
+    TestSequencer& skipPast(Keywords aKW) {
+      if(state) {
+        while(tokenizer.next()) {
+          auto theToken=tokenizer.current();
+          if(theToken.keyword==aKW) {
+            tokenizer.next();//skip it...
+            return *this;
+          }
+        }
+        state=false;
+      }
       return *this;
     }
     

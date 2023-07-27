@@ -25,7 +25,7 @@ namespace ECE141 {
 		CommandType type;
 		std::vector<Token> tokens;
 	};
-	using Commands = std::vector<Command>;
+	using CommandsVec = std::vector<Command>;
 	using CmdCreate = std::pair<CommandType, std::vector<Token>>;
 }
 

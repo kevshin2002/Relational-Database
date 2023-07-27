@@ -1,22 +1,35 @@
 //
 //  Database.hpp
-//  
+//  PA2
 //
-//  Extension of Relational Database, ECE 141B
-//  Copyright UCSD ECE 141B, Prof Rick Gessner
-//  Coded by Kevin Shin
+//  Created by rick gessner on 2/27/23.
 //
 
 #ifndef Database_hpp
 #define Database_hpp
 
+#include <stdio.h>
+#include <fstream> 
+#include "Storage/Storage.hpp"
+
 namespace ECE141 {
-	class Database {
 
-	};
+  //db should be related to storage somehow...
 
-	using UniqueDB = std::unique_ptr<Database>;
+  class Database {
+  public:    
+            Database(const std::string aPath, AccessMode);            
+    virtual ~Database();
+
+    StatusResult    dump(std::ostream &anOutput); //debug...
+
+  protected:
+    
+    std::string     name;
+    bool            changed;  //might be helpful, or ignore if you prefer.
+  };
+
+  using UniqueDB = std::unique_ptr<Database>;
+
 }
-
-
-#endif // Database.hpp
+#endif /* Database_hpp */

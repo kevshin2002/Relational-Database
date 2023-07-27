@@ -11,8 +11,7 @@
 
 namespace ECE141 {
   
-  AppController::AppController(std::ostream &anOutput) : running{true} {
-  }
+  AppController::AppController() : running{true} {}
   
   AppController::~AppController() {}
   
@@ -21,12 +20,11 @@ namespace ECE141 {
   //build a tokenizer, tokenize input, ask processors to handle...
   StatusResult AppController::handleInput(std::istream &anInput,
                                         ViewListener aViewer){
-    Timer& theTimer = Config::getTimer().checkpoint();
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize();
     CommandFactory cmdFac(theTokenizer);
     if (hasSemicolon(theTokenizer, theResult)) {
-        cmdFac.factorize();
+        cmdFac.factorize(theResult);
         FactoryRouter facRouter;
         while (theResult && cmdFac.more()) {
             UniqueStatement Statement = facRouter.route(theResult, cmdFac.getCmd());

@@ -1,6 +1,6 @@
 //
 //  Scanner.hpp
-//  Assignment1
+//  Database
 //
 //  Created by rick gessner on 3/30/23.
 //  Copyright © 2018-2023 rick gessner. All rights reserved.

@@ -1,17 +1,18 @@
 //
 //  Tokenizer.cpp
-//  PA1
+//  Database1
 //
-//  Created by rick gessner on 3/30/23.
-//  Copyright © 2018-2023 rick gessner. All rights reserved.
+//  Created by rick gessner on 3/19/19.
+//  Copyright © 2019 rick gessner. All rights reserved.
 //
-
 
 #include "Tokenizer.hpp"
 #include "../Helpers.hpp"
 #include <exception>
+#include <algorithm>
 
 namespace ECE141 {
+  
 
   bool isWhitespace(char aChar) {
     static const char* theWS = " \t\r\n\b";
@@ -31,7 +32,7 @@ namespace ECE141 {
   }
 
   bool isOperator(char aChar) {
-    return strchr("+-/*%=>!<.", aChar);
+    return strchr("+-/*%=>!<.|", aChar);
   }
 
   bool isSign(char aChar) {
@@ -39,7 +40,7 @@ namespace ECE141 {
   }
 
   bool isPunctuation(char aChar) {
-    return strchr("()[]{}:;,", aChar);
+    return strchr("#()[]{}:;,", aChar);
   }
 
   //-----------------------------------
@@ -54,7 +55,7 @@ namespace ECE141 {
       return tokens[anOffset];
     }
     throw std::out_of_range("invalid offset");
-  }  
+  }
   
   bool Tokenizer::next(int anOffset) {
     index+=anOffset;
@@ -136,6 +137,7 @@ namespace ECE141 {
       }
       else if(isOperator(theChar)) {
         std::string temp;
+        temp+=theChar;
         Token theToken{TokenType::operators};
         theToken.data.push_back(input.get());
         theToken.op=gOperators[temp];
@@ -149,7 +151,7 @@ namespace ECE141 {
       else if(isQuote(theChar) || (apostrophe==theChar)) {
         input.get(); //skip first quote...
         Token theToken{TokenType::identifier, Keywords::unknown_kw, Operators::unknown_op};
-        theToken.data=readUntil(theChar);
+        theToken.data=readUntil(theChar,false); //don't inlude close quote
         tokens.push_back(theToken);
       }
       else if(isAlphaNum(theChar)) {
@@ -174,7 +176,12 @@ namespace ECE141 {
     return theResult;
   }
 
-
+  bool Tokenizer::each(const TokenVisitor aVisitor) {
+    for (auto &theToken : tokens) {
+      if(!aVisitor(theToken)) return false;
+    }
+    return true;
+  }
   
   // USE: ----------------------------------------------
   

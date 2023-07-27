@@ -46,6 +46,11 @@ namespace ECE141 {
     std::make_pair("between", Operators::between_op),
   };
   
+  static ECE141::Keywords gJoinTypes[] = {
+    ECE141::Keywords::cross_kw,ECE141::Keywords::full_kw, ECE141::Keywords::inner_kw,
+    ECE141::Keywords::left_kw, ECE141::Keywords::right_kw
+  };
+
   //a list of known functions...
   static std::map<std::string,int> gFunctions = {
     std::make_pair("avg", 10),
@@ -57,14 +62,14 @@ namespace ECE141 {
     std::make_pair(Keywords::about_kw, CommandType::basic_command),
     std::make_pair(Keywords::version_kw, CommandType::basic_command),
     std::make_pair(Keywords::quit_kw, CommandType::basic_command),
-    //std::make_pair(Keywords::help_kw, CommandType::basic_command),
+    std::make_pair(Keywords::help_kw, CommandType::basic_command),
   };
 
   static std::map<Keywords, StatementType> statements = {
     std::make_pair(Keywords::about_kw, StatementType::about),
     std::make_pair(Keywords::version_kw, StatementType::version),
     std::make_pair(Keywords::quit_kw, StatementType::quit),
-    //std::make_pair(Keywords::help_kw, CommandType::basic_command),
+    std::make_pair(Keywords::help_kw, StatementType::help),
   };
 
   //This (incomplete) map binds keyword-string to Keyword (token)...
@@ -81,6 +86,8 @@ namespace ECE141 {
     std::make_pair("between",   ECE141::Keywords::between_kw),
     std::make_pair("boolean",   ECE141::Keywords::boolean_kw),
     std::make_pair("by",        ECE141::Keywords::by_kw),
+    std::make_pair("change",    ECE141::Keywords::change_kw),
+    std::make_pair("changed",    ECE141::Keywords::changed_kw),
     std::make_pair("char",      ECE141::Keywords::char_kw),
     std::make_pair("column",    ECE141::Keywords::column_kw),
     std::make_pair("count",     ECE141::Keywords::count_kw),
@@ -93,11 +100,13 @@ namespace ECE141 {
     std::make_pair("databases", ECE141::Keywords::databases_kw),
     std::make_pair("datetime",  ECE141::Keywords::datetime_kw),
     std::make_pair("decimal",   ECE141::Keywords::decimal_kw),
+    std::make_pair("desc",      ECE141::Keywords::desc_kw),
     std::make_pair("delete",    ECE141::Keywords::delete_kw),
     std::make_pair("describe",  ECE141::Keywords::describe_kw),
     std::make_pair("distinct",  ECE141::Keywords::distinct_kw),
     std::make_pair("double",    ECE141::Keywords::double_kw),
     std::make_pair("drop",      ECE141::Keywords::drop_kw),
+     std::make_pair("dump",      ECE141::Keywords::dump_kw),
     std::make_pair("enum",      ECE141::Keywords::enum_kw),
     std::make_pair("explain",   ECE141::Keywords::explain_kw),
     std::make_pair("false",     ECE141::Keywords::false_kw),
@@ -106,7 +115,10 @@ namespace ECE141 {
     std::make_pair("from",      ECE141::Keywords::from_kw),
     std::make_pair("full",      ECE141::Keywords::full_kw),
     std::make_pair("group",     ECE141::Keywords::group_kw),
+    std::make_pair("help",      ECE141::Keywords::help_kw),
     std::make_pair("in",        ECE141::Keywords::in_kw),
+    std::make_pair("index",     ECE141::Keywords::index_kw),
+    std::make_pair("indexes",   ECE141::Keywords::indexes_kw),
     std::make_pair("inner",     ECE141::Keywords::inner_kw),
     std::make_pair("insert",    ECE141::Keywords::insert_kw),
     std::make_pair("int",       ECE141::Keywords::integer_kw),
@@ -128,9 +140,12 @@ namespace ECE141 {
     std::make_pair("order",     ECE141::Keywords::order_kw),
     std::make_pair("outer",     ECE141::Keywords::outer_kw),
     std::make_pair("primary",   ECE141::Keywords::primary_kw),
+    std::make_pair("query",     ECE141::Keywords::query_kw),
     std::make_pair("quit",      ECE141::Keywords::quit_kw),
     std::make_pair("references", ECE141::Keywords::references_kw),
     std::make_pair("right",     ECE141::Keywords::right_kw),
+    std::make_pair("rows",      ECE141::Keywords::rows_kw),
+    std::make_pair("run",       ECE141::Keywords::run_kw),
     std::make_pair("select",    ECE141::Keywords::select_kw),
     std::make_pair("self",      ECE141::Keywords::self_kw),
     std::make_pair("set",       ECE141::Keywords::set_kw),

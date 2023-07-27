@@ -26,11 +26,16 @@ namespace ECE141 {
 		@package.second = std::vector<Token>
 		*/
 
-		CommandFactory& factorize() {
+		CommandFactory& factorize(StatusResult& theResult) {
+			theResult = Errors::invalidCommand;
 			while (tokenizer.more()) {
 				CmdCreate package = Parser::parse(tokenizer.getTokens());
-				Command theCmd = create(package.first, package.second);
-				commands.push_back(theCmd);
+				if (package.first != CommandType::unknown_command) {
+					Command theCmd = create(package.first, package.second);
+					commands.push_back(theCmd);
+					theResult = Errors::noError;
+				}
+				
 			}
 			return *this;
 		}
@@ -46,7 +51,7 @@ namespace ECE141 {
 	protected:
 
 		Tokenizer& tokenizer;
-		Commands commands;
+		CommandsVec commands;
 	
 	};
 }

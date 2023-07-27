@@ -2,10 +2,9 @@
 //  Tokenizer.hpp
 //  Database
 //
-//  Created by rick gessner on 3/30/23.
-//  Copyright © 2018-2023 rick gessner. All rights reserved.
+//  Created by rick gessner on 3/19/19.
+//  Copyright © 2019 rick gessner. All rights reserved.
 //
-
 
 #ifndef Tokenizer_hpp
 #define Tokenizer_hpp
@@ -13,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <functional>
 #include "../../Misc/Types/keywords.hpp"
 #include "Scanner.hpp"
 
@@ -21,8 +21,10 @@ namespace ECE141 {
   using parseCallback = bool(char aChar);
   
   enum class TokenType {
-    function, identifier, keyword, number, operators, timedate, punctuation, string, unknown
+    function, identifier, keyword, number, operators, timedate,
+    punctuation, string, unknown
   };
+  
   //-----------------
   
   struct Token {
@@ -41,6 +43,8 @@ namespace ECE141 {
   };
  
   //-----------------
+  
+  using TokenVisitor = std::function<bool(const Token& aToken)>;
 
   class Tokenizer : public Scanner {
   public:
@@ -55,9 +59,10 @@ namespace ECE141 {
     Token&        peek(int anOffset=1);
     void          restart() {index=0;}
     size_t        size() {return tokens.size();}
+    size_t        pos() {return index;}
     size_t        remaining() {return index<size() ? size()-index :0;}
 
-                          //these might consume a token...    
+                          //these might consume a token...
     bool          skipTo(Keywords aKeyword);
     bool          skipTo(TokenType aTokenType);
 
@@ -66,15 +71,17 @@ namespace ECE141 {
     bool          skipIf(TokenType aTokenType);
     bool          skipIf(char aChar);
 
+    bool          each(const TokenVisitor aVisitor);
     void          dump(); //utility
 
   protected:
 
-    std::vector<Token>    tokens;    
+    std::vector<Token>    tokens;
     size_t                index;
   };
   
 }
 
 #endif /* Tokenizer_hpp */
+
 
