@@ -50,7 +50,7 @@ namespace ECE141 {
 		return new DBStatement(anAppProc, theType);
 	}
 	StatusResult	DBProcessor::run(Statement* aStatement, ViewListener aViewer) {
-		Errors::notImplemented;
+		return Errors::notImplemented;
 	}
 }
 
