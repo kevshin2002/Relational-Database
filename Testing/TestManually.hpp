@@ -18,7 +18,6 @@ using namespace ECE141;
 bool doManualTesting() {
     ECE141::AppController   theApp;
     ECE141::StatusResult    theResult{};
-
     std::string theUserInput;
 
     while (theApp.isRunning()) {

@@ -25,7 +25,7 @@ namespace ECE141 {
             char theChar;
             while (!anInput.eof()) {
                 anInput >> theChar;
-                if (semicolon == theChar || 0 == theChar) break;
+                if (semicolon == theChar || 0 == theChar || anInput.eof()) break;
                 else theResult += theChar;
             }
 

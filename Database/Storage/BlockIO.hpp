@@ -14,6 +14,7 @@
 #include <variant>
 #include <functional>
 #include "../../Misc/Types/Errors.hpp"
+#include "../../Utilities/Helpers.hpp"
 
 namespace ECE141 {
 

@@ -1,5 +1,5 @@
 //
-//  AppProcessor.hpp
+//  AppController.hpp
 //  Database5
 //
 //  Created by rick gessner on 3/30/23.
@@ -9,34 +9,29 @@
 #ifndef AppController_hpp
 #define AppController_hpp
 
-#include <stdio.h>
-#include "../Utilities/Config.hpp"
-#include "../Database/Database.hpp"
-#include "../Utilities/Tokenizer/Tokenizer.hpp"
-#include "../Statements/Statement.hpp"
-#include "../View/Views/StringView.hpp"
+#include "Processors/DBProcessor.hpp"
 
 namespace ECE141 {
-  class AppController {
+  class AppController : public AppProcessor{
   public:
-    
     AppController();
-    virtual ~AppController();
+    ~AppController();
+    StatusResult        handleInput(std::istream &anInput,  ViewListener aViewer);
+    bool                isRunning() const { return running; }
 
-      //app api...    
-    virtual StatusResult      handleInput(std::istream &anInput,  ViewListener aViewer);
-    virtual bool              isProcessable(Keywords& aKeyword) const;
-    virtual AppController*    findHandler(Tokenizer& aTokenizer);
-    virtual StatusResult      run(Statement* aStatement, ViewListener aViewer);
-    virtual Statement*        makeStatement(Tokenizer& aTokenizer, AppController* anAppController);
+    bool                isProcessable(Keywords& aKeyword) const override;
+    AppProcessor*       findHandler(Tokenizer& aTokenizer) override;
+    Statement*          makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) override;
+    StatusResult        run(Statement* aStatement, ViewListener aViewer) override;
 
+    bool                holdDB(Database* aDB);
+    bool                releaseDB();
   protected:
-    bool                      isRunning() const {return running;}
-    OptString                 getError(StatusResult& aResult) const;
+    OptString           getError(StatusResult& aResult) const;
 
-      bool running;
-      UniqueDB db;
-      AppController* next;
+    bool running;
+    Database* db;
+    AppProcessor* next;
   };
   
 }

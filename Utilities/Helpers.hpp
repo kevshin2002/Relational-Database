@@ -59,6 +59,16 @@ namespace ECE141 {
     std::make_pair("min", 40)
   };
  
+  static std::map<Keywords, StatementType> gStatements = {
+      std::make_pair(Keywords::about_kw, StatementType::about),
+      std::make_pair(Keywords::version_kw, StatementType::version),
+      std::make_pair(Keywords::help_kw, StatementType::help),
+      std::make_pair(Keywords::quit_kw, StatementType::quit),
+      std::make_pair(Keywords::show_kw, StatementType::showDB),
+      std::make_pair(Keywords::use_kw, StatementType::useDB),
+      std::make_pair(Keywords::dump_kw, StatementType::dumpDB),
+
+  };
 
   //This (incomplete) map binds keyword-string to Keyword (token)...
   static std::map<std::string_view,  Keywords> gDictionary = {
@@ -174,7 +184,7 @@ namespace ECE141 {
         default:  return Keywords::unknown_kw;
       }
     }
-            
+      
     static const char* dataTypeToString(DataTypes aType) {
       switch(aType) {
         case DataTypes::no_type:        return "none";
@@ -206,7 +216,13 @@ namespace ECE141 {
         default:                      return "unknown";
       }
     }
-  
+    
+    static StatementType keywordToStmtType(Keywords aType) {
+        return gStatements.count(aType) ?
+               gStatements[aType] :
+               StatementType::unknown;
+    }
+
     // USE: ---validate that given keyword is a datatype...
     static bool isDatatype(Keywords aKeyword) {
       switch(aKeyword) {
@@ -218,17 +234,6 @@ namespace ECE141 {
           return true;
         default: return false;
       }
-    }
-
-    static bool isCmd(Keywords aKeyword) {
-        switch (aKeyword) {
-        case Keywords::about_kw:
-        case Keywords::version_kw:
-        case Keywords::help_kw:
-        case Keywords::quit_kw:
-            return true;
-        default: return false;
-        }
     }
         
     static Operators toOperator(std::string aString) {

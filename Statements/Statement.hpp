@@ -10,14 +10,18 @@
 #ifndef Statement_hpp
 #define Statement_hpp
 
-#include "../Misc/Types/keywords.hpp"
+#include "../Utilities/Tokenizer/Tokenizer.hpp"
+#include "../Utilities/FolderReader.hpp"
 #include <memory>
 
 namespace ECE141 {
 	class Statement {
 	public:
+		Statement(StatementType aType) : type(aType) {}
 		virtual ~Statement() {}
-		StatusResult virtual parse(Tokenizer& aTokenizer) = 0;
+		virtual StatusResult	     parse(Tokenizer& aTokenizer) {return Errors::noError;}
+		StatementType                getType() const { return type; }
+		
 	protected:
 		StatementType type;
 	};

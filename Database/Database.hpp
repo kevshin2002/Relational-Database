@@ -10,6 +10,11 @@
 
 #include <stdio.h>
 #include <fstream> 
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include <map>
+#include "../Utilities/Config.hpp"
 #include "Storage/Storage.hpp"
 
 namespace ECE141 {
@@ -28,8 +33,6 @@ namespace ECE141 {
     std::string     name;
     bool            changed;  //might be helpful, or ignore if you prefer.
   };
-
-  using UniqueDB = std::unique_ptr<Database>;
 
 }
 #endif /* Database_hpp */

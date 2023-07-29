@@ -20,7 +20,19 @@ namespace ECE141 {
   };
 
   enum class StatementType {
-      about = 'a', version = 'v', help = 'h', quit = 'q', unknown = 'u'
+      about = 0, 
+      version, 
+      help, 
+      quit, 
+
+      createDB,
+      dropDB,
+      showDB, 
+      useDB, 
+      dumpDB,
+
+
+      unknown,
   };
   
   using OptString = std::optional<std::string_view>;

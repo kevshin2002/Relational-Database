@@ -16,7 +16,16 @@
 namespace ECE141 {
 	class StringView : public View{
 	public:
-		StringView(std::string &aString) : view(aString) {}
+		StringView() {}
+		StringView(const char* aString) : view(aString) {}
+		StringView(const std::string& aString) : view(aString) {}
+		StringView& operator=(const char* aString) {
+			view = aString;
+			return *this;
+		}
+		StringView& operator=(const std::string& aString) {
+			view = aString;
+		}
 
 		bool    show(std::ostream& aStream) override {
 			aStream << view;

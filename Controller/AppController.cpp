@@ -1,5 +1,5 @@
 //
-//  CommandProcessor.cpp
+//  AppController.cpp
 //  ECEDatabase
 //
 //  Created by rick gessner on 3/30/23.
@@ -12,11 +12,15 @@
 namespace ECE141 {
   
   AppController::AppController() : running{true} {
-      db = std::unique_ptr<Database>();
-      next = 
+      db = nullptr;
+      next = new DBProcessor();
   }
   
-  AppController::~AppController() {}
+  AppController::~AppController() { 
+      delete next; 
+      if (db) // safety
+          delete db;
+  }
   
   // USE: -----------------------------------------------------
   
@@ -47,6 +51,7 @@ namespace ECE141 {
             aViewer(theView);
         }
     }
+    return theResult;
   }
 
   bool AppController::isProcessable(Keywords& aKeyword) const {
@@ -61,18 +66,59 @@ namespace ECE141 {
       }
   }
 
-  AppController* AppController::findHandler(Tokenizer& aTokenizer) {
+  AppProcessor* AppController::findHandler(Tokenizer& aTokenizer) {
       return isProcessable(aTokenizer.current().keyword) ? this : next->findHandler(aTokenizer);
   }
 
-  StatusResult AppController::run(Statement* aStatement, ViewListener aListener) {
-
+  Statement* AppController::makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) {
+      StatementType theType = Helpers::keywordToStmtType(aTokenizer.current().keyword);
+      aTokenizer.next();
+      return new Statement(theType);
   }
 
-  Statement* AppController::makeStatement(Tokenizer& aTokenizer, AppController* anAppController) {
-
+  StatusResult AppController::run(Statement* aStatement, ViewListener aListener) {
+      StringView theView;
+      switch (aStatement->getType()) {
+      case StatementType::about:
+          theView = "Authors: Kevin Shin";
+          break;
+      case StatementType::version:
+          theView = "Version: 0.1";
+          break;
+      case StatementType::help:
+          theView =
+              "create database {name}: make a new database in storage folder\n"\
+              "drop database{name}   : delete a known database from storage folder\n"\
+              "show databases        : list databases in storage folder\n"\
+              "use database{ name }  : load a known database for use\n"\
+              "about                 : show members\n"\
+              "help                  : show list of commands\n"\
+              "quit                  : stop app\n"\
+              "version               : show app version";
+          break;
+      case StatementType::quit:
+          theView = "DB::141 is shutting down";
+          running = false;
+          break;
+      default: // Is this necessary? isProcessably already validates. Adding for sake of completion
+          return Errors::invalidCommand;
+      }
+      aListener(theView);
+      return Errors::noError;
   }
   
+  bool AppController::holdDB(Database* aDB) {
+      if (aDB)
+          db = aDB;
+      return true;
+  }
+  
+  bool AppController::releaseDB() {
+      if (db)
+          delete db;
+      return true;
+  }
+
   OptString AppController::getError(StatusResult& aResult) const {
 
       static std::map<ECE141::Errors, std::string_view> theMessages = {
