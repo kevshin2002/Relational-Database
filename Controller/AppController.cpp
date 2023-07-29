@@ -123,6 +123,7 @@ namespace ECE141 {
 
       static std::map<ECE141::Errors, std::string_view> theMessages = {
         {Errors::illegalIdentifier, "Illegal identifier"},
+        {Errors::identifierExpected, "Identifier expected"},
         {Errors::unknownIdentifier, "Unknown identifier"},
         {Errors::databaseExists, "Database exists"},
         {Errors::tableExists, "Table Exists"},
@@ -130,7 +131,8 @@ namespace ECE141 {
         {Errors::unknownCommand, "Unknown command"},
         {Errors::unknownDatabase,"Unknown database"},
         {Errors::unknownTable,   "Unknown table"},
-        {Errors::unknownError,   "Unknown error"}
+        {Errors::unknownError,   "Unknown error"},
+        {Errors::notImplemented, "Not Implemented"}
       };
 
       std::string_view theMessage = "Unknown Error";

@@ -73,7 +73,7 @@ namespace ECE141 {
     //general purpose...
     userTerminated = 4000,
     notImplemented,
-        
+    
     unknownError = 10000
   };    
   

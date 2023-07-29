@@ -28,11 +28,19 @@ namespace ECE141 {
 	}
 	
 	AppProcessor*	DBProcessor::findHandler(Tokenizer& aTokenizer) {
-		return isProcessable(aTokenizer.current().keyword) ?
-			   aTokenizer.peek().keyword == Keywords::database_kw || aTokenizer.peek().type == TokenType::identifier ? this : next->findHandler(aTokenizer) :
-			   next->findHandler(aTokenizer);
+		if (isProcessable(aTokenizer.current().keyword)) {
+			aTokenizer.next();
+			if (aTokenizer.more()) {
+				return aTokenizer.current().keyword == Keywords::database_kw || aTokenizer.current().type == TokenType::identifier ?
+					   this : 
+					   next->findHandler(aTokenizer);
+			}
+		}
+		return nullptr;
+
 	}
 	Statement*		DBProcessor::makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) {
+		aTokenizer.restart();
 		Keywords theKeyword = aTokenizer.current().keyword;
 		StatementType theType;
 		aTokenizer.next();

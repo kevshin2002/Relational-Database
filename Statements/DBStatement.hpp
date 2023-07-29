@@ -18,10 +18,17 @@ namespace ECE141 {
 	public:
 		DBStatement(AppProcessor* anAppController, StatementType aType) : appController(anAppController), Statement(aType) {}
 		StatusResult	 virtual parse(Tokenizer& aTokenizer) override {
-			StatusResult theResult = Errors::identifierExpected;
-			if (aTokenizer.skipTo(TokenType::identifier)) {
-				name = aTokenizer.current().data;
-				theResult = Errors::noError;
+			StatusResult theResult = Errors::noError;
+			switch (getType()) {
+			case StatementType::showDB:
+				theResult = aTokenizer.skipTo(Keywords::databases_kw) ? Errors::noError : Errors::unknownCommand;
+				break;
+			case StatementType::unknown:
+				theResult = Errors::unknownCommand;
+				break;
+			default:
+				theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
+				break;
 			}
 			return theResult;
 		}
