@@ -11,10 +11,12 @@
 #include "DBProcessor.hpp"
 
 namespace ECE141 {
-	DBProcessor::DBProcessor() {
-		next = nullptr;
+	DBProcessor::DBProcessor() {}
+	DBProcessor::~DBProcessor() {
+		if (next)
+			delete next;
 	}
-	bool			DBProcessor::isProcessable(Keywords& aKeyword) const{
+	bool	DBProcessor::isProcessable(Keywords& aKeyword) const{
 		switch (aKeyword) {
 		case Keywords::create_kw:
 		case Keywords::show_kw:
@@ -39,7 +41,7 @@ namespace ECE141 {
 		return nullptr;
 
 	}
-	Statement*		DBProcessor::makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) {
+	Statement*		DBProcessor::makeStatement(Tokenizer& aTokenizer, AppController* anAppController) {
 		aTokenizer.restart();
 		Keywords theKeyword = aTokenizer.current().keyword;
 		StatementType theType;
@@ -55,9 +57,47 @@ namespace ECE141 {
 			theType = Helpers::keywordToStmtType(theKeyword);
 			break;
 		}
-		return new DBStatement(anAppProc, theType);
+		return new DBStatement(anAppController, theType);
 	}
 	StatusResult	DBProcessor::run(Statement* aStatement, ViewListener aViewer) {
+		StatusResult theResult = Errors::noError;
+		switch (aStatement->getType()) {
+		case StatementType::createDB:
+			theResult = createDB(aViewer);
+			break;
+		case StatementType::dropDB:
+			theResult = dropDB(aViewer);
+			break;
+		case StatementType::showDB:
+			theResult = showDB(aViewer);
+			break;
+		case StatementType::useDB:
+			theResult = useDB(aViewer);
+			break;
+		case StatementType::dumpDB:
+			theResult = dumpDB(aViewer);
+			break;
+		}
+		return theResult;
+	}
+
+	StatusResult DBProcessor::createDB(ViewListener aViewer) {
+		return Errors::notImplemented;
+	}
+
+	StatusResult DBProcessor::dropDB(ViewListener aViewer) {
+		return Errors::notImplemented;
+	}
+
+	StatusResult DBProcessor::showDB(ViewListener aViewer) {
+		return Errors::notImplemented;
+	}
+
+	StatusResult DBProcessor::useDB(ViewListener aViewer) {
+		return Errors::notImplemented;
+	}
+
+	StatusResult DBProcessor::dumpDB(ViewListener aViewer) {
 		return Errors::notImplemented;
 	}
 }

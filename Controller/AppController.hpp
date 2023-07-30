@@ -12,7 +12,7 @@
 #include "Processors/DBProcessor.hpp"
 
 namespace ECE141 {
-  class AppController : public AppProcessor{
+  class AppController : public AppProcessor {
   public:
     AppController();
     ~AppController();
@@ -21,7 +21,7 @@ namespace ECE141 {
 
     bool                isProcessable(Keywords& aKeyword) const override;
     AppProcessor*       findHandler(Tokenizer& aTokenizer) override;
-    Statement*          makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) override;
+    Statement*          makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
     StatusResult        run(Statement* aStatement, ViewListener aViewer) override;
 
     bool                holdDB(Database* aDB);

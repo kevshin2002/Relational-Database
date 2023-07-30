@@ -21,7 +21,6 @@ namespace ECE141 {
       if (db) // safety
           delete db;
   }
-  
   // USE: -----------------------------------------------------
   
   //build a tokenizer, tokenize input, ask processors to handle...
@@ -70,10 +69,8 @@ namespace ECE141 {
       return isProcessable(aTokenizer.current().keyword) ? this : next->findHandler(aTokenizer);
   }
 
-  Statement* AppController::makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) {
-      StatementType theType = Helpers::keywordToStmtType(aTokenizer.current().keyword);
-      aTokenizer.next();
-      return new Statement(theType);
+  Statement* AppController::makeStatement(Tokenizer& aTokenizer, AppController* anAppController) {
+      return new Statement(StatementType::unknown);
   }
 
   StatusResult AppController::run(Statement* aStatement, ViewListener aListener) {

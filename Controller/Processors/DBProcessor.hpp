@@ -11,6 +11,7 @@
 #ifndef DBProcessor_hpp
 #define DBProcessor_hpp
 
+
 #include "AppProcessor.hpp"
 #include "../../Statements/DBStatement.hpp"
 
@@ -21,11 +22,17 @@ namespace ECE141 {
 	  ~DBProcessor();
 	  bool				isProcessable(Keywords& aKeyword) const override;
 	  AppProcessor*		findHandler(Tokenizer& aTokenizer) override;
-	  Statement*		makeStatement(Tokenizer& aTokenizer, AppProcessor* anAppProc) override;
+	  Statement*		makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
 	  StatusResult	    run(Statement* aStatement, ViewListener aViewer) override;
 
 	protected:
-	  AppProcessor* next;
+		StatusResult createDB(ViewListener aViewer);
+		StatusResult dropDB(ViewListener aViewer);
+		StatusResult showDB(ViewListener aViewer);
+		StatusResult useDB(ViewListener aViewer);
+		StatusResult dumpDB(ViewListener aViewer);
+
+		AppProcessor* next = nullptr;
 	};
 }
 

@@ -19,8 +19,13 @@ namespace ECE141 {
 	public:
 		Statement(StatementType aType) : type(aType) {}
 		virtual ~Statement() {}
-		virtual StatusResult	     parse(Tokenizer& aTokenizer) {return Errors::noError;}
-		StatementType                getType() const { return type; }
+		StatusResult	     virtual parse(Tokenizer& aTokenizer) {
+			StatementType theType = Helpers::keywordToStmtType(aTokenizer.current().keyword);
+			aTokenizer.next();
+			type = theType;
+			return Errors::noError;
+		}
+		StatementType        getType() const { return type; }
 		
 	protected:
 		StatementType type;

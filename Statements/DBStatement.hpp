@@ -16,7 +16,7 @@
 namespace ECE141 {
 	class DBStatement : public Statement {
 	public:
-		DBStatement(AppProcessor* anAppController, StatementType aType) : appController(anAppController), Statement(aType) {}
+		DBStatement(AppController* anAppController, StatementType aType) : appController(anAppController), Statement(aType) {}
 		StatusResult	 virtual parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			switch (getType()) {
@@ -33,9 +33,12 @@ namespace ECE141 {
 			return theResult;
 		}
 
+		AppController* getController() const { return appController; }
+		
+		
 	protected:
 		std::string name;
-		AppProcessor* appController;
+		AppController* appController;
 	};
 }
 #endif //DBStatement.hpp
