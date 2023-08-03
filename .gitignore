@@ -46,3 +46,5 @@ x64/Debug/main.obj
 *.vsidx
 *.ipch
 *.obj
+*.db
+*.enc

@@ -18,13 +18,14 @@ namespace ECE141 {
     ~AppController();
     StatusResult        handleInput(std::istream &anInput,  ViewListener aViewer);
     bool                isRunning() const { return running; }
-
+     
     bool                isProcessable(Keywords& aKeyword) const override;
     AppProcessor*       findHandler(Tokenizer& aTokenizer) override;
     Statement*          makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
     StatusResult        run(Statement* aStatement, ViewListener aViewer) override;
 
     bool                holdDB(Database* aDB);
+    Database*           getDB() const {return db;}
     bool                releaseDB();
   protected:
     OptString           getError(StatusResult& aResult) const;

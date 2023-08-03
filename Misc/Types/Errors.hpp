@@ -44,6 +44,7 @@ namespace ECE141 {
     unknownTable,
     unknownDatabase,
     databaseExists,
+    databaseDeletionError,
     databaseCreationError,
     primaryKeyRequired,
     

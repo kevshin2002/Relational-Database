@@ -29,7 +29,7 @@ namespace ECE141 {
     StatusResult    dump(std::ostream &anOutput); //debug...
 
   protected:
-    
+    Storage         storage;
     std::string     name;
     bool            changed;  //might be helpful, or ignore if you prefer.
   };

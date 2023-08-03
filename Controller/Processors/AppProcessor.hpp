@@ -12,6 +12,7 @@
 #define AppProcessor_hpp
 
 #include <stdio.h>
+#include <set>
 #include "../../View/Views/StringView.hpp"
 #include "../../Database/Database.hpp"
 #include "../../Utilities/Tokenizer/Tokenizer.hpp"

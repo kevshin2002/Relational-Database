@@ -29,10 +29,10 @@ namespace ECE141 {
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize();
     
-    while (theResult && theTokenizer.more()) {
+    while (theResult && theTokenizer.more(1)) {
         theResult = Errors::unknownCommand;
-        if (auto *theProc = findHandler(theTokenizer)) {
-            if (auto *theStmt = theProc->makeStatement(theTokenizer, this)) {
+        if (auto* theProc = findHandler(theTokenizer)) {
+            if (auto* theStmt = theProc->makeStatement(theTokenizer, this)) {
                 theResult = theStmt->parse(theTokenizer);
                 if (theResult) {
                     theResult = theProc->run(theStmt, aViewer);
@@ -105,8 +105,7 @@ namespace ECE141 {
   }
   
   bool AppController::holdDB(Database* aDB) {
-      if (aDB)
-          db = aDB;
+      db = aDB;
       return true;
   }
   

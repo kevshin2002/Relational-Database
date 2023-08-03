@@ -17,7 +17,6 @@ namespace ECE141 {
   enum class CacheType : int {block=0, rows, views};
 
   struct Config {
-
     static const char* getDBExtension() {return ".db";}
     static const std::string getDirectoryPath() { return std::filesystem::current_path().string(); }
 

@@ -14,6 +14,7 @@
 #include <iostream>
 #include <functional>
 #include <map>
+#include "../../Utilities/Config.hpp"
 
 namespace ECE141 {
 

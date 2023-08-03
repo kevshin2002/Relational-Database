@@ -12,8 +12,7 @@
 namespace ECE141 {
   
   Database::Database(const std::string aName, AccessMode aMode)
-    : name(aName), changed(true) {
-    std::string thePath = Config::getDBPath(name);
+    : name(aName), storage(Config::getDBPath(aName), aMode), changed(true) {
     //create for read/write
   }
 

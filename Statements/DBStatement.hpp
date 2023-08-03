@@ -10,16 +10,18 @@
 #ifndef DBStatement_hpp
 #define DBStatement_hpp
 
-
 #include "Statement.hpp"
+#include "../Controller/AppController.hpp"
 
 namespace ECE141 {
 	class DBStatement : public Statement {
 	public:
 		DBStatement(AppController* anAppController, StatementType aType) : appController(anAppController), Statement(aType) {}
-		StatusResult	 virtual parse(Tokenizer& aTokenizer) override {
+		StatusResult  parse(Tokenizer& aTokenizer) override {
+			aTokenizer.restart();
+			StatementType theType = getType();
 			StatusResult theResult = Errors::noError;
-			switch (getType()) {
+			switch (theType) {
 			case StatementType::showDB:
 				theResult = aTokenizer.skipTo(Keywords::databases_kw) ? Errors::noError : Errors::unknownCommand;
 				break;
@@ -27,14 +29,22 @@ namespace ECE141 {
 				theResult = Errors::unknownCommand;
 				break;
 			default:
-				theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
+				if (theType == StatementType::dumpDB) {
+					theResult = aTokenizer.skipTo(Keywords::database_kw) ?
+						aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected :
+						Errors::unknownCommand;
+				}
+				else
+					theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
+				name = aTokenizer.current().data;
 				break;
 			}
+			aTokenizer.eof();
 			return theResult;
 		}
 
-		AppController* getController() const { return appController; }
-		
+		const std::string& getDBName() const {return name;}
+		AppController* getAppController() { return appController; }
 		
 	protected:
 		std::string name;

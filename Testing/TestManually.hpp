@@ -27,7 +27,7 @@ bool doManualTesting() {
                 auto theTimer = Config::getTimer();
                 auto theStart = theTimer.now();
                 std::stringstream theStream(theUserInput);
-                theResult = theApp.handleInput(theStream, [&](View& aView) {
+                    theResult = theApp.handleInput(theStream, [&](View& aView) {
                     aView.show(std::cout);
                 std::cout << "\nElapsed: " << std::fixed
                     << theTimer.elapsed(theStart);

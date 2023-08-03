@@ -28,7 +28,7 @@ namespace ECE141 {
 		}
 
 		bool    show(std::ostream& aStream) override {
-			aStream << view;
+			aStream << view << " (" << Config::getTimer().elapsed() << " sec)\n";
 			return true;
 		}
 	protected:
