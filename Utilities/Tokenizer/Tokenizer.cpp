@@ -123,7 +123,7 @@ namespace ECE141 {
   }
         
   //run on input provided in constructor; produce vector of tokens...
-  StatusResult Tokenizer::tokenize() {
+  StatusResult Tokenizer::tokenize(char aTerminator) {
     
     StatusResult theResult;
     char         theChar;
@@ -172,7 +172,8 @@ namespace ECE141 {
       }
       skipWhile(isWhitespace);
     }
-    
+    if (*tokens.back().data.c_str() == aTerminator)
+        tokens.pop_back();
     return theResult;
   }
 

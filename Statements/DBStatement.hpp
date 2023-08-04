@@ -36,7 +36,7 @@ namespace ECE141 {
 				}
 				else
 					theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
-				name = aTokenizer.current().data;
+				name = theResult ? aTokenizer.current().data : "";
 				break;
 			}
 			aTokenizer.eof();
@@ -48,7 +48,7 @@ namespace ECE141 {
 		
 	protected:
 		std::string name;
-		AppController* appController;
+		AppController* appController = nullptr;
 	};
 }
 #endif //DBStatement.hpp

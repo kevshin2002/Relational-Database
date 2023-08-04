@@ -15,7 +15,7 @@
 #include <stack>
 #include <optional>
 #include <functional>
-#include "BlockIO.hpp"
+#include "Table/BlockIO/BlockIO.hpp"
 #include "../../Misc/Types/Errors.hpp"
 
 namespace ECE141 {
@@ -25,9 +25,9 @@ namespace ECE141 {
   //Hmmm-- what could you do with this?....
   class Storable {
   public:
-    virtual StatusResult  encode(std::ostream &anOutput) const=0;
-    virtual StatusResult  decode(std::istream &anInput) =0;
-    virtual bool          initHeader(Block &aBlock) const=0;    
+    virtual StatusResult  encode(std::ostream& anOutput) const=0;
+    virtual StatusResult  decode(std::istream& anInput) =0;
+    virtual bool          initHeader(Block& aBlock) const=0;    
   };
 
   using BlockVisitor = std::function<bool(const Block&, uint32_t)>;
@@ -37,10 +37,10 @@ namespace ECE141 {
   class Storage : public BlockIO {
   public:
         
-    Storage(const std::string &aName, AccessMode aMode);
+    Storage(const std::string& aName, AccessMode aMode);
     ~Storage();
 
-    bool  each(const BlockVisitor &aVisitor);
+    bool  each(const BlockVisitor& aVisitor);
 
     //What if we also offered a "storable" interface? 
     //StatusResult save(const Storable &aStorable, int32_t aStartPos=kNewBlock);

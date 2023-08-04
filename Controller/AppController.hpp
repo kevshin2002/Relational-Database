@@ -16,7 +16,7 @@ namespace ECE141 {
   public:
     AppController();
     ~AppController();
-    StatusResult        handleInput(std::istream &anInput,  ViewListener aViewer);
+    StatusResult        handleInput(std::istream& anInput,  ViewListener aViewer);
     bool                isRunning() const { return running; }
      
     bool                isProcessable(Keywords& aKeyword) const override;
@@ -27,12 +27,15 @@ namespace ECE141 {
     bool                holdDB(Database* aDB);
     Database*           getDB() const {return db;}
     bool                releaseDB();
+
   protected:
     OptString           getError(StatusResult& aResult) const;
 
-    bool running;
-    Database* db;
-    AppProcessor* next;
+  private:
+    char terminator = ';';
+    bool running = false;
+    Database* db = nullptr;
+    AppProcessor* next = nullptr;
   };
   
 }

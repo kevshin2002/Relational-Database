@@ -69,6 +69,9 @@ namespace ECE141 {
 	}
 	StatusResult	DBProcessor::run(Statement* aStatement, ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
+		size_t theDBLength = statement->getDBName().length();
+		if (theDBLength > length)
+			length = theDBLength;
 		switch (aStatement->getType()) {
 		case StatementType::createDB:
 			theResult = createDB(aViewer);

@@ -40,6 +40,7 @@ namespace ECE141 {
     
     //table/DB related...
     tableExists=300,
+    invalidTableName,
     unknownEntity,
     unknownTable,
     unknownDatabase,

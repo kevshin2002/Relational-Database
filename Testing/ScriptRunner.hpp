@@ -12,7 +12,10 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
 #include "../Controller/AppController.hpp"
+#include "../Utilities/Tokenizer/Scanner.hpp"
+#include "../Misc/Types/BasicTypes.hpp"
 
 namespace ECE141 {
 
@@ -22,11 +25,11 @@ namespace ECE141 {
 
         std::string readCommand(std::istream& anInput) {
             std::string theResult;
-            char theChar;
-            while (!anInput.eof()) {
+            char theChar{ 0 };
+            while (';' != theChar && !anInput.eof()) {
                 anInput >> theChar;
-                if (semicolon == theChar || 0 == theChar || anInput.eof()) break;
-                else theResult += theChar;
+                if (0 == theChar) break;
+                theResult += theChar;
             }
 
             static const char* typeOfWhitespaces = " \t\n\r\f\v";
@@ -36,13 +39,14 @@ namespace ECE141 {
             return theResult;
         }
 
-        StatusResult run(std::istream& anInput, std::ostream& anOutput) {
+        StatusResult run(std::istream& anInput, std::ostream& anOutput,
+            size_t aMaxErrors = 1) {
             StatusResult theResult;
 
             auto theTimer = Config::getTimer();
             auto theStart = theTimer.now();
 
-            while (theResult) {
+            while (theResult || aMaxErrors) {
                 std::string theCommand(readCommand(anInput));
 
                 if (theCommand.length()) {
@@ -52,14 +56,13 @@ namespace ECE141 {
                         aView.show(anOutput);
                     anOutput << std::endl;
                         });
+                    if (!theResult) aMaxErrors--;
                 }
                 else break;
             }
             anOutput << "Elapsed: " << std::fixed
                 << theTimer.elapsed(theStart) << "\n";
-            if (Errors::userTerminated == theResult.error) {
-                theResult = Errors::noError;
-            }
+
             return theResult;
         }
 

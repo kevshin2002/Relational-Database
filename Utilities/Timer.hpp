@@ -16,25 +16,27 @@
 
 class Timer {
 protected:
-  using clock_t = std::chrono::high_resolution_clock;
-  using second_t = std::chrono::duration<double, std::ratio<1> >;
-  using Marker = std::chrono::time_point<clock_t>;
-  
-  Marker _started;
-  
-public:
-  
-  Timer() : _started(now()) {}
-  
-  Marker started() const {return _started; }
-  Marker now() const {return clock_t::now(); }
-  Timer& reset() {_started = now(); return *this;}
+    using clock_t = std::chrono::high_resolution_clock;
+    using second_t = std::chrono::duration<double, std::ratio<1> >;
 
-  double elapsed() const {return elapsed(_started);}
-  double elapsed(const Marker &aStart) const {
-    return std::chrono::duration_cast<second_t>(clock_t::now()-aStart).count();
-  }
-  
+public:
+
+    using Marker = std::chrono::time_point<clock_t>;
+
+    Timer() : _started(now()) {}
+
+    Marker started() const { return _started; }
+    Marker now() const { return clock_t::now(); }
+    Timer& reset() { _started = now(); return *this; }
+
+    double elapsed() const { return elapsed(_started); }
+    double elapsed(const Marker& aStart) const {
+        return std::chrono::duration_cast<second_t>(clock_t::now() - aStart).count();
+    }
+
+protected:
+    Marker _started;
+
 };
 
 #endif /* Timer_h */

@@ -27,17 +27,22 @@ namespace ECE141 {
 	  StatusResult	    run(Statement* aStatement, ViewListener aViewer) override;
 	protected:
 		bool		 fetchDatabases();
+
 		StatusResult createDB(ViewListener aViewer);
 		StatusResult dropDB(ViewListener aViewer);
 		StatusResult useDB(ViewListener aViewer);
 		StatusResult showDB(ViewListener aViewer);
 		StatusResult dumpDB(ViewListener aViewer);
 
+
+	private:
+		// Collection of databases
 		std::set<std::string> databases;
 
 		DBStatement* statement = nullptr;
 		AppProcessor* next = nullptr;
 
+		// Members for formatting.
 		std::stringstream stream;
 		size_t length = 11;
 

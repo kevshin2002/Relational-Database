@@ -26,10 +26,12 @@ namespace ECE141 {
   //build a tokenizer, tokenize input, ask processors to handle...
   StatusResult AppController::handleInput(std::istream& anInput,
                                         ViewListener aViewer){
+      Config::getTimer().reset();
     Tokenizer theTokenizer(anInput);
-    StatusResult theResult=theTokenizer.tokenize();
+    StatusResult theResult=theTokenizer.tokenize(terminator);
     
     while (theResult && theTokenizer.more(1)) {
+        
         theResult = Errors::unknownCommand;
         if (auto* theProc = findHandler(theTokenizer)) {
             if (auto* theStmt = theProc->makeStatement(theTokenizer, this)) {

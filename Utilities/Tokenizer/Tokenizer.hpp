@@ -49,8 +49,8 @@ namespace ECE141 {
   class Tokenizer : public Scanner {
   public:
     Tokenizer(std::istream &anInputStream);
-    
-    StatusResult  tokenize();
+
+    StatusResult  tokenize(char aTerminator = ';');
     Token&        tokenAt(size_t anOffset);
     std::vector<Token>& getTokens() { return tokens; }
     Token&        current();
@@ -76,7 +76,6 @@ namespace ECE141 {
     void          dump(); //utility
 
   protected:
-
     std::vector<Token>    tokens;
     size_t                index;
   };

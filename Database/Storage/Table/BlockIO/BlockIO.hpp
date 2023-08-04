@@ -32,7 +32,7 @@ namespace ECE141 {
     BlockHeader(BlockType aType=BlockType::data_block)
       : type(static_cast<char>(aType)) {}
 
-    BlockHeader(const BlockHeader &aCopy) {
+    BlockHeader(const BlockHeader& aCopy) {
       *this=aCopy;
     }
         
@@ -40,7 +40,7 @@ namespace ECE141 {
       type=static_cast<char>(BlockType::free_block);
     }
     
-    BlockHeader& operator=(const BlockHeader &aCopy) {
+    BlockHeader& operator=(const BlockHeader& aCopy) {
       type=aCopy.type;
       return *this;
     }
@@ -56,11 +56,11 @@ namespace ECE141 {
   class Block {
   public:
     Block(BlockType aType=BlockType::data_block);
-    Block(const Block &aCopy);
+    Block(const Block& aCopy);
     
-    Block& operator=(const Block &aCopy);
+    Block& operator=(const Block& aCopy);
    
-    StatusResult write(std::ostream &aStream);
+    StatusResult write(std::ostream& aStream);
         
     BlockHeader   header;
     char          payload[kPayloadSize];
@@ -84,12 +84,12 @@ namespace ECE141 {
   class BlockIO {
   public:
     
-    BlockIO(const std::string &aName, AccessMode aMode);
+    BlockIO(const std::string& aName, AccessMode aMode);
 
     uint32_t              getBlockCount();
     
-    virtual StatusResult  readBlock(uint32_t aBlockNumber, Block &aBlock);
-    virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block &aBlock);
+    virtual StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
+    virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
     
   protected:
     std::fstream stream;
