@@ -23,6 +23,7 @@ namespace ECE141 {
 	class AppController;
 	class AppProcessor {
 	public:
+		virtual ~AppProcessor(){}
 		virtual bool				isProcessable(Keywords& aKeyword) const = 0;
 		virtual AppProcessor*		findHandler(Tokenizer& aTokenizer) = 0;
 		virtual Statement*			makeStatement(Tokenizer& aTokenizer, AppController* anAppController) = 0;

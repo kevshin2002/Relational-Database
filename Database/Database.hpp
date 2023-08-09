@@ -28,6 +28,7 @@ namespace ECE141 {
 
     StatusResult    dump(std::ostream &anOutput); //debug...
 
+    bool            inUse(const std::string& aDBName) const;
   protected:
     Storage         storage;
     std::string     name;

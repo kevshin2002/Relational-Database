@@ -98,7 +98,6 @@ namespace ECE141 {
     };
 
     //------------------------------------
-
     class TestAutomatic {
     public:
 
@@ -315,7 +314,7 @@ namespace ECE141 {
                 TestSequencer theSeq(theTokenizer);
                 int theValue{ 0 };
                 while (theTokenizer.more()) {
-                    auto& theToken = theTokenizer.current();
+                    //auto& theToken = theTokenizer.current();
                     if (theSeq.clear().nextIs(createDB)) {
                         if (theSeq.skipPast(Keywords::query_kw)) {
                             theTokenizer.skipTo(TokenType::number);

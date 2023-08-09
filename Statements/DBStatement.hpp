@@ -10,8 +10,8 @@
 #ifndef DBStatement_hpp
 #define DBStatement_hpp
 
-#include "Statement.hpp"
 #include "../Controller/AppController.hpp"
+#include "Statement.hpp"
 
 namespace ECE141 {
 	class DBStatement : public Statement {
@@ -21,8 +21,9 @@ namespace ECE141 {
 			aTokenizer.restart();
 			StatementType theType = getType();
 			StatusResult theResult = Errors::noError;
+
 			switch (theType) {
-			case StatementType::showDB:
+			case StatementType::show:
 				theResult = aTokenizer.skipTo(Keywords::databases_kw) ? Errors::noError : Errors::unknownCommand;
 				break;
 			case StatementType::unknown:

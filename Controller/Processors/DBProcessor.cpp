@@ -11,11 +11,8 @@
 #include "DBProcessor.hpp"
 
 namespace ECE141 {
-	DBProcessor::DBProcessor() { fetchDatabases(); }
-	DBProcessor::~DBProcessor() {
-		if (next)
-			delete next;
-	}
+	DBProcessor::DBProcessor() : next(new SQLProcessor()) { fetchDatabases(); }
+	DBProcessor::~DBProcessor() {delete next;}
 	bool	DBProcessor::isProcessable(Keywords& aKeyword) const{
 		switch (aKeyword) {
 		case Keywords::create_kw:
@@ -38,12 +35,12 @@ namespace ECE141 {
 					case Keywords::databases_kw:
 						break;
 					default:
-						return aTokenizer.current().type == TokenType::identifier ? this : nullptr;
+						return aTokenizer.current().type == TokenType::identifier ? this : next->findHandler(aTokenizer);
 				}
 			}
 			return this;
 		}
-		return nullptr;
+		return next->findHandler(aTokenizer);
 
 	}
 	Statement*		DBProcessor::makeStatement(Tokenizer& aTokenizer, AppController* anAppController) {
@@ -51,14 +48,15 @@ namespace ECE141 {
 		Keywords theKeyword = aTokenizer.current().keyword;
 		StatementType theType = StatementType::unknown;
 		aTokenizer.skipTo(Keywords::database_kw);
+
 		switch (theKeyword) {
 		case Keywords::create_kw:
 			if(aTokenizer.more())
-				theType = aTokenizer.current().keyword == Keywords::database_kw ? StatementType::createDB : StatementType::unknown;
+				theType = aTokenizer.current().keyword == Keywords::database_kw ? StatementType::create : StatementType::unknown;
 			break;
 		case Keywords::drop_kw:
 			if (aTokenizer.more())
-				theType = aTokenizer.current().keyword == Keywords::database_kw ? StatementType::dropDB : StatementType::unknown;
+				theType = aTokenizer.current().keyword == Keywords::database_kw ? StatementType::drop : StatementType::unknown;
 			break;
 		default:
 			theType = Helpers::keywordToStmtType(theKeyword);
@@ -70,13 +68,14 @@ namespace ECE141 {
 	StatusResult	DBProcessor::run(Statement* aStatement, ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
 		size_t theDBLength = statement->getDBName().length();
+
 		if (theDBLength > length)
 			length = theDBLength;
 		switch (aStatement->getType()) {
-		case StatementType::createDB:
+		case StatementType::create:
 			theResult = createDB(aViewer);
 			break;
-		case StatementType::dropDB:
+		case StatementType::drop:
 			theResult = dropDB(aViewer);
 			break;
 		case StatementType::useDB:
@@ -85,8 +84,10 @@ namespace ECE141 {
 		case StatementType::dumpDB:
 			theResult = dumpDB(aViewer);
 			break;
-		case StatementType::showDB:
+		case StatementType::show:
 			theResult = showDB(aViewer);
+			break;
+		default:
 			break;
 		}
 		return theResult;
@@ -97,6 +98,7 @@ namespace ECE141 {
 		std::string theExtension = Config::getDBExtension();
 		std::string theFileName;
 		size_t theLength = 0;
+
 		for (const auto& theFile : std::filesystem::directory_iterator(thePath)) {
 			if (theFile.path().extension().string() == theExtension) {
 				theFileName = theFile.path().filename().replace_extension().string();
@@ -112,6 +114,7 @@ namespace ECE141 {
 	StatusResult DBProcessor::createDB(ViewListener aViewer) {
 		StatusResult theResult = Errors::databaseExists;
 		std::string theDBName = statement->getDBName();
+
 		if (!databases.count(statement->getDBName())) {
 			auto theDB = new Database(theDBName, CreateFile());
 			databases.insert(theDBName);
@@ -125,7 +128,12 @@ namespace ECE141 {
 	StatusResult DBProcessor::dropDB(ViewListener aViewer) {
 		StatusResult theResult = Errors::databaseDeletionError;
 		std::string theDBName = statement->getDBName();
+		AppController* theController = statement->getAppController();
+
 		if (databases.count(theDBName)) {
+			auto theDB = theController->getDB();
+			if (theDB->inUse(theDBName))
+				theController->releaseDB();
 			fs::remove(Config::getDBPath(theDBName));
 			databases.erase(theDBName);
 			StringView theView = "Query OK, 0 row affected";
@@ -137,6 +145,7 @@ namespace ECE141 {
 	StatusResult DBProcessor::useDB(ViewListener aViewer) {
 		StatusResult theResult = Errors::unknownDatabase;
 		std::string theDBName = statement->getDBName();
+
 		if (databases.count(theDBName)) {
 			auto theDB = new Database(theDBName, OpenFile());
 			auto theAppController = statement->getAppController();
@@ -151,15 +160,20 @@ namespace ECE141 {
 	StatusResult DBProcessor::showDB(ViewListener aListener) {
 		std::stringstream theStream;
 		size_t theDBLength = 0;
-		theStream << "+" << std::setfill('-') << std::setw(length + 4) << "+\n";
-		theStream << "| Database" << std::setfill(' ') << std::setw(length - 5) << "|\n";
-		theStream << "+" << std::setfill('-') << std::setw(length + 4) << "+\n";
+		size_t theLength = length + 4;
+
+		theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
+		theStream << "| Database" << std::setfill(' ') << std::setw(theLength - 9) << "|\n";
+		theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
+
 		for (const auto& theDB : databases) {
 			theDBLength = theDB.length();
-			theStream << "| " << theDB << std::setfill(' ') << std::setw(length + 3 - theDBLength) << "|\n";
+			theStream << "| " << theDB << std::setfill(' ') << std::setw(theLength - 1 - theDBLength) << "|\n";
 		}
-		theStream << "+" << std::setfill('-') << std::setw(length + 4) << "+\n";
+
+		theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
 		theStream << databases.size() << " rows in set";
+
 		StringView theView(theStream.str());
 		aListener(theView);
 		return Errors::noError;

@@ -25,8 +25,8 @@ namespace ECE141 {
     StatusResult        run(Statement* aStatement, ViewListener aViewer) override;
 
     bool                holdDB(Database* aDB);
-    Database*           getDB() const {return db;}
     bool                releaseDB();
+    Database* getDB() const { return db; }
 
   protected:
     OptString           getError(StatusResult& aResult) const;

@@ -25,12 +25,17 @@ namespace ECE141 {
       help, 
       quit, 
 
-      createDB,
-      dropDB,
-      showDB, 
+      // ambiguous types (db and table)
+      create,
+      drop,
+      show, 
+
+      // purely db
       useDB, 
       dumpDB,
 
+      // purely table
+      describeTable,
 
       unknown,
   };

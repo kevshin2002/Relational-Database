@@ -11,11 +11,7 @@
 
 namespace ECE141 {
   
-  AppController::AppController() : running{true} {
-      db = nullptr;
-      next = new DBProcessor();
-  }
-  
+  AppController::AppController() : running{ true }, db(nullptr), next(new DBProcessor()) {}
   AppController::~AppController() { 
       delete next; 
       if (db) // safety
@@ -26,12 +22,11 @@ namespace ECE141 {
   //build a tokenizer, tokenize input, ask processors to handle...
   StatusResult AppController::handleInput(std::istream& anInput,
                                         ViewListener aViewer){
-      Config::getTimer().reset();
+    Config::getTimer().reset();
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize(terminator);
     
     while (theResult && theTokenizer.more(1)) {
-        
         theResult = Errors::unknownCommand;
         if (auto* theProc = findHandler(theTokenizer)) {
             if (auto* theStmt = theProc->makeStatement(theTokenizer, this)) {
@@ -77,6 +72,7 @@ namespace ECE141 {
 
   StatusResult AppController::run(Statement* aStatement, ViewListener aListener) {
       StringView theView;
+
       switch (aStatement->getType()) {
       case StatementType::about:
           theView = "Authors: Kevin Shin";
@@ -86,21 +82,19 @@ namespace ECE141 {
           break;
       case StatementType::help:
           theView =
-              "create database {name}: make a new database in storage folder\n"\
-              "drop database{name}   : delete a known database from storage folder\n"\
-              "show databases        : list databases in storage folder\n"\
-              "use database{ name }  : load a known database for use\n"\
-              "about                 : show members\n"\
-              "help                  : show list of commands\n"\
-              "quit                  : stop app\n"\
-              "version               : show app version";
+              "create database {name} : make a new database in storage folder\n"\
+              "drop database {name}   : delete a known database from storage folder\n"\
+              "show databases         : list databases in storage folder\n"\
+              "use database {name}    : load a known database for use\n"\
+              "about                  : show members\n"\
+              "help                   : show list of commands\n"\
+              "quit                   : stop app\n"\
+              "version                : show app version";
           break;
       case StatementType::quit:
           theView = "DB::141 is shutting down";
           running = false;
           break;
-      default: // Is this necessary? isProcessably already validates. Adding for sake of completion
-          return Errors::invalidCommand;
       }
       aListener(theView);
       return Errors::noError;

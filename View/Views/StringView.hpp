@@ -25,6 +25,7 @@ namespace ECE141 {
 		}
 		StringView& operator=(const std::string& aString) {
 			view = aString;
+			return *this;
 		}
 
 		bool    show(std::ostream& aStream) override {

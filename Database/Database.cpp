@@ -23,6 +23,11 @@ namespace ECE141 {
     }
   }
 
+  bool Database::inUse(const std::string& aDBName) const {
+      return this ?
+             aDBName == name ? true : false :
+             false;
+  }
   // USE: Dump command for debug purposes...
   StatusResult Database::dump(std::ostream &anOutput) {    
     return StatusResult{Errors::noError};

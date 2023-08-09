@@ -64,9 +64,12 @@ namespace ECE141 {
       std::make_pair(Keywords::version_kw, StatementType::version),
       std::make_pair(Keywords::help_kw, StatementType::help),
       std::make_pair(Keywords::quit_kw, StatementType::quit),
-      std::make_pair(Keywords::show_kw, StatementType::showDB),
+      std::make_pair(Keywords::create_kw, StatementType::create),
+      std::make_pair(Keywords::drop_kw, StatementType::drop),
+      std::make_pair(Keywords::show_kw, StatementType::show), // show tables vs show db
       std::make_pair(Keywords::use_kw, StatementType::useDB),
       std::make_pair(Keywords::dump_kw, StatementType::dumpDB),
+      std::make_pair(Keywords::describe_kw, StatementType::describeTable),
 
   };
 
