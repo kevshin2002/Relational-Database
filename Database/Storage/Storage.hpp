@@ -17,6 +17,7 @@
 #include <functional>
 #include "Table/BlockIO/BlockIO.hpp"
 #include "../../Misc/Types/Errors.hpp"
+#include "Table/Table.hpp"
 
 namespace ECE141 {
 

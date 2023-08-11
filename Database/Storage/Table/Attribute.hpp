@@ -18,11 +18,6 @@
 namespace ECE141 {
       
   class Attribute {
-  protected:
-    std::string   name;
-    DataTypes     type;
-    //what other properties do we need?
-
   public:
           
     Attribute(DataTypes aType=DataTypes::no_type);
@@ -34,9 +29,24 @@ namespace ECE141 {
     DataTypes           getType() const {return type;}
     
     //need more getters and setters right?
-    
-    bool                isValid(); //is this  valid?
+    Attribute& setSize(size_t aSize);
 
+    Attribute& setDataType(DataTypes aType);
+    Attribute& setPrimaryKey(bool aBool);
+    Attribute& setAutoIncrement(bool aBool);
+    Attribute& setNullable(bool aBool);
+
+
+    bool                isValid(); //is this  valid?
+  protected:
+      std::string   name;
+      DataTypes     type;
+
+      size_t        size;
+      bool          primary;
+      bool          increment;
+      bool          nullable;
+      //what other properties do we need?
   };
   
   using AttributeOpt = std::optional<Attribute>;

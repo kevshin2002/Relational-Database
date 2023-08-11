@@ -21,6 +21,8 @@ namespace ECE141 {
 		case Keywords::drop_kw:
 		case Keywords::describe_kw:
 		case Keywords::show_kw:
+		case Keywords::insert_kw:
+		case Keywords::select_kw:
 			return true;
 		default:
 			return false;
@@ -34,6 +36,8 @@ namespace ECE141 {
 				switch (aTokenizer.current().keyword) {
 				case Keywords::table_kw:
 				case Keywords::tables_kw:
+				case Keywords::into_kw:
+				case Keywords::from_kw:
 					break;
 				default:
 					return aTokenizer.current().type == TokenType::identifier ? this : nullptr;
@@ -43,26 +47,28 @@ namespace ECE141 {
 		}
 		return nullptr;
 	}
+
 	Statement* SQLProcessor::makeStatement(Tokenizer& aTokenizer, AppController* anAppController) {
 		aTokenizer.restart();
 		Keywords theKeyword = aTokenizer.current().keyword;
 		StatementType theType = StatementType::unknown;
-		aTokenizer.skipTo(Keywords::table_kw);
-
 		switch (theKeyword) {
 		case Keywords::create_kw:
-			if (aTokenizer.more())
-				theType = aTokenizer.current().keyword == Keywords::table_kw ? StatementType::create : StatementType::unknown;
+			theType = aTokenizer.skipTo(Keywords::table_kw) ? StatementType::create : StatementType::unknown;
+			statement = (theType == StatementType::create) ? new createTableStatement(anAppController, theType) : nullptr;
 			break;
-		case Keywords::drop_kw:
-			if (aTokenizer.more())
-				theType = aTokenizer.current().keyword == Keywords::table_kw ? StatementType::drop : StatementType::unknown;
+		case Keywords::insert_kw:
+			theType = aTokenizer.skipTo(Keywords::into_kw) ? StatementType::insertTable : StatementType::unknown;
+			statement = (theType == StatementType::insertTable) ? new insertTableStatement(anAppController, theType) : nullptr;
 			break;
-		default:
+		case Keywords::select_kw:
+			statement = new selectTableStatement(anAppController, StatementType::selectTable);
+			break;
+		default:// drop, describe, show
 			theType = Helpers::keywordToStmtType(theKeyword);
+			statement = new SQLStatement(anAppController, theType);
 			break;
 		}
-		statement = new SQLStatement(anAppController, theType);
 		return statement;
 	}
 	StatusResult	    SQLProcessor::run(Statement* aStatement, ViewListener aViewer) {

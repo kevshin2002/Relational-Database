@@ -11,10 +11,12 @@
 #define SQLProcessor_hpp
 
 #include "AppProcessor.hpp"
-#include "../../Statements/SQLStatement.hpp"
 #include "../../Database/Storage/Storage.hpp"
-
+#include "../../Statements/SQL Statements/createTableStatement.hpp"
+#include "../../Statements/SQL Statements/insertTableStatement.hpp"
+#include "../../Statements/SQL Statements/selectTableStatement.hpp"
 namespace ECE141 {
+
 	class SQLProcessor : public AppProcessor {
 	public:
 	SQLProcessor();
@@ -22,6 +24,7 @@ namespace ECE141 {
 
 	bool				isProcessable(Keywords& aKeyword) const override;
 	AppProcessor*		findHandler(Tokenizer& aTokenizer) override;
+
 	Statement*			makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
 	StatusResult	    run(Statement* aStatement, ViewListener aViewer) override;
 
@@ -40,6 +43,7 @@ namespace ECE141 {
 	// Members for formatting.
 	std::stringstream stream;
 	size_t length = 11;
+
 	};
 }
 

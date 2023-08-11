@@ -13,14 +13,26 @@
 #include <map>
 #include <algorithm>
 
-#include "Testing/TestManually.hpp"
-#include "Testing/TestAutomatic.hpp"
+#include "Tests/Testing/TestAutomatic.hpp"
+#include "Tests/Testing/TestManually.hpp"
 
 //----------------------------------------------
 
 int main(int argc, const char* argv[]) {
 
     srand(static_cast<uint32_t>(time(0)));
+    /*
+    Timer theTimer;
+    Timer0 theTimer0;
+
+    int x=2;
+    for(int i=0;i<999999999;i++) {
+      x*=2;
+    }
+    std::cout << "elapsed " << std::fixed << std::setprecision(6)
+      << theTimer.elapsedMs() << "\n";
+    std::cout << "elapsed0 " << theTimer0.elapsed() << "\n";
+  */
 
     if (argc > 1) {
 
@@ -42,16 +54,20 @@ int main(int argc, const char* argv[]) {
             return run.filterCommandTest(anOut); }},
           {"index", [&](std::stringstream& anOut) {
             return run.indexCommandTest(anOut); }},
+          {"insert", [&](std::stringstream& anOut) {
+            return run.insertCommandTest(anOut); }},
+          {"overfill", [&](std::stringstream& anOut) {
+            return run.insertCommandTest(anOut,20); }},
           {"join", [&](std::stringstream& anOut) {
             return run.joinCommandTest(anOut); }},
           {"mutate", [&](std::stringstream& anOut) {
             return run.mutateCommandTest(anOut); }},
+          {"parse", [&](std::stringstream& anOut) {
+            return run.parseTest(anOut); }},
           {"select", [&](std::stringstream& anOut) {
             return run.selectCommandTest(anOut); }},
           {"table", [&](std::stringstream& anOut) {
             return run.tableCommandsTest(anOut); }},
-          {"parse", [&](std::stringstream& anOut) {
-            return run.parseTest(anOut); }},
           {"quit", [&](std::stringstream& anOut) {
             return run.quitTest(anOut); }},
           {"version", [&](std::stringstream& anOut) {
@@ -76,25 +92,3 @@ int main(int argc, const char* argv[]) {
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

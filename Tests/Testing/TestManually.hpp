@@ -11,7 +11,7 @@
 #define TestManually_h
 
 #include <sstream>
-#include "../Controller/AppController.hpp"
+#include "../../Controller/AppController.hpp"
 
 using namespace ECE141;
 

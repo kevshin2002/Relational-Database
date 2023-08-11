@@ -47,21 +47,20 @@ namespace ECE141 {
 		aTokenizer.restart();
 		Keywords theKeyword = aTokenizer.current().keyword;
 		StatementType theType = StatementType::unknown;
-		aTokenizer.skipTo(Keywords::database_kw);
+		bool kwCheck = aTokenizer.skipTo(Keywords::database_kw);
 
 		switch (theKeyword) {
 		case Keywords::create_kw:
-			if(aTokenizer.more())
-				theType = aTokenizer.current().keyword == Keywords::database_kw ? StatementType::create : StatementType::unknown;
+				theType = kwCheck ? StatementType::create : StatementType::unknown;
 			break;
 		case Keywords::drop_kw:
-			if (aTokenizer.more())
-				theType = aTokenizer.current().keyword == Keywords::database_kw ? StatementType::drop : StatementType::unknown;
+				theType = kwCheck ? StatementType::drop : StatementType::unknown;
 			break;
 		default:
 			theType = Helpers::keywordToStmtType(theKeyword);
 			break;
 		}
+
 		statement = new DBStatement(anAppController, theType);
 		return statement;
 	}

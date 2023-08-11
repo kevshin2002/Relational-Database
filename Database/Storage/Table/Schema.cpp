@@ -20,6 +20,13 @@ namespace ECE141 {
   Schema::~Schema() {
     //std::cout << "~Schema()\n";
   }
+
+  Attribute& Schema::getAttribute(const std::string& aField) {
+      return *std::find_if(attributes.begin(), attributes.end(),
+          [&](const Attribute& anAttribute) {
+              return anAttribute.getName() == aField;
+          });
+  }
  
 
 }

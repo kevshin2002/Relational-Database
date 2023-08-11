@@ -20,7 +20,9 @@ namespace ECE141 {
   };
 
   enum class StatementType {
-      about = 0, 
+      unknown = 0,
+
+      about,
       version, 
       help, 
       quit, 
@@ -36,8 +38,9 @@ namespace ECE141 {
 
       // purely table
       describeTable,
+      insertTable,
+      selectTable,
 
-      unknown,
   };
   
   using OptString = std::optional<std::string_view>;

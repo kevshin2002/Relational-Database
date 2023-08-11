@@ -13,9 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "../Controller/AppController.hpp"
-#include "../Utilities/Tokenizer/Scanner.hpp"
-#include "../Misc/Types/BasicTypes.hpp"
+#include "../../Controller/AppController.hpp"
 
 namespace ECE141 {
 
@@ -26,7 +24,7 @@ namespace ECE141 {
         std::string readCommand(std::istream& anInput) {
             std::string theResult;
             char theChar{ 0 };
-            while (';' != theChar && !anInput.eof()) {
+            while (semicolon != theChar && !anInput.eof()) {
                 anInput >> theChar;
                 if (0 == theChar) break;
                 theResult += theChar;
@@ -44,7 +42,7 @@ namespace ECE141 {
             StatusResult theResult;
 
             auto theTimer = Config::getTimer();
-            auto theStart = theTimer.now();
+            auto theStart = theTimer.started();
 
             while (theResult || aMaxErrors) {
                 std::string theCommand(readCommand(anInput));
@@ -60,8 +58,9 @@ namespace ECE141 {
                 }
                 else break;
             }
-            anOutput << "Elapsed: " << std::fixed
-                << theTimer.elapsed(theStart) << "\n";
+
+            anOutput << "Script Elapsed: " << std::fixed << std::setprecision(5)
+                << theTimer.elapsed(theStart) << " secs\n";
 
             return theResult;
         }

@@ -176,6 +176,16 @@ namespace ECE141 {
       return Keywords::unknown_kw;
     }
     
+    static DataTypes getTypeForKeyword(const Keywords aKeyword) {
+        switch (aKeyword) {
+        case Keywords::boolean_kw:  return DataTypes::bool_type;
+        case Keywords::datetime_kw:  return DataTypes::datetime_type;
+        case Keywords::float_kw:  return DataTypes::float_type;
+        case Keywords::integer_kw:  return DataTypes::int_type;
+        case Keywords::varchar_kw:  return DataTypes::varchar_type;
+        default:                    return DataTypes::no_type;
+        }
+    }
     //convert from char to keyword...
     static Keywords charToKeyword(char aChar) {
       switch(toupper(aChar)) {

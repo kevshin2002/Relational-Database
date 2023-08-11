@@ -17,7 +17,6 @@
 
 
 namespace ECE141 {
-  
   class Schema {
   public:
                           Schema(const std::string aName);
@@ -26,7 +25,7 @@ namespace ECE141 {
                           ~Schema();
     
     const std::string&    getName() const {return name;}
-        
+    Attribute&            getAttribute(const std::string& aField);
            
   protected:
         

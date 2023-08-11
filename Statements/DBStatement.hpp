@@ -24,7 +24,7 @@ namespace ECE141 {
 
 			switch (theType) {
 			case StatementType::show:
-				theResult = aTokenizer.skipTo(Keywords::databases_kw) ? Errors::noError : Errors::unknownCommand;
+				theResult = aTokenizer.skipTo(Keywords::databases_kw) ? theResult : Errors::unknownCommand;
 				break;
 			case StatementType::unknown:
 				theResult = Errors::unknownCommand;
@@ -32,15 +32,14 @@ namespace ECE141 {
 			default:
 				if (theType == StatementType::dumpDB) {
 					theResult = aTokenizer.skipTo(Keywords::database_kw) ?
-						aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected :
+						aTokenizer.skipTo(TokenType::identifier) ? theResult : Errors::identifierExpected :
 						Errors::unknownCommand;
 				}
 				else
-					theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
+					theResult = aTokenizer.skipTo(TokenType::identifier) ? theResult : Errors::identifierExpected;
 				name = theResult ? aTokenizer.current().data : "";
 				break;
 			}
-			aTokenizer.eof();
 			return theResult;
 		}
 
