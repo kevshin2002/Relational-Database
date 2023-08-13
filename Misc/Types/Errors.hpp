@@ -27,6 +27,8 @@ namespace ECE141 {
     joinTypeExpected,
     keyExpected,
     syntaxError,
+    openerExpected,
+    closerExpected,
     unexpectedKeyword,
     unexpectedValue,
     valueExpected,

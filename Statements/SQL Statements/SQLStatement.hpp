@@ -18,8 +18,26 @@ namespace ECE141 {
 
 	/* is this the right approach? */
 	struct SQLQuery {
+		const AttributeList& getAttributes() const { return attributes; }
+		SQLQuery& addAttribute(Attribute& anAttribute) {
+			attributes.push_back(anAttribute);
+			return *this;
+		}
+
 		AttributeList attributes;
 	};
+	// good track
+	// blockvisitor
+	// dont rely on order of anything
+	// make them independent
+	// consider block 0 trick (state)
+	// add it later (can add in indexing)
+	// come up with a way to distinguish between different iterators
+	// schemas 
+	// hash schema id
+	// BlockIterator
+	// dont worry about edge cases
+
 
 	class SQLStatement : public Statement {
 	public:
@@ -51,13 +69,13 @@ namespace ECE141 {
 			return theResult;
 		}
 
-		AppController* getAppController() { return appController; }
-		virtual SQLQuery* getQuery() { return query; };
+		AppController* getAppController() const { return appController; }
+		virtual SQLQuery* getQuery() const { return query; };
 		
 	protected:
 		AppController* appController = nullptr;
 		TableName tableName;
-		SQLQuery* query;
+		SQLQuery* query = new SQLQuery(); // consider making all pointers into smart pointers. reminder
 	};
 }
 

@@ -44,7 +44,7 @@ namespace ECE141 {
 		}
 
 		const std::string& getDBName() const {return name;}
-		AppController* getAppController() { return appController; }
+		AppController* getAppController() const { return appController; }
 		
 	protected:
 		std::string name;

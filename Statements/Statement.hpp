@@ -25,7 +25,7 @@ namespace ECE141 {
 			type = theType;
 			return Errors::noError;
 		}
-		StatementType        getType() const { return type; }
+		const StatementType        getType() const { return type; }
 
 		
 	protected:

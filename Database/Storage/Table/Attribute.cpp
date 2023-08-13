@@ -9,30 +9,41 @@
 #include "Attribute.hpp"
 
 namespace ECE141 {
-  Attribute::Attribute(DataTypes aType) : type(DataTypes::no_type), size(0), primary(false), increment(false), nullable(false) {}
+  Attribute::Attribute(DataTypes aType) : type(DataTypes::no_type), size(0), primary(false), increment(false), nullable(false), unique(false) {}
   Attribute::Attribute(std::string aName, DataTypes aType, uint32_t aSize)  {
     name=aName;
-    //other fields?
+    type = aType;
+    size = aSize;
   }
  
   Attribute::Attribute(const Attribute &aCopy)  {
-    name=aCopy.name;
-    //other fields?
+      name = aCopy.name;
+      type = aCopy.type;
+      size = aCopy.size;
+      primary = aCopy.primary;
+      increment = aCopy.increment;
+      nullable = aCopy.nullable;
+      unique = aCopy.unique;
   }
  
   Attribute::~Attribute()  {
   }
   
-  bool Attribute::isValid() {
+  bool Attribute::isValid() { // check if types match
     return true;
   }
 
-  Attribute& Attribute::setSize(size_t aSize) {
+  Attribute& Attribute::setName(const std::string& aString) {
+      name = aString;
+      return *this;
+  }
+
+  Attribute& Attribute::setSize(const size_t& aSize) {
       size = aSize;
       return *this;
   }
 
-  Attribute& Attribute::setDataType(DataTypes aType) {
+  Attribute& Attribute::setDataType(const DataTypes& aType) {
       type = aType;
       return *this;
   }
@@ -48,6 +59,9 @@ namespace ECE141 {
       nullable = aBool;
       return *this;
   }
-
+  Attribute& Attribute::setUnique(bool aBool) {
+      unique = aBool;
+      return *this;
+  }
 
 }

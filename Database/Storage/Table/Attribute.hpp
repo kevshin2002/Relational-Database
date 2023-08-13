@@ -26,15 +26,17 @@ namespace ECE141 {
     ~Attribute();
         
     const std::string&  getName() const {return name;}
-    DataTypes           getType() const {return type;}
+    const DataTypes     getType() const {return type;}
     
     //need more getters and setters right?
-    Attribute& setSize(size_t aSize);
+    Attribute& setName(const std::string& aString);
+    Attribute& setSize(const size_t& aSize);
 
-    Attribute& setDataType(DataTypes aType);
+    Attribute& setDataType(const DataTypes& aType);
     Attribute& setPrimaryKey(bool aBool);
     Attribute& setAutoIncrement(bool aBool);
     Attribute& setNullable(bool aBool);
+    Attribute& setUnique(bool aBool);
 
 
     bool                isValid(); //is this  valid?
@@ -46,6 +48,7 @@ namespace ECE141 {
       bool          primary;
       bool          increment;
       bool          nullable;
+      bool          unique;
       //what other properties do we need?
   };
   

@@ -17,12 +17,23 @@ namespace ECE141 {
 	public:
 		createTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
-			StatusResult theResult = Errors::identifierExpected;
-			if (aTokenizer.skipTo(TokenType::identifier)) {
-				theResult = Errors::noError;
-				tableName = aTokenizer.current().data;
-				// parse table creation fields
+			StatusResult theResult = Errors::noError;
+			ParseHelper theHelper(aTokenizer);
+			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(tableName) : Errors::identifierExpected;
+			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected;
+			if (theResult) {
+				while (theResult && aTokenizer.more()) {
+					Attribute theAttribute;
+					theResult = theHelper.parseAttribute(theAttribute);
+					query->addAttribute(theAttribute);
+				}
 			}
+			
+			if (aTokenizer.more())
+				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::closerExpected;
+			else 
+				theResult = aTokenizer.tokenAt(aTokenizer.size() - 1).data[0] == right_paren ? theResult : Errors::closerExpected;
+
 			return theResult;
 		}
 	};

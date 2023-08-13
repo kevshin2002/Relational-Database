@@ -96,7 +96,7 @@ namespace ECE141 {
 
   //move ahead IFF the current keyword matches given...
   bool Tokenizer::skipIf(Keywords aKeyword) {
-    if (more() && (aKeyword==current().keyword)) {
+    if (more() && (aKeyword == current().keyword)) {
       next(); //eat the target...
       return true;
     }
@@ -105,7 +105,7 @@ namespace ECE141 {
   
   // USE: skip a regular char, usually punctuation....
   bool Tokenizer::skipIf(char aChar) {
-    if(more() && (aChar==current().data[0])) {
+    if(more()  && aChar == current().data[0]) {
       next(); //eat the target...
       return true;
     }

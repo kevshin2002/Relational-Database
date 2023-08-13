@@ -63,7 +63,9 @@ namespace ECE141 {
               }
               else theResult.error=Errors::syntaxError;
               break;
-              
+            case Keywords::unique_kw:
+                anAttribute.setUnique(true);
+                break;
             default: break;
           }
           break;
@@ -78,7 +80,7 @@ namespace ECE141 {
           options=false;
           theResult.error=Errors::syntaxError;
       } //switch
-      if(theResult) tokenizer.next(); //skip ahead...
+      if(theResult && tokenizer.more()) tokenizer.next(); //skip ahead...
     } //while
     return theResult;
   }
@@ -89,6 +91,14 @@ namespace ECE141 {
     
     if(tokenizer.more()) {
       Token &theToken=tokenizer.current();
+      if (theToken.type == TokenType::identifier) {
+          anAttribute.setName(theToken.data);
+          tokenizer.next();
+          theToken = tokenizer.current();
+      }
+      else
+          goto error_handling;
+
       if(Helpers::isDatatype(theToken.keyword)) {
         DataTypes theType = Helpers::getTypeForKeyword(theToken.keyword);
         anAttribute.setDataType(theType);
@@ -117,6 +127,10 @@ namespace ECE141 {
       } //if
       else theResult.error=Errors::unknownType;
     } //if
+    return theResult;
+
+error_handling:
+    theResult = Errors::identifierExpected;
     return theResult;
   }
 
