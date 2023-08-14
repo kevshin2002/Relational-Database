@@ -14,8 +14,7 @@ namespace ECE141 {
   AppController::AppController() : running{ true }, db(nullptr), next(new DBProcessor()) {}
   AppController::~AppController() { 
       delete next; 
-      if (db) // safety
-          delete db;
+      delete db;
   }
   // USE: -----------------------------------------------------
   
@@ -106,8 +105,8 @@ namespace ECE141 {
   }
   
   bool AppController::releaseDB() {
-      if (db)
-          delete db;
+      delete db;
+      db = nullptr;
       return true;
   }
 

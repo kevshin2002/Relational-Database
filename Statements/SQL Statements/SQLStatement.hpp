@@ -18,13 +18,28 @@ namespace ECE141 {
 
 	/* is this the right approach? */
 	struct SQLQuery {
-		const AttributeList& getAttributes() const { return attributes; }
-		SQLQuery& addAttribute(Attribute& anAttribute) {
+		SQLQuery& addAttribute(const Attribute& anAttribute) {
 			attributes.push_back(anAttribute);
 			return *this;
 		}
 
+		SQLQuery& addIdentifiers(const StringList& aList) {
+			identifiers = aList;
+			return *this;
+		}
+
+		SQLQuery& addValues(const StringList& aList) {
+			values = aList;
+			return *this;
+		}
+
+		const AttributeList& getAttributes() const { return attributes; }
+		const StringList& getIdentifiers() const { return identifiers; }
+		const StringList& getValues() const { return values; }
+
 		AttributeList attributes;
+		StringList identifiers;
+		StringList values;
 	};
 	// good track
 	// blockvisitor
@@ -70,7 +85,7 @@ namespace ECE141 {
 		}
 
 		AppController* getAppController() const { return appController; }
-		virtual SQLQuery* getQuery() const { return query; };
+		const SQLQuery* getQuery() const { return query; };
 		
 	protected:
 		AppController* appController = nullptr;

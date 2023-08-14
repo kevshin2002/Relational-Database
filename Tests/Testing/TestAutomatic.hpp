@@ -169,7 +169,7 @@ namespace ECE141 {
 
             anOutput << aProps.cmdCloseParen << ";\n";
 
-            CommandCount theCommand{ Commands::createTable,1,'>',true };
+            CommandCount theCommand{ Commands::createTable,1,'=',true };
             return theCommand;
         }
 

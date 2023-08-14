@@ -17,14 +17,34 @@ namespace ECE141 {
 	public:
 		insertTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
-			StatusResult theResult = Errors::identifierExpected;
-			// Check for semantics: insert into table name values
-			if (aTokenizer.skipTo(Keywords::into_kw) && aTokenizer.skipTo(TokenType::identifier)) {
-				theResult = Errors::noError;
-				tableName = aTokenizer.current().data;
+			StatusResult theResult = Errors::noError;
+			ParseHelper theHelper(aTokenizer);
+
+			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(tableName) : Errors::identifierExpected;
+			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected;
+			if (theResult) {
+				StringList theIdentifiers;
+				theResult = theHelper.parseIdentifierList(theIdentifiers);
+				if (aTokenizer.previous().data[0] == right_paren) {
+					theResult = aTokenizer.skipIf(Keywords::values_kw) ? 
+								aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected : 
+								Errors::valueExpected;
+					if (theResult) {
+						StringList theValues;
+						theResult = theHelper.parseValueList(theValues);
+						query->addIdentifiers(theIdentifiers);
+						query->addValues(theValues);
+					}
+				}
+				else
+					theResult = Errors::closerExpected;
 			}
 
-			// parse values
+			if (theResult && aTokenizer.more())
+				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::closerExpected;
+			else if(theResult)
+				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::closerExpected;
+
 			return theResult;
 		}
 	};

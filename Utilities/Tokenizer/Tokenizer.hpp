@@ -54,6 +54,7 @@ namespace ECE141 {
     Token&        tokenAt(size_t anOffset);
     std::vector<Token>& getTokens() { return tokens; }
     Token&        current();
+    Token&        previous() { return tokens[index - 1]; }
     bool          more(size_t anOffset) { return index == 0 ? index < size() : index + anOffset < size(); }
     bool          more() {return index<size();}
     bool          next(int anOffset=1);
@@ -66,6 +67,7 @@ namespace ECE141 {
                           //these might consume a token...
     bool          skipTo(Keywords aKeyword);
     bool          skipTo(TokenType aTokenType);
+    bool          skipTo(char aChar);
 
     bool          skipIf(Keywords aKeyword);
     bool          skipIf(Operators anOperator);

@@ -94,6 +94,17 @@ namespace ECE141 {
     return false;
   }
 
+  bool Tokenizer::skipTo(char aTarget) {
+      while (more()) {
+          Token& theToken = current();
+          if (theToken.data[0] == aTarget) {
+              return true;
+          }
+          next();
+      }
+      return false;
+  }
+
   //move ahead IFF the current keyword matches given...
   bool Tokenizer::skipIf(Keywords aKeyword) {
     if (more() && (aKeyword == current().keyword)) {
@@ -111,7 +122,14 @@ namespace ECE141 {
     }
     return false;
   }
-  
+
+  bool Tokenizer::skipIf(TokenType aTokenType) {
+      if (more() && (aTokenType == current().type)) {
+          next(); //eat the target...
+          return true;
+      }
+      return false;
+  }
   //move ahead IFF the current token/op matches given...
   bool Tokenizer::skipIf(Operators anOperator) {
     Token &theToken=current();
@@ -121,7 +139,7 @@ namespace ECE141 {
     }
     return false;
   }
-        
+      
   //run on input provided in constructor; produce vector of tokens...
   StatusResult Tokenizer::tokenize(char aTerminator) {
     

@@ -21,18 +21,21 @@ namespace ECE141 {
 
 // USE: parse table name (identifier) with (optional) alias...
   StatusResult ParseHelper::parseTableName(TableName &aTableName) {
-  
+    Keywords theKeywords[] = { Keywords::table_kw, Keywords::database_kw, Keywords::into_kw, Keywords::from_kw };
     StatusResult theResult{Errors::identifierExpected};
-    Token &theToken=tokenizer.current(); //get token (should be identifier)
-    if(TokenType::identifier==theToken.type) {
-      aTableName.table=theToken.data;
-      theResult.error=Errors::noError;
-      tokenizer.next(); //skip ahead...
-      if(tokenizer.skipIf(Keywords::as_kw)) { //try to skip 'as' for alias...
-        Token &theToken=tokenizer.current();
-        aTableName.alias=theToken.data; //copy alias...
-        tokenizer.next(); //skip past alias...
-      }
+    Token &theToken=tokenizer.previous(); //get token (should be identifier
+    if (in_array<Keywords>(theKeywords, theToken.keyword)) {
+        theToken = tokenizer.current();
+        if (TokenType::identifier == theToken.type) {
+            aTableName.table = theToken.data;
+            theResult.error = Errors::noError;
+            tokenizer.next(); //skip ahead...
+            if (tokenizer.skipIf(Keywords::as_kw)) { //try to skip 'as' for alias...
+                Token& theToken = tokenizer.current();
+                aTableName.alias = theToken.data; //copy alias...
+                tokenizer.next(); //skip past alias...
+            }
+        }
     }
     return theResult;
   }

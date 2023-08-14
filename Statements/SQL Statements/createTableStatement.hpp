@@ -19,6 +19,7 @@ namespace ECE141 {
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);
+
 			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(tableName) : Errors::identifierExpected;
 			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected;
 			if (theResult) {
@@ -29,10 +30,10 @@ namespace ECE141 {
 				}
 			}
 			
-			if (aTokenizer.more())
+			if (theResult && aTokenizer.more())
 				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::closerExpected;
-			else 
-				theResult = aTokenizer.tokenAt(aTokenizer.size() - 1).data[0] == right_paren ? theResult : Errors::closerExpected;
+			else if(theResult)
+				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::closerExpected;
 
 			return theResult;
 		}

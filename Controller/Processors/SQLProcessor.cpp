@@ -92,8 +92,8 @@ namespace ECE141 {
 		}
 		return theResult;
 	}
-	StatusResult		SQLProcessor::createTable(ViewListener aViewer){ return Errors::notImplemented; }
-	StatusResult		SQLProcessor::dropTable(ViewListener aViewer){ return Errors::notImplemented; }
-	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ return Errors::notImplemented; }
-	StatusResult		SQLProcessor::showTables(ViewListener aViewer) { return Errors::notImplemented; }
+	StatusResult		SQLProcessor::createTable(ViewListener aViewer){ return Errors::noError; }
+	StatusResult		SQLProcessor::dropTable(ViewListener aViewer){ return Errors::noError; }
+	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ return Errors::noError; }
+	StatusResult		SQLProcessor::showTables(ViewListener aViewer) { return Errors::noError; }
 }
