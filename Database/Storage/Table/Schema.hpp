@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Attribute.hpp"
+#include "Row.hpp"
 #include "../../../Misc/Types/Errors.hpp"
 
 
@@ -25,11 +26,14 @@ namespace ECE141 {
                           ~Schema();
     
     const std::string&    getName() const {return name;}
-    Attribute&            getAttribute(const std::string& aField);
-           
+    Attribute*            getAttribute(const std::string& aField);
+    
+    size_t         hashString(const std::string& aField);
+    size_t         getHash() const { return hashedName; }
   protected:
         
     AttributeList   attributes;
+    size_t          hashedName;
     std::string     name;
     
     //how will you manage creation of primary keys?

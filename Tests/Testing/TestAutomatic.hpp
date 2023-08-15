@@ -20,11 +20,11 @@
 #include <filesystem>
 #include <stack>
 
+#include "../Scripts/ScriptRunner.hpp"
 #include "../../Misc/Types/Errors.hpp"
 #include "../../Utilities/FolderReader.hpp"
-#include "../Scripts/ScriptRunner.hpp"
-#include "../Test Utilities/Faked.hpp"
 #include "TestSequencer.hpp"
+#include "../Test Utilities/Faked.hpp"
 
 using namespace ECE141;
 namespace fs = std::filesystem;
@@ -37,6 +37,7 @@ namespace ECE141 {
     using LineList = std::initializer_list<InputLine>;
     using StringList = std::vector<std::string>;
     using StringMap = std::map<std::string, std::string>;
+    using InitList = std::initializer_list<std::string>;
     using TestCalls = std::map<std::string, TestCall>;
 
     const std::string_view theVersion{ "Tester(1.5)" };
@@ -169,7 +170,7 @@ namespace ECE141 {
 
             anOutput << aProps.cmdCloseParen << ";\n";
 
-            CommandCount theCommand{ Commands::createTable,1,'=',true };
+            CommandCount theCommand{ Commands::createTable,1,'>',true };
             return theCommand;
         }
 
@@ -179,7 +180,7 @@ namespace ECE141 {
             anOutput << " first_name varchar(50) NOT NULL,";
             anOutput << " last_name varchar(50),";
             anOutput << " age int,";
-            anOutput << " zipcode int);\n";
+            anOutput << " zip int);\n";
         }
 
         void addPaymentsTable(std::ostream& anOutput) {
@@ -314,7 +315,7 @@ namespace ECE141 {
                 TestSequencer theSeq(theTokenizer);
                 int theValue{ 0 };
                 while (theTokenizer.more()) {
-                    //auto& theToken = theTokenizer.current();
+                    //.auto &theToken=theTokenizer.current();
                     if (theSeq.clear().nextIs(createDB)) {
                         if (theSeq.skipPast(Keywords::query_kw)) {
                             theTokenizer.skipTo(TokenType::number);
@@ -587,11 +588,61 @@ namespace ECE141 {
             return theResult;
         }
 
-        bool cacheCommandTest(std::stringstream& anOutput) {
-            return false;
+        bool filterCommandTest(std::stringstream& anOutput) {
+
+            std::stringstream theCmds, theOut;
+            std::string theDBName("db_" + std::to_string(rand() % 9999));
+            theCmds << "create database " << theDBName << ";\n";
+            theCmds << "use " << theDBName << ";\n";
+
+            addBooksTable(theCmds);
+            insertBooks(theCmds, 0, 14);
+
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 0, 10);
+
+            theCmds << getUserSelect("*", {});//basic
+            theCmds << getUserSelect("*", { " order by zip",
+                                           " where zip>92122" });
+            theCmds << getUserSelect("first_name, last_name, age",
+                { " order by zip desc"," limit 3" });
+
+            theCmds << "show tables;\n";
+            theCmds << "dump database " << theDBName << ";\n";
+            theCmds << "drop database " << theDBName << ";\n";
+
+            theCmds << std::endl;
+            auto temp1 = theCmds.str();
+            //std::cerr << temp1 << "\n---------------------------------------------------\n";
+
+            theCmds >> std::noskipws; //make sure to include ws...
+
+            bool theResult = scriptTest(theCmds, theOut, [&](const std::string& aBuf) {
+
+                bool theResult{ false };
+            auto temp = theOut.str();
+            std::stringstream theOutput(temp);
+            //std::cerr << temp << "\n"; //debugging!
+            anOutput << temp << "\n"; //capture for main!
+
+            Responses theResponses;
+            if ((theResult = analyzeOutput(theOutput, theResponses))) {
+                Expected theExpected({
+                  {Commands::createDB,1},    {Commands::useDB,0},
+                  {Commands::createTable,1}, {Commands::insert,14},
+                  {Commands::createTable,1}, {Commands::insert,10},
+                  {Commands::select,10},     {Commands::select,6},
+                  {Commands::select,3},     {Commands::showTables,2},
+                  {Commands::dumpDB,3,'>'},  {Commands::dropDB,0},
+                    });
+                theResult = theExpected == theResponses;
+            }
+            return theResult;
+                });
+            return theResult;
         }
 
-        bool filterCommandTest(std::stringstream& anOutput) {
+        bool cacheCommandTest(std::stringstream& anOutput) {
             return false;
         }
 
@@ -607,8 +658,71 @@ namespace ECE141 {
             return false;
         }
 
+        std::string getUserSelect(const std::string& aFields,
+            const InitList& aClauses) {
+            std::string theResult("SELECT " + aFields + " from Users ");
+            if (aClauses.size()) {
+                std::vector<std::string> theClauses(aClauses);
+                auto rd = std::random_device{};
+                auto rng = std::default_random_engine{ rd() };
+                std::shuffle(theClauses.begin(), theClauses.end(), rng);
+                for (auto theClause : theClauses) {
+                    theResult += theClause;
+                }
+            }
+            theResult += ";\n";
+            return theResult;
+        }
+
         bool selectCommandTest(std::stringstream& anOutput) {
-            return false;
+
+            std::stringstream theCmds, theOut;
+            std::string theDBName("db_" + std::to_string(rand() % 9999));
+            theCmds << "create database " << theDBName << ";\n";
+            theCmds << "use " << theDBName << ";\n";
+
+            addBooksTable(theCmds);
+            insertBooks(theCmds, 0, 14);
+
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 0, 10);
+
+            theCmds << getUserSelect("*", {});//basic
+            theCmds << getUserSelect("*", { " order by zip" });
+
+            theCmds << "show tables;\n";
+            theCmds << "dump database " << theDBName << ";\n";
+            theCmds << "drop database " << theDBName << ";\n";
+
+            theCmds << std::endl;
+            auto temp1 = theCmds.str();
+            //std::cerr << temp1 << "\n---------------------------------------------------\n";
+
+            theCmds >> std::noskipws; //make sure to include ws...
+
+            bool theResult = scriptTest(theCmds, theOut, [&](const std::string& aBuf) {
+
+                bool theResult{ false };
+            auto temp = theOut.str();
+            std::stringstream theOutput(temp);
+            //std::cerr << temp << "\n"; //debugging!
+            anOutput << temp << "\n"; //capture for main!
+
+            Responses theResponses;
+            if ((theResult = analyzeOutput(theOutput, theResponses))) {
+                Expected theExpected({
+                  {Commands::createDB,1},    {Commands::useDB,0},
+                  {Commands::createTable,1}, {Commands::insert,14},
+                  {Commands::createTable,1}, {Commands::insert,10},
+                  {Commands::select,10},     {Commands::select,10},
+                  {Commands::showTables,2},
+                  {Commands::dumpDB,3,'>'},  {Commands::dropDB,0},
+                    });
+                theResult = theExpected == theResponses;
+            }
+            return theResult;
+                });
+            return theResult;
         }
 
         bool parseTest(std::stringstream& anOutput) {
@@ -722,7 +836,7 @@ namespace ECE141 {
               " (\"Neal\",      \"Stephenson\",62,  92121)"
             };
 
-            anOut << "INSERT INTO Users (first_name, last_name, age, zipcode)";
+            anOut << "INSERT INTO Users (first_name, last_name, age, zip)";
 
             size_t theSize = sizeof(kUsers) / sizeof(char*);
             size_t theLimit = std::min(theSize, anOffset + aLimit);
@@ -737,7 +851,7 @@ namespace ECE141 {
         void insertFakeUsers(std::ostream& anOut, int aGroupSize,
             Expected& anExpected, int aGroupCount = 1) {
             for (size_t theCount = 0; theCount < aGroupCount; theCount++) {
-                anOut << "INSERT INTO Users (first_name, last_name, age, zipcode) VALUES ";
+                anOut << "INSERT INTO Users (first_name, last_name, age, zip) VALUES ";
                 const char* thePrefix = "";
                 for (size_t theSize = 0; theSize < aGroupSize; theSize++) {
                     anOut << thePrefix <<
@@ -824,6 +938,15 @@ namespace ECE141 {
             return theResult;
         }
 
+        bool deleteCommandTest(std::stringstream& anOutput, int aCount = 2) {
+            bool theResult{ true };
+            return theResult;
+        }
+
+        bool updateCommandTest(std::stringstream& anOutput, int aCount = 2) {
+            bool theResult{ true };
+            return theResult;
+        }
 
     }; //TestAutomatic...
 

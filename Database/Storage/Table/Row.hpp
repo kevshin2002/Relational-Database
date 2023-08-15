@@ -23,7 +23,7 @@ namespace ECE141 {
 
   //These really shouldn't be here...
   using Value = std::variant<bool, int, float, std::string>;
-  using RowKeyValues = std::map<const std::string, Value>;
+  using KeyValues = std::map<const std::string, Value>;
 
   class Row  {
   public:
@@ -43,18 +43,18 @@ namespace ECE141 {
     Row&                set(const std::string &aKey,
                             const Value &aValue);
         
-    RowKeyValues&       getData() {return data;}
+    KeyValues&       getData() {return data;}
     
     //uint32_t            entityId; //hash value of entity?
     //uint32_t            blockNumber;
 
   protected:
-    RowKeyValues        data;
+    KeyValues        data;
   };
 
   //-------------------------------------------
 
-  using RowCollection = std::vector<std::unique_ptr<Row> >;
+  using RowCollection = std::vector<std::unique_ptr<Row>>;
 
 
 }

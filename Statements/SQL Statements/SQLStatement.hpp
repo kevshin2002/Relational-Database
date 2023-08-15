@@ -11,36 +11,11 @@
 #define SQLStatement_hpp
 
 #include "../../Controller/AppController.hpp"
-#include "../../Utilities/ParseHelper.hpp"
+#include "../../Utilities/Filters.hpp"
 #include "../Statement.hpp"
+#include "../DBQuery.hpp"
 
 namespace ECE141 {
-
-	/* is this the right approach? */
-	struct SQLQuery {
-		SQLQuery& addAttribute(const Attribute& anAttribute) {
-			attributes.push_back(anAttribute);
-			return *this;
-		}
-
-		SQLQuery& addIdentifiers(const StringList& aList) {
-			identifiers = aList;
-			return *this;
-		}
-
-		SQLQuery& addValues(const StringList& aList) {
-			values = aList;
-			return *this;
-		}
-
-		const AttributeList& getAttributes() const { return attributes; }
-		const StringList& getIdentifiers() const { return identifiers; }
-		const StringList& getValues() const { return values; }
-
-		AttributeList attributes;
-		StringList identifiers;
-		StringList values;
-	};
 	// good track
 	// blockvisitor
 	// dont rely on order of anything
@@ -85,12 +60,12 @@ namespace ECE141 {
 		}
 
 		AppController* getAppController() const { return appController; }
-		const SQLQuery* getQuery() const { return query; };
+		const DBQuery* getQuery() const { return query; };
 		
 	protected:
 		AppController* appController = nullptr;
 		TableName tableName;
-		SQLQuery* query = new SQLQuery(); // consider making all pointers into smart pointers. reminder
+		DBQuery* query = new DBQuery(); // consider making all pointers into smart pointers. reminder
 	};
 }
 

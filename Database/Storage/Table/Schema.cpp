@@ -21,12 +21,17 @@ namespace ECE141 {
     //std::cout << "~Schema()\n";
   }
 
-  Attribute& Schema::getAttribute(const std::string& aField) {
-      return *std::find_if(attributes.begin(), attributes.end(),
+  Attribute* Schema::getAttribute(const std::string& aField) {
+      return &(*std::find_if(attributes.begin(), attributes.end(),
           [&](const Attribute& anAttribute) {
               return anAttribute.getName() == aField;
-          });
+          }));
   }
  
+  size_t  Schema::hashString(const std::string& aField) {
+      std::hash<std::string> hashString;
+      hashedName = hashString(aField);
+      return hashedName;
+  }
 
 }
