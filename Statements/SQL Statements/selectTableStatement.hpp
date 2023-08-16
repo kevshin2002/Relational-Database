@@ -17,18 +17,27 @@ namespace ECE141 {
 	public:
 		selectTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
-			StatusResult theResult = Errors::invalidCommand;
-			// query selector parsing
+			StatusResult theResult = Errors::noError;
+			ParseHelper theHelper(aTokenizer);
+			StringList theIdentifiers;
+			TableName theName;
 
-			if (aTokenizer.skipTo(Keywords::from_kw)) {
-				theResult = Errors::identifierExpected;
-				tableName = aTokenizer.skipTo(TokenType::identifier) ? aTokenizer.current().data : "none";
+			aTokenizer.next();
+			theResult = aTokenizer.skipIf(all) ? query->setAll() : theHelper.parseIdentifierList(theIdentifiers);
+			if (theResult && aTokenizer.skipIf(Keywords::from_kw)) {
+				theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
+				schema = theName.table;
+				if (theResult && aTokenizer.skipIf(Keywords::where_kw)) {
+					theResult = filter.parse(aTokenizer, schema);
+				}
 			}
-			
-
-			// condition parsing
+			else
+				theResult = Errors::invalidCommand;
 			return theResult;
 		}
+
+	protected:
+		Filters filter;
 	};
 }
 #endif // selectTableStatement.hpp

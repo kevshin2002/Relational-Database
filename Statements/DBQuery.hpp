@@ -53,7 +53,11 @@ namespace ECE141 {
         values = aList;
         return *this;
     }
-
+    
+    StatusResult setAll() { 
+        all = true; 
+        return Errors::noError; 
+    }
  //   bool Matches(const ) const {
    //   return true;
     //}
@@ -71,6 +75,7 @@ namespace ECE141 {
     StringList values;
 
     Filters  filters;
+
     bool     all; //if user used SELECT * FROM...
 
     //e.g. what if the user says, "SELECT name, age FROM students WHERE..."

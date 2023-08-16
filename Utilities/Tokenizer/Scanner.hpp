@@ -28,6 +28,7 @@ namespace ECE141 {
   const char semicolon = ';';
   const char apostrophe = '\'';
   const char quote = '"';
+  const char all = '*';
 
 
   class Scanner {

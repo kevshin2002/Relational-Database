@@ -19,10 +19,12 @@ namespace ECE141 {
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);
+			TableName theName;
 
-			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(tableName) : Errors::identifierExpected;
+			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
 			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected;
 			if (theResult) {
+				schema = theName.table;
 				while (theResult && aTokenizer.more()) {
 					Attribute theAttribute;
 					theResult = theHelper.parseAttribute(theAttribute);

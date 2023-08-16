@@ -28,11 +28,36 @@ namespace ECE141 {
     //STUDENT: Add more for other operators...
   };
 
-  bool Expression::operator()(/* args */) {
+  bool Expression::operator()(KeyValues& aList) {
     //STUDENT: Add code here to evaluate the expression...
     return false;
   }
-  
+  //--------------------------------------------------------------
+
+  Operand& Operand::setVarChar(const std::string& aValue) {
+      ttype = TokenType::string;
+      dtype = DataTypes::varchar_type;
+      value = aValue;
+      return *this;
+  }
+  Operand& Operand::setAttribute(Token& aToken, DataTypes aType){
+      ttype = aToken.type;
+      dtype = aType;
+      name = aToken.data;
+      return *this;
+  }
+  Operand& Operand::setNumber(Token& aToken){
+      ttype = aToken.type;
+      dtype = Helpers::getTypeForKeyword(aToken.keyword);
+      if (aToken.data.find('.') != std::string::npos) {
+          value = std::stof(aToken.data);
+      }
+      else value = std::stoi(aToken.data);
+      return *this;
+  }
+
+
+
   //--------------------------------------------------------------
   template <typename T, size_t aSize>
   bool in_array(const T(&array)[aSize], const T& value) {
@@ -242,6 +267,7 @@ namespace ECE141 {
       return theSchema ? theSchema->getAttribute(aFieldName) : nullptr;
   }
 
+
   //where operand is field, number, string...
   StatusResult ParseHelper::parseOperand(Schema& aSchema, Operand& anOp) {
       StatusResult theResult;
@@ -257,9 +283,10 @@ namespace ECE141 {
           if (auto theAttr = getAttribute(aSchema, theEntityName,
               theToken.data)) {
               anOp.setAttribute(
-                  theToken, aSchema.getHash(), theAttr->getType());
+                  theToken, theAttr->getType());
           }
-          else anOp.setVarChar(theToken.data);
+          else if (theToken.type == TokenType::string) anOp.setVarChar(theToken.data);
+          else theResult = Errors::unknownAttribute;
       }
       else if (TokenType::number == theToken.type) {
           anOp.setNumber(theToken);
@@ -305,7 +332,7 @@ namespace ECE141 {
       while (theResult && tokenizer.more()) {
           Expression theExpr;
           if ((theResult = parseExpression(aSchema, theExpr))) {
-              aList.push_back(theExpr);
+              aList.push_back(std::make_unique<Expression>(theExpr));
               if (!tokenizer.skipIf(',')) {
                   break;
               }
@@ -319,14 +346,14 @@ namespace ECE141 {
   Filters::Filters()  {}
   
   Filters::Filters(const Filters &aCopy)  {
+      for (const auto& theExpress : aCopy.expressions)
+          expressions.push_back(std::make_unique<Expression>(*theExpress));
   }
   
-  Filters::~Filters() {
-    //no need to delete expressions, they're unique_ptrs!
-  }
+  Filters::~Filters() {}
 
   Filters& Filters::add(Expression *anExpression) {
-    expressions.push_back(*anExpression);
+    expressions.push_back(std::make_unique<Expression>(*anExpression));
     return *this;
   }
     
@@ -337,46 +364,15 @@ namespace ECE141 {
     //         logical combinations (AND, OR, NOT):
     //         like:  WHERE zipcode=92127 AND age>20
     
-   /* for (auto& theExpr : expressions) {
+    for (auto& theExpr : expressions) {
       if(!(*theExpr)(aList)) {
         return false;
       }
     }
-    */
+    
     return true;
   }
  
-
-  //where operand is field, number, string...
-  StatusResult parseOperand(Tokenizer &aTokenizer, Schema &aSchema, Operand &anOperand) {
-    StatusResult theResult{Errors::noError};
-    Token &theToken = aTokenizer.current();
-    if(TokenType::identifier==theToken.type) {
-      if(auto *theAttr=aSchema.getAttribute(theToken.data)) {
-        anOperand.ttype=theToken.type;
-        anOperand.name=theToken.data; //hang on to name...
-        anOperand.schemaId=aSchema.hashString(theToken.data);
-        anOperand.dtype=theAttr->getType();
-      }
-      else {
-        anOperand.ttype=TokenType::string;
-        anOperand.dtype=DataTypes::varchar_type;
-        anOperand.value=theToken.data;
-      }
-    }
-    else if(TokenType::number==theToken.type) {
-      anOperand.ttype=TokenType::number;
-      anOperand.dtype=DataTypes::int_type;
-      if (theToken.data.find('.')!=std::string::npos) {
-        anOperand.dtype=DataTypes::float_type;
-        anOperand.value=std::stof(theToken.data);
-      }
-      else anOperand.value=std::stoi(theToken.data);
-    }
-    else theResult.error=Errors::syntaxError;
-    if(theResult) aTokenizer.next();
-    return theResult;
-  }
     
   //STUDENT: Add validation here...
   bool validateOperands(Operand &aLHS, Operand &aRHS, Schema &aSchema) {
@@ -405,7 +401,8 @@ namespace ECE141 {
       if(isValidOperand(aTokenizer.current())) {
         Expression theExpr;
         if((theResult=theHelper.parseExpression(aSchema,theExpr))) {
-          expressions.push_back(theExpr);
+          expressions.push_back(std::make_unique<Expression>(theExpr));
+          aTokenizer.next();
           //add logic to deal with bool combo logic...
         }
       }

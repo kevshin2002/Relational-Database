@@ -21,15 +21,16 @@
 #include "../Misc/Types/keywords.hpp"
 #include "Compare.hpp"
 
+
 namespace ECE141 {
   using StringList = std::vector<std::string>;
   class Entity;
   class Schema;
   struct Operand {
-      Operand() {}
+      Operand() : ttype(TokenType::unknown), dtype(DataTypes::no_type) {}
       Operand(std::string& aName, TokenType aType, Value& aValue, size_t anId = 0) : ttype(aType), dtype(DataTypes::varchar_type), name(aName), value(aValue), schemaId(anId) {}
       Operand& setVarChar(const std::string& aValue);
-      Operand& setAttribute(Token& aToken, size_t aHashedName, DataTypes aType);
+      Operand& setAttribute(Token& aToken, DataTypes aType);
       Operand& setNumber(Token& aToken);
 
       TokenType   ttype; //is it a field, or const (#, string)...
@@ -45,7 +46,7 @@ namespace ECE141 {
       Expression(const Operand& aLHSOperand = {}, const Operators anOp = Operators::unknown_op, const Operand& aRHSOperand = {}) : lhs(aLHSOperand), rhs(aRHSOperand), op(anOp), logic(Logical::no_op) {}
       Expression(const Expression& anExpr) : lhs(anExpr.lhs), rhs(anExpr.rhs), op(anExpr.op), logic(anExpr.logic) {}
 
-      bool operator()( /* args */);
+      bool operator()(KeyValues& aList);
 
       Operand     lhs;  //id
       Operand     rhs;  //usually a constant; maybe a field...
@@ -54,8 +55,9 @@ namespace ECE141 {
 
   };
 
-  using Expressions = std::vector<Expression>;
+  using Expressions = std::vector<std::unique_ptr<Expression>>;
   struct TableName {
+      TableName() {}
       TableName(const std::string& aTableName, const std::string& anAlias = "") : table(aTableName), alias(anAlias) {}
       TableName(const TableName& aCopy) : table(aCopy.table), alias(aCopy.alias) {}
       TableName& operator=(const std::string& aName) {

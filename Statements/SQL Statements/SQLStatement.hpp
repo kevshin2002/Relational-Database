@@ -11,7 +11,6 @@
 #define SQLStatement_hpp
 
 #include "../../Controller/AppController.hpp"
-#include "../../Utilities/Filters.hpp"
 #include "../Statement.hpp"
 #include "../DBQuery.hpp"
 
@@ -31,7 +30,7 @@ namespace ECE141 {
 
 	class SQLStatement : public Statement {
 	public:
-		SQLStatement(AppController* anAppController, StatementType aType) : appController(anAppController), tableName("none"), Statement(aType) {}
+		SQLStatement(AppController* anAppController, StatementType aType) : appController(anAppController), schema("none"), Statement(aType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			StatementType theType = getType();
@@ -52,7 +51,7 @@ namespace ECE141 {
 				}
 				else{
 					theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
-				    tableName = theResult ? aTokenizer.current().data : "none";
+				    schema = theResult ? aTokenizer.current().data : "none";
 				}
 				break;
 			}
@@ -64,7 +63,7 @@ namespace ECE141 {
 		
 	protected:
 		AppController* appController = nullptr;
-		TableName tableName;
+		Schema schema;
 		DBQuery* query = new DBQuery(); // consider making all pointers into smart pointers. reminder
 	};
 }

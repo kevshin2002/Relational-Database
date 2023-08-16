@@ -37,10 +37,9 @@ namespace ECE141 {
 				case Keywords::table_kw:
 				case Keywords::tables_kw:
 				case Keywords::into_kw:
-				case Keywords::from_kw:
 					break;
 				default:
-					return aTokenizer.current().type == TokenType::identifier ? this : nullptr;
+					return aTokenizer.current().type == TokenType::identifier || isProcessable(aTokenizer.previous().keyword) ? this : nullptr;
 				}
 			}
 			return this;
