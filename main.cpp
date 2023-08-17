@@ -32,10 +32,12 @@ int main(int argc, const char* argv[]) {
             return run.cacheCommandTest(anOut); }},
           {"compile", [&](std::stringstream& anOut) {
             return run.compileTest(anOut); }},
-          {"db", [&](std::stringstream& anOut) {
-            return run.dbCommandsTest(anOut); }},
           {"delete", [&](std::stringstream& anOut) {
             return run.deleteCommandTest(anOut); }},
+          {"db", [&](std::stringstream& anOut) {
+            return run.dbCommandsTest(anOut); }},
+          {"drop", [&](std::stringstream& anOut) {
+            return run.dropCommandTest(anOut); }},
           {"dojo",    [&](std::stringstream& anOut) {
             return run.dojoTest(anOut); }},
           {"filter", [&](std::stringstream& anOut) {

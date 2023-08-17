@@ -35,12 +35,10 @@ namespace ECE141 {
     using TestCall = std::function<bool(std::stringstream& anOutput)>;
     using InputLine = std::pair<std::string_view, size_t>;
     using LineList = std::initializer_list<InputLine>;
-    using StringList = std::vector<std::string>;
-    using StringMap = std::map<std::string, std::string>;
     using InitList = std::initializer_list<std::string>;
     using TestCalls = std::map<std::string, TestCall>;
 
-    const std::string_view theVersion{ "Tester(1.5)" };
+    const std::string_view theVersion{ "Tester(1.7)" };
     const size_t kMaxErrors{ 100 };
 
     using CountList = std::vector<int>;
@@ -850,10 +848,10 @@ namespace ECE141 {
 
         void insertFakeUsers(std::ostream& anOut, int aGroupSize,
             Expected& anExpected, int aGroupCount = 1) {
-            for (size_t theCount = 0; theCount < aGroupCount; theCount++) {
+            for (int theCount = 0; theCount < aGroupCount; theCount++) {
                 anOut << "INSERT INTO Users (first_name, last_name, age, zip) VALUES ";
                 const char* thePrefix = "";
-                for (size_t theSize = 0; theSize < aGroupSize; theSize++) {
+                for (int theSize = 0; theSize < aGroupSize; theSize++) {
                     anOut << thePrefix <<
                         '(' << '"' << Fake::People::first_name()
                         << "\", \"" << Fake::People::last_name()
@@ -923,8 +921,8 @@ namespace ECE141 {
                 bool theResult{ false };
             auto temp = theOut.str();
             std::stringstream theOutput(temp);
+            anOutput << temp << "\n";
             //std::cerr << temp << "\n"; //debugging!
-            anOutput << temp << "\n"; //capture for main!
 
             Responses theResponses;
             if ((theResult = analyzeOutput(theOutput, theResponses))) {
@@ -939,12 +937,184 @@ namespace ECE141 {
         }
 
         bool deleteCommandTest(std::stringstream& anOutput, int aCount = 2) {
-            bool theResult{ true };
+
+            std::string theDBName1(getRandomDBName('F'));
+            std::string theDBName2(getRandomDBName('F'));
+
+            std::stringstream theCmds, theOut;
+            theCmds << "create database " << theDBName1 << ";\n";
+            theCmds << "create database " << theDBName2 << ";\n";
+            theCmds << "use " << theDBName1 << ";\n";
+
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 0, 5);
+
+            theCmds << "select * from Users;\n";
+
+            theCmds << "use " << theDBName2 << ";\n";
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 6, 4);
+
+            theCmds << "select * from Users;\n";
+
+            theCmds << "use " << theDBName1 << ";\n";
+
+            theCmds << "DELETE from Users where zip=92120;\n";
+            theCmds << "select * from Users;\n";
+            theCmds << "DELETE from Users where zip<92124;\n";
+            theCmds << "select * from Users;\n";
+            theCmds << "DELETE from Users where zip>92124;\n";
+            theCmds << "select * from Users;\n";
+
+            theCmds << "drop database " << theDBName1 << ";\n";
+            theCmds << "drop database " << theDBName2 << ";\n";
+
+            theCmds >> std::noskipws; //make sure to include ws...
+
+            bool theResult = scriptTest(theCmds, theOut, [&](const std::string& aBuf) {
+                bool theResult{ false };
+            auto temp = theOut.str();
+            std::stringstream theOutput(temp);
+            anOutput << temp << "\n";
+            //std::cerr << temp << "\n"; //debugging!
+
+            Responses theResponses;
+            if ((theResult = analyzeOutput(theOutput, theResponses))) {
+                Expected theExpected({
+                  {Commands::createDB,1},    {Commands::createDB,1},
+                  {Commands::useDB,0},       {Commands::createTable,1},
+                  {Commands::insert,5},      {Commands::select,5},
+                  {Commands::useDB,0},       {Commands::createTable,1},
+                  {Commands::insert,4},      {Commands::select,4},
+
+                  {Commands::useDB,0},       {Commands::delet,2},
+                  {Commands::select,3},      {Commands::delet,1},
+                  {Commands::select,2},      {Commands::delet,1},
+                  {Commands::select,1},      {Commands::dropDB,0},
+                  {Commands::dropDB,0},
+                    });
+                theResult = theExpected == theResponses;
+            }
+            return theResult;
+
+                });
+
+            return theResult;
+        }
+
+        //test dropping a table...
+        bool dropCommandTest(std::stringstream& anOutput, int aCount = 2) {
+
+            std::string theDBName1(getRandomDBName('F'));
+            std::stringstream theCmds, theOut;
+            theCmds << "create database " << theDBName1 << ";\n";
+            theCmds << "use " << theDBName1 << ";\n";
+
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 0, 5);
+            theCmds << "select * from Users;\n";
+
+            addBooksTable(theCmds);
+            int theBookCount = 13;
+            insertBooks(theCmds, 0, theBookCount);
+            theCmds << "select * from Books;\n";
+
+            theCmds << "show tables;\n";
+            theCmds << "DROP table Books;\n";
+            theCmds << "show tables;\n";
+
+            theCmds << "drop database " << theDBName1 << ";\n";
+
+            theCmds >> std::noskipws; //make sure to include ws...
+
+            bool theResult = scriptTest(theCmds, theOut, [&](const std::string& aBuf) {
+                bool theResult{ false };
+            auto temp = theOut.str();
+            std::stringstream theOutput(temp);
+            anOutput << temp << "\n";
+            //std::cerr << temp << "\n"; //debugging!
+
+            Responses theResponses;
+            if ((theResult = analyzeOutput(theOutput, theResponses))) {
+                Expected theExpected({
+                  {Commands::createDB,1},    {Commands::useDB,0},
+                  {Commands::createTable,1}, {Commands::insert,5},
+                  {Commands::select,5},      {Commands::createTable,1},
+                  {Commands::insert,theBookCount}, {Commands::select,theBookCount},
+                  {Commands::showTables,2},  {Commands::dropTable,theBookCount},
+                  {Commands::showTables,1},  {Commands::dropDB,0},
+                    });
+                theResult = theExpected == theResponses;
+            }
+            return theResult;
+
+                });
+
             return theResult;
         }
 
         bool updateCommandTest(std::stringstream& anOutput, int aCount = 2) {
-            bool theResult{ true };
+            std::string theDBName1(getRandomDBName('E'));
+            std::string theDBName2(getRandomDBName('E'));
+
+            std::stringstream theCmds, theOut;
+            theCmds << "create database " << theDBName2 << ";\n";
+            theCmds << "create database " << theDBName1 << ";\n";
+            theCmds << "use " << theDBName1 << ";\n";
+
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 0, 5);
+
+            theCmds << "use " << theDBName2 << ";\n";
+            addUsersTable(theCmds);
+            insertUsers(theCmds, 6, 4);
+
+            theCmds << "use " << theDBName1 << ";\n";
+            theCmds << "select * from Users;\n";
+
+            std::string theZip(std::to_string(10000 + rand() % 75000));
+
+            theCmds << "update Users set zip=" << theZip
+                << " where id=5;\n";
+
+            theCmds << "select * from Users;\n";
+
+            theCmds << "use " << theDBName2 << ";\n";
+            theCmds << "select * from Users;\n";
+
+            theCmds << "use " << theDBName1 << ";\n";
+            theCmds << "select * from Users where zip="
+                << theZip << ";\n";
+
+            theCmds << "drop database " << theDBName1 << ";\n";
+            theCmds << "drop database " << theDBName2 << ";\n";
+
+            theCmds >> std::noskipws; //make sure to include ws...
+
+            bool theResult = scriptTest(theCmds, theOut, [&](const std::string& aBuf) {
+                bool theResult{ false };
+            auto temp = theOut.str();
+            std::stringstream theOutput(temp);
+            anOutput << temp << "\n";
+            //std::cerr << temp << "\n"; //debugging!
+
+            Responses theResponses;
+            if ((theResult = analyzeOutput(theOutput, theResponses))) {
+                Expected theExpected({
+                  {Commands::createDB,1},     {Commands::createDB,1},
+                  {Commands::useDB,0},        {Commands::createTable,1},
+                  {Commands::insert,5},       {Commands::useDB,0},
+                  {Commands::createTable,1},  {Commands::insert,4},
+                  {Commands::useDB,0},        {Commands::select,5},
+                  {Commands::update,1},       {Commands::select,5},
+                  {Commands::useDB,0},        {Commands::select,4},
+                  {Commands::useDB,0},        {Commands::select,1},
+                  {Commands::dropDB,0},       {Commands::dropDB,0}
+                    });
+                theResult = theExpected == theResponses;
+            }
+            return theResult;
+                });
             return theResult;
         }
 
@@ -954,3 +1124,6 @@ namespace ECE141 {
 
 
 #endif /* TestAutomatic_h */
+
+
+

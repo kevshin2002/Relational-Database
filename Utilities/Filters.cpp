@@ -203,7 +203,7 @@ namespace ECE141 {
       return theResult;
 
   error_handling:
-      theResult = Errors::identifierExpected;
+      theResult = Errors::illegalAttributeIdentifier;
       return theResult;
   }
 
@@ -397,7 +397,7 @@ namespace ECE141 {
   StatusResult Filters::parse(Tokenizer &aTokenizer,Schema &aSchema) {
     StatusResult  theResult;
     ParseHelper theHelper(aTokenizer);
-    while(theResult && (2<aTokenizer.remaining())) {
+    while(theResult && (2<=aTokenizer.remaining())) {
       if(isValidOperand(aTokenizer.current())) {
         Expression theExpr;
         if((theResult=theHelper.parseExpression(aSchema,theExpr))) {
@@ -405,6 +405,7 @@ namespace ECE141 {
           aTokenizer.next();
           //add logic to deal with bool combo logic...
         }
+        // add condition for non = operands but just for setting and limiting
       }
       else break;
     }

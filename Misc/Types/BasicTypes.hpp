@@ -40,7 +40,7 @@ namespace ECE141 {
       describeTable,
       insertTable,
       selectTable,
-
+      updateTable,
   };
   
   using OptString = std::optional<std::string_view>;

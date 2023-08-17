@@ -33,7 +33,14 @@ namespace ECE141 {
 								Errors::valueExpected;
 					if (theResult) {
 						StringList theValues;
-						theResult = theHelper.parseValueList(theValues);
+						while (theResult && aTokenizer.more()) {
+							theResult = theHelper.parseValueList(theValues);
+							if(aTokenizer.more())
+								theResult = aTokenizer.skipIf(comma) ?
+										aTokenizer.skipIf(left_paren) ? theResult : Errors::syntaxError :
+										Errors::syntaxError;
+								
+						}
 						query->addIdentifiers(theIdentifiers);
 						query->addValues(theValues);
 					}

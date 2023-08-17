@@ -15,6 +15,7 @@
 #include "../../Statements/SQL Statements/createTableStatement.hpp"
 #include "../../Statements/SQL Statements/insertTableStatement.hpp"
 #include "../../Statements/SQL Statements/selectTableStatement.hpp"
+#include "../../Statements/SQL Statements/updateTableStatement.hpp"
 namespace ECE141 {
 
 	class SQLProcessor : public AppProcessor {

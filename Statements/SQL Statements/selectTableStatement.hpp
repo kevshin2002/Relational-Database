@@ -20,14 +20,14 @@ namespace ECE141 {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);
 			StringList theIdentifiers;
-			TableName theName;
-
+		
 			aTokenizer.next();
 			theResult = aTokenizer.skipIf(all) ? query->setAll() : theHelper.parseIdentifierList(theIdentifiers);
-			if (theResult && aTokenizer.skipIf(Keywords::from_kw)) {
+			if (theResult) {
+				TableName theName;
 				theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
 				schema = theName.table;
-				if (theResult && aTokenizer.skipIf(Keywords::where_kw)) {
+				if (theResult && isConditional(aTokenizer)) {
 					theResult = filter.parse(aTokenizer, schema);
 				}
 			}
@@ -36,6 +36,22 @@ namespace ECE141 {
 			return theResult;
 		}
 
+		bool isConditional(Tokenizer& aTokenizer) {
+			if (aTokenizer.more()) {
+				switch (aTokenizer.current().keyword) {
+				case Keywords::where_kw:
+					aTokenizer.next();
+				case Keywords::order_kw:
+				case Keywords::group_kw:
+				case Keywords::limit_kw:
+				case Keywords::min_kw:
+					return true;
+				default:
+					break;
+				}
+			}
+			return false;
+		}
 	protected:
 		Filters filter;
 	};

@@ -23,6 +23,7 @@ namespace ECE141 {
 		case Keywords::show_kw:
 		case Keywords::insert_kw:
 		case Keywords::select_kw:
+		case Keywords::update_kw:
 			return true;
 		default:
 			return false;
@@ -61,13 +62,19 @@ namespace ECE141 {
 			statement = (theType == StatementType::insertTable) ? new insertTableStatement(anAppController, theType) : nullptr;
 			break;
 		case Keywords::select_kw:
-			statement = new selectTableStatement(anAppController, StatementType::selectTable);
+			theType = aTokenizer.skipTo(Keywords::from_kw) ? StatementType::selectTable : StatementType::unknown;
+			statement = new selectTableStatement(anAppController, theType);
+			break;
+		case Keywords::update_kw:
+			theType = aTokenizer.skipTo(Keywords::set_kw) ? StatementType::updateTable : StatementType::unknown;
+			statement = new updateTableStatement(anAppController, theType);
 			break;
 		default:// drop, describe, show
 			theType = Helpers::keywordToStmtType(theKeyword);
 			statement = new SQLStatement(anAppController, theType);
 			break;
 		}
+		aTokenizer.restart();
 		return statement;
 	}
 	StatusResult	    SQLProcessor::run(Statement* aStatement, ViewListener aViewer) {
