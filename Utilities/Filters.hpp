@@ -70,6 +70,14 @@ namespace ECE141 {
       std::string alias;
   };
 
+  struct Condition {
+      Condition(Keywords aKeyword) : keyword(aKeyword), value("") {}
+
+      Condition& setAttribute(Token& aToken, DataTypes aType);
+      Keywords keyword;
+      std::string value;
+  };
+
   struct TableField {
       const std::string_view& getTableName() const { return table; }
       const std::string_view& getTableField() const { return fieldName; }
@@ -78,6 +86,7 @@ namespace ECE141 {
       std::string fieldName;
   };
 
+  using Conditions = std::vector<std::unique_ptr<Condition>>;
   struct ParseHelper {
 
       ParseHelper(Tokenizer& aTokenizer) : tokenizer(aTokenizer) {}
@@ -97,6 +106,9 @@ namespace ECE141 {
       StatusResult parseOperator(Operators& anOp);
       StatusResult parseOperand(Schema&, Operand&);
       StatusResult parseExpression(Schema&, Expression&);
+      
+      StatusResult parseCondition(Schema&, Condition&);
+      StatusResult parseRestriction(Condition&);
 
       Tokenizer& tokenizer;
   };
@@ -112,10 +124,12 @@ namespace ECE141 {
       bool          matches(KeyValues& aList) const;
       Filters& add(Expression* anExpression);
       Expressions& getExpressions() { return expressions; }
+      Conditions&  getConditions() { return conditions; }
       StatusResult  parse(Tokenizer& aTokenizer, Schema& aSchema);
 
   protected:
       Expressions   expressions;
+      Conditions    conditions;
   };
  
 }

@@ -98,8 +98,77 @@ namespace ECE141 {
 		}
 		return theResult;
 	}
-	StatusResult		SQLProcessor::createTable(ViewListener aViewer){ return Errors::noError; }
-	StatusResult		SQLProcessor::dropTable(ViewListener aViewer){ return Errors::noError; }
-	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ return Errors::noError; }
-	StatusResult		SQLProcessor::showTables(ViewListener aViewer) { return Errors::noError; }
+	StatusResult		SQLProcessor::createTable(ViewListener aViewer) {
+		/*
+		* auto* theDB - statement->getAppController()->getDB();
+		if (!tables.count(statement->getSchema().getName())) {
+			StatusResult theResult =  theDB ? theDB->getStorage().add(BlockType::table_block, statement) : Errors::noDatabaseSpecified;
+			if (theResult) {
+				StringView theView = "Query OK, 0 rows affected";
+				aViewer(theView);
+			}
+		}
+		return theResult;
+		*/
+		return Errors::notImplemented;
+	}
+
+	StatusResult		SQLProcessor::dropTable(ViewListener aViewer) {
+		/*
+		auto* theDB = statement->getAppController()->getDB();
+		StatusResult theResult = theDB ? theDB->getStorage().drop(BlockType::table_block, statement) : Errors::noDatabaseSpecified;
+		if (theResult) {
+			StringView theView = "Query OK, 0 rows affected";
+			aViewer(theView);
+		}
+		return theResult;
+		*/
+		return Errors::notImplemented;
+	}
+	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ 
+		/*
+		* StatusResult theResult = Errors::noError;
+		auto* theDB = statement->getAppController()->getDB();
+		if(theDB){
+		Table& theTable = theDB->getStorage().get(BlockType::table_block, statement); // consider adding optional here.
+		if(theTable.has_value()){
+			// describe show attributes
+			// maybe table view?
+		}
+		}
+		else
+			theResult = Errors::noDatabaseSpecified;
+		return theResult;
+		*/
+		return Errors::notImplemented; }
+	StatusResult		SQLProcessor::showTables(ViewListener aViewer) {
+		/*StatusResult theResult = Errors::noError;
+		auto* theDB = statement->getAppController()->getDB();
+		if (theDB) {
+			std::stringstream theStream;
+			size_t theTableLength = 0;
+			size_t theLength = length + 4;
+
+			theDB->fetchTables(tables);
+
+			theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
+			theStream << "| Database" << std::setfill(' ') << std::setw(theLength - 9) << "|\n";
+			theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
+			for (const auto& theTable : tables) {
+				theTableLength = theTable.length();
+				theStream << "| " << theTable << std::setfill(' ') << std::setw(theLength - 1 - theTableLength) << "|\n";
+			}
+
+			theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
+			theStream << tables.size() << " rows in set";
+
+			StringView theView(theStream.str());
+			aViewer(theView);
+		}
+		else
+			theResult = Errors::noDatabaseSpecified;
+		return theResult;
+		*/
+		return Errors::notImplemented;
+	}
 }

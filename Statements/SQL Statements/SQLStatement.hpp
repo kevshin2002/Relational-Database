@@ -15,6 +15,7 @@
 #include "../DBQuery.hpp"
 
 namespace ECE141 {
+
 	// good track
 	// blockvisitor
 	// dont rely on order of anything
@@ -57,9 +58,24 @@ namespace ECE141 {
 			}
 			return theResult;
 		}
-
+		bool isConditional(Tokenizer& aTokenizer) {
+			if (aTokenizer.more()) {
+				switch (aTokenizer.current().keyword) {
+				case Keywords::where_kw:
+					aTokenizer.next();
+				case Keywords::order_kw:
+				case Keywords::group_kw:
+				case Keywords::limit_kw:
+					return true;
+				default:
+					break;
+				}
+			}
+			return false;
+		}
 		AppController* getAppController() const { return appController; }
 		const DBQuery* getQuery() const { return query; };
+		const Schema& getSchema() const { return schema; }
 		
 	protected:
 		AppController* appController = nullptr;

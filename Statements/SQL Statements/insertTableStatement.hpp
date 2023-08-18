@@ -22,14 +22,14 @@ namespace ECE141 {
 			TableName theName;
 
 			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
-			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected;
+			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::insertIdentifiersOpenerExpected;
 			if (theResult) {
 				StringList theIdentifiers;
 				schema = theName.table;
 				theResult = theHelper.parseIdentifierList(theIdentifiers);
 				if (aTokenizer.previous().data[0] == right_paren) {
 					theResult = aTokenizer.skipIf(Keywords::values_kw) ? 
-								aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected : 
+								aTokenizer.skipIf(left_paren) ? theResult : Errors::insertValuesOpenerExpected : 
 								Errors::valueExpected;
 					if (theResult) {
 						StringList theValues;
@@ -46,13 +46,13 @@ namespace ECE141 {
 					}
 				}
 				else
-					theResult = Errors::closerExpected;
+					theResult = Errors::insertIdentifiersCloserExpected;
 			}
 
 			if (theResult && aTokenizer.more())
-				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::closerExpected;
+				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::insertValuesCloserExpected;
 			else if(theResult)
-				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::closerExpected;
+				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::insertValuesCloserExpected;
 
 			return theResult;
 		}

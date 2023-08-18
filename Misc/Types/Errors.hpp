@@ -14,74 +14,81 @@
 namespace ECE141 {
     
 
-  enum class Errors : uint16_t {
-    
-    noError=0,
+    enum class Errors : uint16_t {
+        // Parse related
+        creationOpenerExpected = 100,
+        creationCloserExpected,
+        insertIdentifiersOpenerExpected,
+        insertIdentifiersCloserExpected,
+        insertValuesOpenerExpected,
+        insertValuesCloserExpected,
+        illegalAttributeIdentifier,
+        illegalIdentifier,
+        identifierExpected,
+        joinTypeExpected,
+        keywordExpected,
+        keyExpected,
+        keyValueMismatch,
 
-    //parse related...
-    keywordExpected=100,
-    keyExpected,
-    identifierExpected,
-    illegalIdentifier,
-    illegalAttributeIdentifier,
-    joinTypeExpected,
-    syntaxError,
-    insertValuesError,
-    openerExpected,
-    closerExpected,
-    unexpectedKeyword,
-    unexpectedValue,
-    unknownIdentifier,
-    unexpectedIdentifier,
-    valueExpected,
-    operatorExpected,
-    punctuationExpected,
-    eofError,
-    
-    //statement related...
-    statementExpected=200,
-    noDatabaseSpecified,
-    
-    //table/DB related...
-    tableExists=300,
-    invalidTableName,
-    unknownEntity,
-    unknownTable,
-    unknownDatabase,
-    databaseExists,
-    databaseDeletionError,
-    databaseCreationError,
-    primaryKeyRequired,
-    
-    //type related...
-    unknownType=400,
-    unknownAttribute,
-    invalidAttribute,
-    invalidArguments,
-    keyValueMismatch, //# of fieldnames doesn't match values...
-    
-    //storage/io related...
-    readError=500,
-    writeError,
-    seekError,
-    storageFull,
-    
-    //index related
-    indexExists=600,
-    cantCreateIndex,
-    unknownIndex,
-    
-    //command related...
-    unknownCommand=3000,
-    noSemicolon,
-    invalidCommand,
-    
-    //general purpose...
-    userTerminated = 4000,
-    notImplemented,
-    
-    unknownError = 10000
-  };    
+        // General errors
+        noError = 0,
+
+        // Statement related
+        noDatabaseSpecified = 200,
+        primaryKeyRequired,
+        syntaxError,
+        insertValuesError,
+        
+        unexpectedKeyword,
+        unexpectedValue,
+        unknownIdentifier,
+        unexpectedIdentifier,
+        valueExpected,
+        operatorExpected,
+        punctuationExpected,
+        eofError,
+
+        // Statement related
+        statementExpected = 300,
+        noSemicolon,
+        invalidCommand,
+
+        // Table/DB related
+        tableExists,
+        invalidTableName,
+        unknownEntity,
+        unknownTable,
+        unknownDatabase,
+        databaseExists,
+        databaseDeletionError,
+        databaseCreationError,
+
+        // Type related
+        unknownDatatype = 400,
+        unknownType,
+        unknownAttribute,
+        invalidAttribute,
+        invalidArguments,
+
+        // Storage/IO related
+        readError = 500,
+        writeError,
+        seekError,
+        storageFull,
+
+        // Index related
+        cantCreateIndex = 600,
+        unknownIndex,
+
+        // Command related
+        notImplemented = 4000,
+        userTerminated,
+        unknownCommand = 3000,
+
+        // General purpose
+        unknownError = 10000
+    };
+
   
   struct StatusResult {
     Errors    error;

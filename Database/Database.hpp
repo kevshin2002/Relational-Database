@@ -27,7 +27,7 @@ namespace ECE141 {
     virtual ~Database();
 
     StatusResult    dump(std::ostream &anOutput); //debug...
-
+    Storage&        getStorage()  { return storage; } // maybe make it a pointer for flexibility?
     bool            inUse(const std::string& aDBName) const;
   protected:
     Storage         storage;

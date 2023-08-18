@@ -20,11 +20,9 @@ namespace ECE141 {
 			StatusResult theResult = Errors::noError;
 
 			aTokenizer.next();
-			theResult = aTokenizer.skipIf(TokenType::identifier) ? filter.parse(aTokenizer, schema) : Errors::identifierExpected;
+			theResult = aTokenizer.skipIf(TokenType::identifier) ? query->getFilters().parse(aTokenizer, schema) : Errors::identifierExpected;
 			return theResult;
 		}
-	protected:
-		Filters filter;
 	};
 }
 

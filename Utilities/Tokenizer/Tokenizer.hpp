@@ -54,10 +54,10 @@ namespace ECE141 {
     Token&        tokenAt(size_t anOffset);
     std::vector<Token>& getTokens() { return tokens; }
     Token&        current();
-    Token&        previous() { return tokens[index - 1]; }
+    Token&        previous(size_t anOffset=1) { return tokens[index - anOffset]; }
     bool          more(size_t anOffset) { return index == 0 ? index < size() : index + anOffset < size(); }
     bool          more() {return index<size();}
-    bool          next(int anOffset=1);
+    bool          next(size_t anOffset=1);
     Token&        peek(int anOffset=1);
     void          restart() {index=0;}
     size_t        size() {return tokens.size();}

@@ -43,7 +43,7 @@ namespace ECE141 {
 
 	// Members for formatting.
 	std::stringstream stream;
-	size_t length = 11;
+	size_t length = 8;
 
 	};
 }

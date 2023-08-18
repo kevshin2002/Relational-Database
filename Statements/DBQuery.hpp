@@ -66,7 +66,7 @@ namespace ECE141 {
     const AttributeList& getAttributes() const { return attributes; }
     const StringList& getIdentifiers() const { return identifiers; }
     const StringList& getValues() const { return values; }
-        
+    Filters& getFilters() { return filters; }
   protected:
     Schema*  fromTable;
 

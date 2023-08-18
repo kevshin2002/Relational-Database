@@ -22,8 +22,7 @@ namespace ECE141 {
 			TableName theName;
 
 			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
-			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::openerExpected;
-			if (theResult) {
+			if (aTokenizer.skipIf(left_paren)) {
 				schema = theName.table;
 				while (theResult && aTokenizer.more()) {
 					Attribute theAttribute;
@@ -31,11 +30,13 @@ namespace ECE141 {
 					query->addAttribute(theAttribute);
 				}
 			}
+			else if(theResult)
+				theResult = Errors::creationOpenerExpected;
 			
 			if (theResult && aTokenizer.more())
-				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::closerExpected;
+				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::creationCloserExpected;
 			else if(theResult)
-				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::closerExpected;
+				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::creationCloserExpected;
 
 			return theResult;
 		}

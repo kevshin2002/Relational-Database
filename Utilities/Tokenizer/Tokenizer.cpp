@@ -57,7 +57,7 @@ namespace ECE141 {
     throw std::out_of_range("invalid offset");
   }
   
-  bool Tokenizer::next(int anOffset) {
+  bool Tokenizer::next(size_t anOffset) {
     index+=anOffset;
     return index<size();
   }

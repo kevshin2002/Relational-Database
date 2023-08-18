@@ -55,8 +55,14 @@ namespace ECE141 {
       else value = std::stoi(aToken.data);
       return *this;
   }
-
-
+  //--------------------------------------------------------------
+  /*Condition& Condition::setAttribute(Token& aToken, DataTypes aType) {
+      keyword = aToken.keyword;
+      dtype = aType;
+      value = aToken.data;
+      return *this;
+  }
+  */
 
   //--------------------------------------------------------------
   template <typename T, size_t aSize>
@@ -72,7 +78,7 @@ namespace ECE141 {
   // USE: parse table name (identifier) with (optional) alias...
   StatusResult ParseHelper::parseTableName(TableName& aTableName) {
       Keywords theKeywords[] = { Keywords::table_kw, Keywords::database_kw, Keywords::into_kw, Keywords::from_kw };
-      StatusResult theResult{ Errors::identifierExpected };
+      StatusResult theResult{ Errors::invalidTableName };
       Token& theToken = tokenizer.previous(); //get token (should be identifier
       if (in_array<Keywords>(theKeywords, theToken.keyword)) {
           theToken = tokenizer.current();
@@ -198,7 +204,7 @@ namespace ECE141 {
               }
 
           } //if
-          else theResult.error = Errors::unknownType;
+          else theResult.error = Errors::unknownDatatype;
       } //if
       return theResult;
 
@@ -325,7 +331,7 @@ namespace ECE141 {
       }
       return theResult;
   }
-
+  // not sure what this is for
   //read a comma-sep list of expressions...
   StatusResult ParseHelper::parseAssignments(Expressions& aList, Schema& aSchema) {
       StatusResult theResult;
@@ -341,7 +347,13 @@ namespace ECE141 {
       }
       return theResult;
   }
+  /*StatusResult ParseHelper::parseCondition(Schema& aSchema, Condition& aCondition) {
 
+  }
+  StatusResult ParseHelper::parseRestriction(Condition& aCondition){
+      
+  }
+  */
   //--------------------------------------------------------------
   Filters::Filters()  {}
   
@@ -386,27 +398,71 @@ namespace ECE141 {
     }
     return false;
   }
-
+  // boolean conditions
   bool isValidOperand(Token &aToken) {
     //identifier, number, string...
-    if(aToken.type==TokenType::identifier) return true;
-    return false;
+      switch (aToken.type) {
+      case TokenType::identifier:
+      case TokenType::number:
+      case TokenType::string:
+      case TokenType::timedate:
+          return true;
+      default:
+          break;
+      }
+      return false;
+  }
+  // 2-word conditions
+  bool isValidCondition(Token& aToken) {
+      switch (aToken.keyword) {
+      case Keywords::order_kw:
+      case Keywords::group_kw:
+          return true;
+      default:
+          break;
+      }
+      return false;
   }
 
+  // 1-word conditions
+  bool isValidRestriction(Token& aToken) {
+      switch (aToken.keyword) {
+      case Keywords::limit_kw:
+          return true;
+      default:
+          break;
+      }
+      return false;
+  }
   //STUDENT: This starting point code may need adaptation...
   StatusResult Filters::parse(Tokenizer &aTokenizer,Schema &aSchema) {
     StatusResult  theResult;
     ParseHelper theHelper(aTokenizer);
     while(theResult && (2<=aTokenizer.remaining())) {
-      if(isValidOperand(aTokenizer.current())) {
-        Expression theExpr;
-        if((theResult=theHelper.parseExpression(aSchema,theExpr))) {
-          expressions.push_back(std::make_unique<Expression>(theExpr));
-          aTokenizer.next();
-          //add logic to deal with bool combo logic...
+       Token& theToken = aTokenizer.current();
+       if (isValidOperand(theToken)) {
+           Expression theExpr;
+           if ((theResult = theHelper.parseExpression(aSchema, theExpr))) {
+               expressions.push_back(std::make_unique<Expression>(theExpr));
+               aTokenizer.next();
+               //add logic to deal with bool combo logic...
+           }
+       }
+     /*   else if (isValidCondition(theToken)) {
+            Condition theCondition(theToken.keyword);
+            aTokenizer.next(2);
+            if ((theResult = theHelper.parseCondition(aSchema, theCondition))) {
+                conditions.push_back(std::make_unique<Condition>(theCondition));
+            }
         }
-        // add condition for non = operands but just for setting and limiting
-      }
+        else if (isValidRestriction(theToken)) {
+            Condition theCondition(theToken.keyword);
+            aTokenizer.next();
+            if ((theResult = theHelper.parseRestriction(theCondition))) {
+                conditions.push_back(std::make_unique<Condition>(theCondition));
+            }
+        }
+        */
       else break;
     }
     return theResult;
