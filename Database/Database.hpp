@@ -27,8 +27,11 @@ namespace ECE141 {
     virtual ~Database();
 
     StatusResult    dump(std::ostream &anOutput); //debug...
+    StatusResult    fetchTables(std::set<std::string> aTableList);
+
+    TableOpt        getTable(Schema& aSchema);
     Storage&        getStorage()  { return storage; } // maybe make it a pointer for flexibility?
-    bool            inUse(const std::string& aDBName) const;
+    bool            inUse(const std::string& aDBName = "") const;
   protected:
     Storage         storage;
     std::string     name;

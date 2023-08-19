@@ -114,7 +114,7 @@ namespace ECE141 {
 		StatusResult theResult = Errors::databaseExists;
 		std::string theDBName = statement->getDBName();
 
-		if (!databases.count(statement->getDBName())) {
+		if (!dbExists(theDBName)) {
 			auto theDB = new Database(theDBName, CreateFile());
 			databases.insert(theDBName);
 			delete theDB;
@@ -129,7 +129,7 @@ namespace ECE141 {
 		std::string theDBName = statement->getDBName();
 		AppController* theController = statement->getAppController();
 
-		if (databases.count(theDBName)) {
+		if (dbExists(theDBName)) {
 			auto theDB = theController->getDB();
 			if (theDB->inUse(theDBName))
 				theController->releaseDB();
@@ -145,7 +145,7 @@ namespace ECE141 {
 		StatusResult theResult = Errors::unknownDatabase;
 		std::string theDBName = statement->getDBName();
 
-		if (databases.count(theDBName)) {
+		if (dbExists(theDBName)) {
 			auto theDB = new Database(theDBName, OpenFile());
 			auto theAppController = statement->getAppController();
 			theAppController->holdDB(theDB);
@@ -179,9 +179,20 @@ namespace ECE141 {
 		}
 
 	StatusResult DBProcessor::dumpDB(ViewListener aViewer) {
-		StringView theView = "0 rows in set";
-		aViewer(theView);
-		return Errors::noError;
+		StatusResult theResult = Errors::noDatabaseSpecified;
+		std::stringstream theStream;
+		auto theController = statement->getAppController();
+		std::string theDBName = statement->getDBName();
+
+		if (dbExists(theDBName)) {
+			auto theDB = new Database(theDBName, OpenFile());
+			theController->holdDB(theDB);
+			theResult = theDB->dump(theStream);
+			StringView theView(theStream.str());
+			aViewer(theView);
+		}
+
+		return theResult;
 	}
 
 }

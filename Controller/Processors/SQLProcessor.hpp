@@ -11,7 +11,6 @@
 #define SQLProcessor_hpp
 
 #include "AppProcessor.hpp"
-#include "../../Database/Storage/Storage.hpp"
 #include "../../Statements/SQL Statements/createTableStatement.hpp"
 #include "../../Statements/SQL Statements/insertTableStatement.hpp"
 #include "../../Statements/SQL Statements/selectTableStatement.hpp"

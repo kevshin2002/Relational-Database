@@ -13,6 +13,12 @@
 #include <fstream>
 #include <variant>
 #include <functional>
+#include <cstring>
+#include <string>
+#include <deque>
+#include <stack>
+#include <optional>
+#include <set>
 #include "../../Misc/Types/Errors.hpp"
 #include "../../Utilities/Helpers.hpp"
 
@@ -23,6 +29,7 @@ namespace ECE141 {
     free_block='F',
     //other types?
     unknown_block='U',
+    table_block='T'
   };
 
 

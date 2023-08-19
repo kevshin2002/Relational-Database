@@ -30,7 +30,7 @@ namespace ECE141 {
 				if (aTokenizer.previous().data[0] == right_paren) {
 					theResult = aTokenizer.skipIf(Keywords::values_kw) ? 
 								aTokenizer.skipIf(left_paren) ? theResult : Errors::insertValuesOpenerExpected : 
-								Errors::valueExpected;
+								Errors::valueKeywordExpected;
 					if (theResult) {
 						StringList theValues;
 						while (theResult && aTokenizer.more()) {

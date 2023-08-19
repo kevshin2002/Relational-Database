@@ -9,10 +9,6 @@
 #ifndef Schema_hpp
 #define Schema_hpp
 
-#include <memory>
-#include <string>
-
-#include "Attribute.hpp"
 #include "Row.hpp"
 #include "../../../Misc/Types/Errors.hpp"
 

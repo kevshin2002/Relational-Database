@@ -43,7 +43,7 @@ namespace ECE141 {
         unexpectedValue,
         unknownIdentifier,
         unexpectedIdentifier,
-        valueExpected,
+        valueKeywordExpected,
         operatorExpected,
         punctuationExpected,
         eofError,

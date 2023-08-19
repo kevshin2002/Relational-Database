@@ -23,10 +23,21 @@ namespace ECE141 {
     }
   }
 
+  StatusResult    Database::fetchTables(std::set<std::string> aTableList) {
+      return Errors::notImplemented;
+  }
+
+  TableOpt        Database::getTable(Schema& aSchema) {
+      return std::nullopt;
+  }
   bool Database::inUse(const std::string& aDBName) const {
-      return this ?
-             aDBName == name ? true : false :
-             false;
+      bool theResult = false;
+      if (aDBName.size() && this) { 
+          theResult = aDBName == name ? true : theResult;
+      }
+      else
+          theResult = this ? true : theResult;
+      return theResult;
   }
   // USE: Dump command for debug purposes...
   StatusResult Database::dump(std::ostream &anOutput) {    

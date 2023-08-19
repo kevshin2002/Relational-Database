@@ -99,50 +99,45 @@ namespace ECE141 {
 		return theResult;
 	}
 	StatusResult		SQLProcessor::createTable(ViewListener aViewer) {
-		/*
-		* auto* theDB - statement->getAppController()->getDB();
+		StatusResult theResult = Errors::noError;
+		auto* theDB = statement->getAppController()->getDB();
 		if (!tables.count(statement->getSchema().getName())) {
-			StatusResult theResult =  theDB ? theDB->getStorage().add(BlockType::table_block, statement) : Errors::noDatabaseSpecified;
+			theResult =  theDB ? theDB->getStorage().add(BlockType::table_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
 			if (theResult) {
 				StringView theView = "Query OK, 0 rows affected";
 				aViewer(theView);
 			}
 		}
 		return theResult;
-		*/
-		return Errors::notImplemented;
 	}
 
 	StatusResult		SQLProcessor::dropTable(ViewListener aViewer) {
-		/*
+		StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
-		StatusResult theResult = theDB ? theDB->getStorage().drop(BlockType::table_block, statement) : Errors::noDatabaseSpecified;
+		theResult = theDB ? theDB->getStorage().drop(BlockType::table_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
 		if (theResult) {
 			StringView theView = "Query OK, 0 rows affected";
 			aViewer(theView);
 		}
 		return theResult;
-		*/
-		return Errors::notImplemented;
 	}
+
 	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ 
-		/*
-		* StatusResult theResult = Errors::noError;
+		StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
-		if(theDB){
-		Table& theTable = theDB->getStorage().get(BlockType::table_block, statement); // consider adding optional here.
-		if(theTable.has_value()){
-			// describe show attributes
-			// maybe table view?
-		}
+		if (theDB) {
+			TableOpt theTable = theDB->getTable(statement->getSchema()); // consider adding optional here.
+			if (theTable.has_value()) {
+				// describe show attributes
+				// maybe table view?
+			}
 		}
 		else
 			theResult = Errors::noDatabaseSpecified;
 		return theResult;
-		*/
-		return Errors::notImplemented; }
+	}
 	StatusResult		SQLProcessor::showTables(ViewListener aViewer) {
-		/*StatusResult theResult = Errors::noError;
+		StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
 		if (theDB) {
 			std::stringstream theStream;
@@ -168,7 +163,5 @@ namespace ECE141 {
 		else
 			theResult = Errors::noDatabaseSpecified;
 		return theResult;
-		*/
-		return Errors::notImplemented;
 	}
 }

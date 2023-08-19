@@ -27,7 +27,7 @@ namespace ECE141 {
 	StatusResult	    run(Statement* aStatement, ViewListener aViewer) override;
 	protected:
 	bool			    fetchDatabases();
-
+	bool				dbExists(const std::string& aDBName) { return databases.count(statement->getDBName()); }
 	StatusResult		createDB(ViewListener aViewer);
 	StatusResult		dropDB(ViewListener aViewer);
 	StatusResult		useDB(ViewListener aViewer);

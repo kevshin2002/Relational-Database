@@ -73,9 +73,9 @@ namespace ECE141 {
 			}
 			return false;
 		}
-		AppController* getAppController() const { return appController; }
-		const DBQuery* getQuery() const { return query; };
-		const Schema& getSchema() const { return schema; }
+		AppController* getAppController() { return appController; }
+		DBQuery* getQuery()  { return query; };
+		Schema& getSchema() { return schema; }
 		
 	protected:
 		AppController* appController = nullptr;

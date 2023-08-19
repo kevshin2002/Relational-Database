@@ -11,10 +11,15 @@
 #define Table_hpp
 
 #include "Schema.hpp"
-#include "Row.hpp"
 
 namespace ECE141 {
-
+	class Table {
+	public:
+	protected:
+		Schema schema;
+		AttributeList attributes;
+	};
+	using TableOpt = std::optional<Table>;
 }
 
 #endif // Table.hpp

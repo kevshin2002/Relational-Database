@@ -135,7 +135,7 @@ namespace ECE141 {
       {Errors::unexpectedValue, "Unexpected value"},
       {Errors::unknownIdentifier, "Unknown identifier"},
       {Errors::unexpectedIdentifier, "Unexpected identifier"},
-      {Errors::valueExpected, "Value expected"},
+      {Errors::valueKeywordExpected, "Value keyword expected"},
       {Errors::operatorExpected, "Operator expected"},
       {Errors::punctuationExpected, "Punctuation expected"},
       {Errors::eofError, "End of file error"},

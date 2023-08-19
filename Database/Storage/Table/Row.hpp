@@ -8,14 +8,11 @@
 #ifndef Row_hpp
 #define Row_hpp
 
-#include <stdio.h>
-#include <string>
 #include <utility>
 #include <variant>
-#include <vector>
 #include <memory>
+#include <map>
 #include "Attribute.hpp"
-#include "../../../Misc/Types/BasicTypes.hpp"
 
 //feel free to use this, or create your own version...
 
