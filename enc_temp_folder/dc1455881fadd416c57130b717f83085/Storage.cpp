@@ -26,9 +26,7 @@ namespace ECE141 {
   // USE: dtor ---------------------------------------
   Storage::~Storage() {
   }
-  // create storables within add
   StatusResult Storage::add(BlockType aType, StatementType aStmtType, DBQuery* aQuery) { return Errors::notImplemented; }
-  // get all blocks with that table name, call block iterator
   StatusResult Storage::drop(BlockType aType, StatementType aStmtType, DBQuery* aQuery) { return Errors::notImplemented; }
   bool Storage::each(const BlockVisitor &aVisitor) {
     return true;

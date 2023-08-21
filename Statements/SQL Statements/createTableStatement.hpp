@@ -21,9 +21,9 @@ namespace ECE141 {
 			ParseHelper theHelper(aTokenizer);
 			TableName theName;
 
-			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
+			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : StatusResult(Errors::identifierExpected, aTokenizer.pos());
 			if (aTokenizer.skipIf(left_paren)) {
-				//schema = theName.table;
+				query->getSchema()->setName(theName);
 				while (theResult && aTokenizer.more()) {
 					Attribute theAttribute;
 					theResult = theHelper.parseAttribute(theAttribute);
@@ -31,12 +31,12 @@ namespace ECE141 {
 				}
 			}
 			else if(theResult)
-				theResult = Errors::creationOpenerExpected;
+				theResult = StatusResult(Errors::creationOpenerExpected, aTokenizer.pos());
 			
 			if (theResult && aTokenizer.more())
-				theResult = aTokenizer.skipIf(right_paren) ? theResult : Errors::creationCloserExpected;
+				theResult = aTokenizer.skipIf(right_paren) ? theResult : StatusResult(Errors::creationCloserExpected, aTokenizer.pos());
 			else if(theResult)
-				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : Errors::creationCloserExpected;
+				theResult = aTokenizer.previous().data[0] == right_paren ? theResult : StatusResult(Errors::creationCloserExpected, aTokenizer.prevPos());
 
 			return theResult;
 		}

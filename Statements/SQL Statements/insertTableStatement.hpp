@@ -25,7 +25,7 @@ namespace ECE141 {
 			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::insertIdentifiersOpenerExpected;
 			if (theResult) {
 				StringList theIdentifiers;
-				//schema = theName.table;
+				query->getSchema()->setName(theName.table);
 				theResult = theHelper.parseIdentifierList(theIdentifiers);
 				if (aTokenizer.previous().data[0] == right_paren) {
 					theResult = aTokenizer.skipIf(Keywords::values_kw) ? 

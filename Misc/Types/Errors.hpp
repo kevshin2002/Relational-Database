@@ -43,6 +43,7 @@ namespace ECE141 {
         unexpectedValue,
         unknownIdentifier,
         unexpectedIdentifier,
+        setKeywordExpected,
         valueKeywordExpected,
         operatorExpected,
         punctuationExpected,
@@ -92,13 +93,17 @@ namespace ECE141 {
   
   struct StatusResult {
     Errors    error;
-    uint32_t  value;
+    size_t    position;
     
-    StatusResult(Errors anError=Errors::noError) :
-      error(anError), value(0) {}
-    
+    StatusResult(Errors anError = Errors::noError, size_t aPos = 0) : error(anError), position(aPos) {}
+    StatusResult& operator=(const StatusResult& aCopy) {
+        error = aCopy.error;
+        position = aCopy.position;
+        return *this;
+    }
     operator bool() {return Errors::noError==error;}
     bool operator==(Errors anError) {return anError==error;}
+    
   };
  
 }

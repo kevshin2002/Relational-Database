@@ -99,17 +99,17 @@ namespace ECE141 {
 		return theResult;
 	}
 	StatusResult		SQLProcessor::createTable(ViewListener aViewer) {
-		/*StatusResult theResult = Errors::noError;
-		auto* theDB = statement->getAppController()->getDB();
-		if (!tables.count(statement->getSchema().getName())) {
+		StatusResult theResult = Errors::noError;
+		auto* theDB = statement->getDatabase();
+		auto* theQuery = statement->getQuery();
+		if (!tables.count(theQuery->getSchema()->getName())) {
 			theResult =  theDB ? theDB->getStorage().add(BlockType::table_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
 			if (theResult) {
 				StringView theView = "Query OK, 0 rows affected";
 				aViewer(theView);
 			}
 		}
-		return theResult;*/
-		return Errors::notImplemented;
+		return theResult;
 	}
 
 	StatusResult		SQLProcessor::dropTable(ViewListener aViewer) {

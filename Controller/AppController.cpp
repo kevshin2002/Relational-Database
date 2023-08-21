@@ -38,9 +38,11 @@ namespace ECE141 {
         }
 
         if (!theResult) {
+            std::stringstream stream;
             std::string theMsg(getError(theResult).value());
-            if (theResult.value) {
-                theMsg += ":" + theTokenizer.tokenAt(theResult.value).data;
+            if (theResult.position) {
+                stream << ", got \"" << theTokenizer.tokenAt(theResult.position).data << "\" instead at position " << theResult.position + 1;
+                theMsg += stream.str();
             }
             StringView theView(theMsg);
             aViewer(theView);
@@ -135,6 +137,7 @@ namespace ECE141 {
       {Errors::unexpectedValue, "Unexpected value"},
       {Errors::unknownIdentifier, "Unknown identifier"},
       {Errors::unexpectedIdentifier, "Unexpected identifier"},
+      {Errors::setKeywordExpected, "Set keyword expected"},
       {Errors::valueKeywordExpected, "Value keyword expected"},
       {Errors::operatorExpected, "Operator expected"},
       {Errors::punctuationExpected, "Punctuation expected"},
@@ -167,10 +170,7 @@ namespace ECE141 {
       {Errors::unknownError, "Unknown error"}
       };
 
-      std::string_view theMessage = "Unknown Error";
-      if (theMessages.count(aResult.error)) {
-          theMessage = theMessages[aResult.error];
-      }
+      std::string_view theMessage = theMessages.count(aResult.error) ? theMessages[aResult.error] : "Unknown Error";
       return theMessage;
   }
 

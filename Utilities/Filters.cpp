@@ -78,7 +78,7 @@ namespace ECE141 {
   // USE: parse table name (identifier) with (optional) alias...
   StatusResult ParseHelper::parseTableName(TableName& aTableName) {
       Keywords theKeywords[] = { Keywords::table_kw, Keywords::database_kw, Keywords::into_kw, Keywords::from_kw };
-      StatusResult theResult{ Errors::invalidTableName };
+      StatusResult theResult(Errors::invalidTableName, tokenizer.prevPos());
       Token& theToken = tokenizer.previous(); //get token (should be identifier
       if (in_array<Keywords>(theKeywords, theToken.keyword)) {
           theToken = tokenizer.current();
@@ -140,7 +140,7 @@ namespace ECE141 {
                   if (Keywords::null_kw == theToken.keyword) {
                       anAttribute.setNullable(false);
                   }
-                  else theResult.error = Errors::syntaxError;
+                  else theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
                   break;
               case Keywords::unique_kw:
                   anAttribute.setUnique(true);
@@ -152,12 +152,12 @@ namespace ECE141 {
           case TokenType::punctuation: //fall thru...
               options = !in_array<char>(thePunct, theToken.data[0]);
               if (semicolon == theToken.data[0])
-                  theResult.error = Errors::syntaxError;
+                  theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
               break;
 
           default:
               options = false;
-              theResult.error = Errors::syntaxError;
+              theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
           } //switch
           if (theResult && tokenizer.more()) tokenizer.next(); //skip ahead...
       } //while
@@ -198,18 +198,18 @@ namespace ECE141 {
                   theResult = parseAttributeOptions(anAttribute);
                   if (theResult) {
                       if (!anAttribute.isValid()) {
-                          theResult.error = Errors::invalidAttribute;
+                          theResult = StatusResult(Errors::invalidAttribute, tokenizer.pos());
                       }
                   }
               }
 
           } //if
-          else theResult.error = Errors::unknownDatatype;
+          else theResult = StatusResult(Errors::unknownDatatype, tokenizer.pos());
       } //if
       return theResult;
 
   error_handling:
-      theResult = Errors::illegalAttributeIdentifier;
+      theResult = StatusResult(Errors::illegalAttributeIdentifier, tokenizer.pos());
       return theResult;
   }
 
@@ -234,7 +234,7 @@ namespace ECE141 {
           else if (semicolon == theToken.data[0]) {
               break;
           }
-          else theResult.error = Errors::syntaxError;
+          else theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
       }
       return theResult;
   }
@@ -253,7 +253,7 @@ namespace ECE141 {
           else if (tokenizer.skipIf(right_paren)) {
               break;
           }
-          else theResult.error = Errors::syntaxError;
+          else theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
       }
       return theResult;
   }
@@ -292,12 +292,12 @@ namespace ECE141 {
                   theToken, theAttr->getType());
           }
           else if (theToken.type == TokenType::string) anOp.setVarChar(theToken.data);
-          else theResult = Errors::unknownAttribute;
+          else theResult = StatusResult(Errors::unknownAttribute, tokenizer.pos());
       }
       else if (TokenType::number == theToken.type) {
           anOp.setNumber(theToken);
       }
-      else theResult.error = Errors::syntaxError;
+      else theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
       if (theResult) tokenizer.next();
       return theResult;
   }
@@ -327,7 +327,7 @@ namespace ECE141 {
           if ((theResult = parseOperator(anExpr.op))) {
               theResult = parseOperand(aSchema, anExpr.rhs);
           }
-          else theResult.error = Errors::operatorExpected;
+          else theResult = StatusResult(Errors::operatorExpected, tokenizer.pos());
       }
       return theResult;
   }
@@ -343,7 +343,7 @@ namespace ECE141 {
                   break;
               }
           }
-          else theResult.error = Errors::syntaxError;
+          else theResult = StatusResult(Errors::syntaxError, tokenizer.pos());
       }
       return theResult;
   }

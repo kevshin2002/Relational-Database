@@ -18,9 +18,11 @@ namespace ECE141 {
 		updateTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
+			ParseHelper theHelper(aTokenizer);
+			TableName theName;
 
-			aTokenizer.next();
-			//theResult = aTokenizer.skipIf(TokenType::identifier) ? query->getFilters().parse(aTokenizer, schema) : Errors::identifierExpected;
+			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
+			theResult = aTokenizer.skipIf(Keywords::set_kw) ? query->getFilters().parse(aTokenizer, *query->getSchema()) : Errors::setKeywordExpected;
 			return theResult;
 		}
 	};

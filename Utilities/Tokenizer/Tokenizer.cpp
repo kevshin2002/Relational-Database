@@ -51,6 +51,7 @@ namespace ECE141 {
   }
 
   Token& Tokenizer::tokenAt(size_t anOffset) {
+      anOffset = anOffset == tokens.size() ? anOffset - 1 : anOffset;
     if(anOffset>=0 && anOffset<tokens.size()) {
       return tokens[anOffset];
     }

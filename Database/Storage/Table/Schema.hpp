@@ -21,11 +21,13 @@ namespace ECE141 {
                           Schema(const Schema &aCopy);
     
                           ~Schema();
-    
+    Schema&               setName(const std::string& aName); 
+
+    size_t                hashString(const std::string& aField);
     const std::string&    getName() const {return name;}
     Attribute*            getAttribute(const std::string& aField);
     
-    size_t         hashString(const std::string& aField);
+
     size_t         getHash() const { return hashedName; }
   protected:
     Database*     database;
