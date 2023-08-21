@@ -55,23 +55,23 @@ namespace ECE141 {
 		switch (theKeyword) {
 		case Keywords::create_kw:
 			theType = aTokenizer.skipTo(Keywords::table_kw) ? StatementType::create : StatementType::unknown;
-			statement = (theType == StatementType::create) ? new createTableStatement(anAppController, theType) : nullptr;
+			statement = (theType == StatementType::create) ? new createTableStatement(anAppController->getDB(), theType) : nullptr;
 			break;
 		case Keywords::insert_kw:
 			theType = aTokenizer.skipTo(Keywords::into_kw) ? StatementType::insertTable : StatementType::unknown;
-			statement = (theType == StatementType::insertTable) ? new insertTableStatement(anAppController, theType) : nullptr;
+			statement = (theType == StatementType::insertTable) ? new insertTableStatement(anAppController->getDB(), theType) : nullptr;
 			break;
 		case Keywords::select_kw:
 			theType = aTokenizer.skipTo(Keywords::from_kw) ? StatementType::selectTable : StatementType::unknown;
-			statement = new selectTableStatement(anAppController, theType);
+			statement = new selectTableStatement(anAppController->getDB(), theType);
 			break;
 		case Keywords::update_kw:
 			theType = aTokenizer.skipTo(Keywords::set_kw) ? StatementType::updateTable : StatementType::unknown;
-			statement = new updateTableStatement(anAppController, theType);
+			statement = new updateTableStatement(anAppController->getDB(), theType);
 			break;
 		default:// drop, describe, show
 			theType = Helpers::keywordToStmtType(theKeyword);
-			statement = new SQLStatement(anAppController, theType);
+			statement = new SQLStatement(anAppController->getDB(), theType);
 			break;
 		}
 		aTokenizer.restart();
@@ -99,7 +99,7 @@ namespace ECE141 {
 		return theResult;
 	}
 	StatusResult		SQLProcessor::createTable(ViewListener aViewer) {
-		StatusResult theResult = Errors::noError;
+		/*StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
 		if (!tables.count(statement->getSchema().getName())) {
 			theResult =  theDB ? theDB->getStorage().add(BlockType::table_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
@@ -108,11 +108,12 @@ namespace ECE141 {
 				aViewer(theView);
 			}
 		}
-		return theResult;
+		return theResult;*/
+		return Errors::notImplemented;
 	}
 
 	StatusResult		SQLProcessor::dropTable(ViewListener aViewer) {
-		StatusResult theResult = Errors::noError;
+		/*StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
 		theResult = theDB ? theDB->getStorage().drop(BlockType::table_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
 		if (theResult) {
@@ -120,10 +121,12 @@ namespace ECE141 {
 			aViewer(theView);
 		}
 		return theResult;
+		*/
+		return Errors::notImplemented;
 	}
 
 	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ 
-		StatusResult theResult = Errors::noError;
+		/*StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
 		if (theDB) {
 			TableOpt theTable = theDB->getTable(statement->getSchema()); // consider adding optional here.
@@ -134,11 +137,12 @@ namespace ECE141 {
 		}
 		else
 			theResult = Errors::noDatabaseSpecified;
-		return theResult;
+		return theResult;*/
+		return Errors::notImplemented;
 	}
 	StatusResult		SQLProcessor::showTables(ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
-		auto* theDB = statement->getAppController()->getDB();
+		auto* theDB = statement->getDatabase();
 		if (theDB) {
 			std::stringstream theStream;
 			size_t theTableLength = 0;

@@ -11,9 +11,10 @@
 #ifndef DBProcessor_hpp
 #define DBProcessor_hpp
 
+
 #include "SQLProcessor.hpp"
 #include "../../Statements/DBStatement.hpp"
-#include "../../Database/Database.hpp"
+
 
 
 namespace ECE141 {

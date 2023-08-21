@@ -11,8 +11,8 @@
 #define SQLStatement_hpp
 
 #include "../../Controller/AppController.hpp"
-#include "../Statement.hpp"
 #include "../DBQuery.hpp"
+#include "../Statement.hpp"
 
 namespace ECE141 {
 
@@ -27,11 +27,9 @@ namespace ECE141 {
 	// hash schema id
 	// BlockIterator
 	// dont worry about edge cases
-
-
 	class SQLStatement : public Statement {
 	public:
-		SQLStatement(AppController* anAppController, StatementType aType) : appController(anAppController), schema("none"), Statement(aType) {}
+		SQLStatement(Database* aDatabase, StatementType aType) : database(aDatabase), Statement(aType) { query = new DBQuery(aDatabase); }
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			StatementType theType = getType();
@@ -52,7 +50,6 @@ namespace ECE141 {
 				}
 				else{
 					theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
-				    schema = theResult ? aTokenizer.current().data : "none";
 				}
 				break;
 			}
@@ -73,15 +70,13 @@ namespace ECE141 {
 			}
 			return false;
 		}
-		AppController* getAppController() { return appController; }
+		Database* getDatabase() { return database; }
 		DBQuery* getQuery()  { return query; };
-		Schema& getSchema() { return schema; }
 		
 	protected:
-		AppController* appController = nullptr;
-		Schema schema;
-		DBQuery* query = new DBQuery(); // consider making all pointers into smart pointers. reminder
+		Database* database;
+		DBQuery* query; // consider making all pointers into smart pointers. reminder
 	};
 }
 
-#endif // SQLProcessor.hpp
+#endif // SQLStatement.hpp

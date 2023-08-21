@@ -15,7 +15,7 @@
 namespace ECE141 {
 	class insertTableStatement : public SQLStatement {
 	public:
-		insertTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
+		insertTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);
@@ -25,7 +25,7 @@ namespace ECE141 {
 			theResult = aTokenizer.skipIf(left_paren) ? theResult : Errors::insertIdentifiersOpenerExpected;
 			if (theResult) {
 				StringList theIdentifiers;
-				schema = theName.table;
+				//schema = theName.table;
 				theResult = theHelper.parseIdentifierList(theIdentifiers);
 				if (aTokenizer.previous().data[0] == right_paren) {
 					theResult = aTokenizer.skipIf(Keywords::values_kw) ? 

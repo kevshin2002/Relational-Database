@@ -15,7 +15,7 @@
 namespace ECE141 {
 	class selectTableStatement : public SQLStatement {
 	public:
-		selectTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
+		selectTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);
@@ -26,9 +26,9 @@ namespace ECE141 {
 			if (theResult) {
 				TableName theName;
 				theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
-				schema = theName.table;
+				//schema = theName.table;
 				if (theResult && isConditional(aTokenizer)) {
-					theResult = query->getFilters().parse(aTokenizer, schema);
+					//theResult = query->getFilters().parse(aTokenizer, schema);
 				}
 			}
 			else

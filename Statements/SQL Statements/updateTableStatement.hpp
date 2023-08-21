@@ -15,12 +15,12 @@
 namespace ECE141 {
 	class updateTableStatement : public SQLStatement {
 	public:
-		updateTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
+		updateTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 
 			aTokenizer.next();
-			theResult = aTokenizer.skipIf(TokenType::identifier) ? query->getFilters().parse(aTokenizer, schema) : Errors::identifierExpected;
+			//theResult = aTokenizer.skipIf(TokenType::identifier) ? query->getFilters().parse(aTokenizer, schema) : Errors::identifierExpected;
 			return theResult;
 		}
 	};

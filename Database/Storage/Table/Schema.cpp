@@ -11,7 +11,7 @@ namespace ECE141 {
 
  //STUDENT: Implement this class...
 
-  Schema::Schema(const std::string aName) : name(aName){}
+  Schema::Schema(Database* aDB) : database(aDB){}
 
   Schema::Schema(const Schema &aCopy) {
     name=aCopy.name;

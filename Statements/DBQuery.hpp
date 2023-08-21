@@ -8,7 +8,6 @@
 #ifndef DBQuery_hpp
 #define DBQuery_hpp
 
-#include "../Database/Storage/Table/Schema.hpp"
 #include "../Utilities/Filters.hpp"
 
 namespace ECE141 {
@@ -28,8 +27,10 @@ namespace ECE141 {
   class DBQuery {
   public:
 
-    DBQuery(Schema *aSchema=nullptr, bool allFields=true) 
-      : fromTable(aSchema), all(allFields) {}
+    DBQuery(Database* aDB, bool allFields=true) 
+      :  all(allFields) {
+        fromTable = new Schema(aDB);
+    }
     
     DBQuery(const DBQuery &aQuery) : fromTable(aQuery.fromTable) {}
                  

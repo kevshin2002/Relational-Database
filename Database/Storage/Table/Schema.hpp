@@ -14,9 +14,10 @@
 
 
 namespace ECE141 {
+  class Database;
   class Schema {
   public:
-                          Schema(const std::string aName);
+                          Schema(Database* aDB);
                           Schema(const Schema &aCopy);
     
                           ~Schema();
@@ -27,7 +28,7 @@ namespace ECE141 {
     size_t         hashString(const std::string& aField);
     size_t         getHash() const { return hashedName; }
   protected:
-        
+    Database*     database;
     AttributeList   attributes;
     size_t          hashedName;
     std::string     name;

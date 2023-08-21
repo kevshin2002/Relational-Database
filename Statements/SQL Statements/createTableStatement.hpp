@@ -15,7 +15,7 @@
 namespace ECE141 {
 	class createTableStatement : public SQLStatement {
 	public:
-		createTableStatement(AppController* anAppController, StatementType theType) : SQLStatement(anAppController, theType) {}
+		createTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);
@@ -23,7 +23,7 @@ namespace ECE141 {
 
 			theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
 			if (aTokenizer.skipIf(left_paren)) {
-				schema = theName.table;
+				//schema = theName.table;
 				while (theResult && aTokenizer.more()) {
 					Attribute theAttribute;
 					theResult = theHelper.parseAttribute(theAttribute);
