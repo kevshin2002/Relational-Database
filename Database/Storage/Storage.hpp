@@ -30,7 +30,7 @@ namespace ECE141 {
           hashedName = ahashedString;
           return *this;
       }
-      virtual StatusResult  encode(std::stringstream& anOutput) = 0;
+      virtual StatusResult  encode(uint32_t aBlockPos, std::stringstream& anOutput) = 0;
       virtual bool          save(std::fstream& aFile) = 0;
 
       virtual StatusResult  decode(std::istream& anInput) = 0;
@@ -47,7 +47,7 @@ namespace ECE141 {
   class SchemaStorable : public Block, public Storable {
   public:
       ~SchemaStorable() {}
-      StatusResult  encode(std::stringstream& anOutput) override;
+      StatusResult  encode(uint32_t aBlockPos, std::stringstream& anOutput) override;
       bool          save(std::fstream& aFile) override;
       StatusResult  decode(std::istream& anInput) override;
   };

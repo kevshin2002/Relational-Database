@@ -45,10 +45,9 @@ namespace ECE141 {
   // USE: ctor ---------------------------------------
 
     Storage::Storage(const std::string& aName, AccessMode aMode)
-        : BlockIO(aName, aMode) {}// auto load index first block with index pointing to all tables schemas only} and also count all blocks
+        : BlockIO(aName, aMode) {}// auto load index first block with index pointing to all tables schemas only}
   // USE: dtor ---------------------------------------
       Storage::~Storage() {
-          // create index table here.
           for (const auto& theBlock : blocks) {
               (*theBlock.get())->save(stream);
           }

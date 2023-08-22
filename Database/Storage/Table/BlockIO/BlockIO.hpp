@@ -104,7 +104,7 @@ namespace ECE141 {
     
   protected:
     std::fstream stream;
-    uint32_t pointerIndex;
+    uint32_t pointerIndex = 0;
   };
 
 }
