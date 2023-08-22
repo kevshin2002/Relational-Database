@@ -15,9 +15,9 @@
 namespace ECE141 {
 	class Table {
 	public:
+		Table(const Schema* aSchema) : schema(*aSchema) {}
 	protected:
 		Schema schema;
-		AttributeList attributes;
 	};
 	using TableOpt = std::optional<Table>;
 }

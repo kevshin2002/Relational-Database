@@ -199,16 +199,17 @@ namespace ECE141 {
     }
       
     static const char* dataTypeToString(DataTypes aType) {
-      switch(aType) {
+        switch (aType) {
         case DataTypes::no_type:        return "none";
         case DataTypes::bool_type:      return "bool";
         case DataTypes::datetime_type:  return "datetime";
         case DataTypes::float_type:     return "float";
         case DataTypes::int_type:       return "int";
         case DataTypes::varchar_type:   return "varchar";
-      }
+        default:
+            return "none";
+        }
     }
-
 
     static const char* keywordToString(Keywords aType) {
       switch(aType) {

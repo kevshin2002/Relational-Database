@@ -22,14 +22,15 @@
 #include "../../Misc/Types/Errors.hpp"
 #include "../../Utilities/Helpers.hpp"
 
-namespace ECE141 {
 
+namespace ECE141 {
+    class Storable;
   enum class BlockType {
     data_block='D',
     free_block='F',
     //other types?
+    schema_block = 'S',
     unknown_block='U',
-    table_block='T'
   };
 
 
@@ -49,10 +50,12 @@ namespace ECE141 {
     
     BlockHeader& operator=(const BlockHeader& aCopy) {
       type=aCopy.type;
+      name = aCopy.name;
       return *this;
     }
    
-    char      type;     //char version of block type
+    char          type;     //char version of block type
+    size_t        name;
     //other properties?
   };
 
@@ -68,9 +71,11 @@ namespace ECE141 {
     Block& operator=(const Block& aCopy);
    
     StatusResult write(std::ostream& aStream);
-        
+    bool         initHeader(BlockType aType, size_t hashedString);
+
     BlockHeader   header;
     char          payload[kPayloadSize];
+    uint32_t      position;
   };
 
   //------------------------------
@@ -92,14 +97,14 @@ namespace ECE141 {
   public:
     
     BlockIO(const std::string& aName, AccessMode aMode);
-
+    uint32_t              chunk(std::string aContent);
     uint32_t              getBlockCount();
-    
     virtual StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
     virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
     
   protected:
     std::fstream stream;
+    uint32_t pointerIndex;
   };
 
 }

@@ -33,17 +33,13 @@ namespace ECE141 {
     }
     
     DBQuery(const DBQuery &aQuery) : fromTable(aQuery.fromTable) {}
-                 
+    ~DBQuery() {}
     //from (table) -- *, or a comma separated list of fields
     //where specific options...
     //offset
     //limit
     //group, etc.
     //maybe joins?  
-    DBQuery& addAttribute(const Attribute& anAttribute) {
-        attributes.push_back(anAttribute);
-        return *this;
-    }
 
     DBQuery& addIdentifiers(const StringList& aList) {
         identifiers = aList;
@@ -63,8 +59,6 @@ namespace ECE141 {
    //   return true;
     //}
 
-
-    const AttributeList& getAttributes() const { return attributes; }
     const StringList& getIdentifiers() const { return identifiers; }
     const StringList& getValues() const { return values; }
     Filters& getFilters() { return filters; }
@@ -72,7 +66,6 @@ namespace ECE141 {
   protected:
     Schema*  fromTable;
 
-    AttributeList attributes;
     StringList identifiers;
     StringList values;
 

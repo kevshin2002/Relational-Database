@@ -27,7 +27,12 @@ namespace ECE141 {
         
     const std::string&  getName() const {return name;}
     const DataTypes     getType() const {return type;}
-    
+    const size_t        getSize() const { return size; }
+    const bool     isPrimary() const { return primary; }
+    const bool     isIncrement() const { return increment; }
+    const bool     isNull() const { return nullable; }
+    const bool     isUnique() const { return unique; }
+
     //need more getters and setters right?
     Attribute& setName(const std::string& aString);
     Attribute& setSize(const size_t& aSize);
@@ -43,7 +48,6 @@ namespace ECE141 {
   protected:
       std::string   name;
       DataTypes     type;
-
       size_t        size;
       bool          primary;
       bool          increment;

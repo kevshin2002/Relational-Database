@@ -24,9 +24,20 @@ namespace ECE141 {
   }
 
   StatusResult Block::write(std::ostream &aStream) {
+      std::stringstream contents;
+      contents << header.type << " " << header.name << " ";
+      contents << payload;
+      aStream.seekp(position * kBlockSize);
+      aStream.write(contents.str().c_str(), kBlockSize);
+      aStream.flush();
     return StatusResult{Errors::noError};
   }
 
+  bool Block::initHeader(BlockType aType, size_t hashedString) {
+      header.type = static_cast<char>(aType);
+      header.name = hashedString;
+      return true;
+  }
   //---------------------------------------------------
 
   struct modeToInt {
@@ -39,10 +50,7 @@ namespace ECE141 {
       auto  theMode = std::visit(modeToInt(), aMode);
       stream.clear(); // Clear flag just-in-case...
       stream.open(aName.c_str(), theMode); //force truncate if...
-      stream.close();
-      stream.open(aName.c_str(), theMode);
   }
-
 
   // USE: write data a given block (after seek) ---------------------------------------
   StatusResult BlockIO::writeBlock(uint32_t aBlockNum, Block &aBlock) {
@@ -59,4 +67,8 @@ namespace ECE141 {
     return 0; //What should this be?
   }
 
+  uint32_t BlockIO::chunk(std::string aContent) {
+      uint32_t theNum = std::ceil(aContent.size() / kPayloadSize);
+      return theNum == 0 ? 1 : theNum;
+  }
 }

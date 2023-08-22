@@ -15,11 +15,20 @@ namespace ECE141 {
 
   Schema::Schema(const Schema &aCopy) {
     name=aCopy.name;
+    attributes = aCopy.attributes;
+    database = aCopy.database;
+    hashedName = aCopy.hashedName;
   }
 
   Schema::~Schema() {
     //std::cout << "~Schema()\n";
   }
+
+  Schema& Schema::addAttribute(const Attribute& anAttribute) {
+      attributes.push_back(anAttribute);
+      return *this;
+  }
+
   Schema& Schema::setName(const std::string& aName) {
       name = aName;
       hashString(aName);

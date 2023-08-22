@@ -23,8 +23,9 @@ namespace ECE141 {
 
   class Database {
   public:    
-            Database(const std::string aPath, AccessMode);            
-    virtual ~Database();
+            Database(const std::string aPath, AccessMode);  
+            virtual ~Database();
+        
 
     StatusResult    dump(std::ostream &anOutput); //debug...
     StatusResult    fetchTables(std::set<std::string> aTableList);

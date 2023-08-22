@@ -16,7 +16,6 @@ namespace ECE141 {
     //create for read/write
   }
 
-
   Database::~Database() {
     if(changed) {
       //stuff to save?

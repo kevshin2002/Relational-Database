@@ -6,6 +6,10 @@
 //  Copyright © 2018-2023 rick gessner. All rights reserved.
 //
 
+// visual studio code memory leak detector
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 #include <iostream>
 #include <sstream>
@@ -67,6 +71,8 @@ int main(int argc, const char* argv[]) {
           {"version", [&](std::stringstream& anOut) {
             return run.versionTest(anOut); }},
         };
+        int* myInt = new int;
+        *myInt = 42;
 
         std::string theCmd(argv[1]);
         std::transform(theCmd.begin(), theCmd.end(), theCmd.begin(),
@@ -84,5 +90,7 @@ int main(int argc, const char* argv[]) {
     else {
         doManualTesting();
     }
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+    _CrtDumpMemoryLeaks();
     return 0;
 }

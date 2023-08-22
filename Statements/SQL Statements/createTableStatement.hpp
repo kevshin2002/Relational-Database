@@ -27,7 +27,7 @@ namespace ECE141 {
 				while (theResult && aTokenizer.more()) {
 					Attribute theAttribute;
 					theResult = theHelper.parseAttribute(theAttribute);
-					query->addAttribute(theAttribute);
+					query->getSchema()->addAttribute(theAttribute);
 				}
 			}
 			else if(theResult)

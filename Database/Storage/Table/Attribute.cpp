@@ -25,9 +25,7 @@ namespace ECE141 {
       nullable = aCopy.nullable;
       unique = aCopy.unique;
   }
- 
-  Attribute::~Attribute()  {
-  }
+  Attribute::~Attribute()  { }
   
   bool Attribute::isValid() { // check if types match
     return true;

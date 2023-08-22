@@ -103,7 +103,7 @@ namespace ECE141 {
 		auto* theDB = statement->getDatabase();
 		auto* theQuery = statement->getQuery();
 		if (!tables.count(theQuery->getSchema()->getName())) {
-			theResult =  theDB ? theDB->getStorage().add(BlockType::table_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
+			theResult =  theDB ? theDB->getStorage().add(BlockType::schema_block, statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
 			if (theResult) {
 				StringView theView = "Query OK, 0 rows affected";
 				aViewer(theView);
