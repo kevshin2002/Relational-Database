@@ -36,7 +36,6 @@ namespace ECE141 {
   protected:
     Storage         storage;
     std::string     name;
-    bool            changed;  //might be helpful, or ignore if you prefer.
   };
 
 }

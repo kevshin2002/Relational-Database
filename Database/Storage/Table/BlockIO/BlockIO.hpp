@@ -28,7 +28,7 @@ namespace ECE141 {
   enum class BlockType {
     data_block='D',
     free_block='F',
-    //other types?
+    index_block='I',
     schema_block = 'S',
     unknown_block='U',
   };
@@ -37,8 +37,8 @@ namespace ECE141 {
   //a small header that describes the block...
   struct BlockHeader {
    
-    BlockHeader(BlockType aType=BlockType::data_block)
-      : type(static_cast<char>(aType)) {}
+    BlockHeader(BlockType aType=BlockType::data_block, size_t aHash = 0)
+      : type(static_cast<char>(aType)), name(aHash) {}
 
     BlockHeader(const BlockHeader& aCopy) {
       *this=aCopy;
@@ -56,26 +56,28 @@ namespace ECE141 {
    
     char          type;     //char version of block type
     size_t        name;
-    //other properties?
+    //other properties? 
   };
 
   const size_t kBlockSize = 1024;
   const size_t kPayloadSize = kBlockSize - sizeof(BlockHeader);
-  
+  const uint32_t kFirstBlock = 0;
   //block .................
   class Block {
   public:
-    Block(BlockType aType=BlockType::data_block);
+    Block(BlockType aType=BlockType::data_block, uint32_t aPointer=1, size_t aHash = 0);
     Block(const Block& aCopy);
     
     Block& operator=(const Block& aCopy);
    
     StatusResult write(std::ostream& aStream);
     bool         initHeader(BlockType aType, size_t hashedString);
+    uint32_t&     getPos() { return position; }
+    size_t&    getBlockName() { return header.name; }
+    uint32_t      position;
 
     BlockHeader   header;
     char          payload[kPayloadSize];
-    uint32_t      position;
   };
 
   //------------------------------
@@ -103,8 +105,10 @@ namespace ECE141 {
     virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
     
   protected:
+    std::map<uint32_t*, size_t> indices;
+
     std::fstream stream;
-    uint32_t pointerIndex = 0;
+    uint32_t pointerIndex = 1;
   };
 
 }

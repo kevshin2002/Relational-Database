@@ -25,9 +25,10 @@ namespace ECE141 {
     size_t                hashString(const std::string& aField);
     const std::string&    getName() const {return name;}
     Attribute*            getAttribute(const std::string& aField);
-    const AttributeList& getAttributes() const { return attributes; }
+    AttributeList& getAttributes() { return attributes; }
 
     size_t         getHash() const { return hashedName; }
+    bool isEmpty() { return attributes.size(); }
   protected:
     Database*     database;
     AttributeList   attributes;

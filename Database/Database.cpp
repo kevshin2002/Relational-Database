@@ -12,14 +12,11 @@
 namespace ECE141 {
   
   Database::Database(const std::string aName, AccessMode aMode)
-    : name(aName), storage(Config::getDBPath(aName), aMode), changed(true) {
+    : name(aName), storage(Config::getDBPath(aName), aMode) {
     //create for read/write
   }
 
   Database::~Database() {
-    if(changed) {
-      //stuff to save?
-    }
   }
 
   StatusResult    Database::fetchTables(std::set<std::string> aTableList) {

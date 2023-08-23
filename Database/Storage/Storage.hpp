@@ -22,33 +22,44 @@ namespace ECE141 {
   };
 
   //--------------------------------------------------------------
-
+  class Storage;
   class Storable {
   public:
+      Storable(std::stringstream& aPayload) : contents(aPayload) {}
       virtual ~Storable() {}
-      Storable& setName(size_t ahashedString) {
-          hashedName = ahashedString;
-          return *this;
-      }
-      virtual StatusResult  encode(uint32_t aBlockPos, std::stringstream& anOutput) = 0;
-      virtual bool          save(std::fstream& aFile) = 0;
+      virtual StatusResult  encode(std::ostream& anOutput) = 0;
 
+      virtual bool          save(std::fstream& aFile) = 0;
+      virtual uint32_t&     getStorablePos() = 0;
+
+      virtual size_t& getName() = 0;
       virtual StatusResult  decode(std::istream& anInput) = 0;
   protected:
-      size_t hashedName;
+      std::stringstream& contents;
   };
   using UniqueStorable = std::unique_ptr<Storable*>;
- /* class IndexStorable : public Block {
-      StatusResult  encode(std::ostream& anOutput) const override;
+  class IndexStorable : public Block, public Storable {
+  public:
+      ~IndexStorable() {}
+      StatusResult  encode(std::ostream& anOutput) override;
+      bool          save(std::fstream& aFile) override;
+      uint32_t&     getStorablePos() override;
+      size_t& getName() override;
       StatusResult  decode(std::istream& anInput) override;
+
+  protected:
+      uint32_t nextIndex = 0;
   };
-  */
+  
 
   class SchemaStorable : public Block, public Storable {
   public:
+      SchemaStorable(BlockType aType, std::stringstream& aPayload, uint32_t aPointer, size_t aHash) : Block(aType, aPointer, aHash) , Storable(aPayload) {}
       ~SchemaStorable() {}
-      StatusResult  encode(uint32_t aBlockPos, std::stringstream& anOutput) override;
+      StatusResult  encode(std::ostream& anOutput) override;
       bool          save(std::fstream& aFile) override;
+      uint32_t&     getStorablePos() override;
+      size_t& getName() override;
       StatusResult  decode(std::istream& anInput) override;
   };
   
@@ -65,8 +76,13 @@ namespace ECE141 {
     ~Storage();
 
     // Create storables here (blocks)
-    StatusResult add(BlockType aType, StatementType aStmtType, DBQuery* aQuery);
-    StatusResult drop(BlockType aType, StatementType aStmtType, DBQuery* aQuery);
+    StatusResult add(StatementType aStmtType, DBQuery* aQuery);
+    StatusResult drop(StatementType aStmtType, DBQuery* aQuery);
+
+    std::vector<Table>& getTables() { return tables; }
+
+
+
 
     bool  each(const BlockVisitor& aVisitor) override;
 
@@ -78,13 +94,28 @@ namespace ECE141 {
      //uint32_t     getFreeBlock(); //pos of next free (or new)...
 
   protected:
-      StatusResult    schemaBlock(const Schema* aSchema);
-      StatusResult    dataBlock(const StringList& aIdentifierList, const StringList& aValueList);
+      std::stringstream makePayload(StatementType aType, DBQuery* aQuery);
+      Storable* makeStorable(StatementType aType, std::stringstream& aPayload, size_t aHash);
 
+      std::stringstream schemaPayload(DBQuery* aQuery);
+
+      // API for creating specific blocks, is there a better way?
+      // Maybe a StorageProcessor that creates a block type? Version 2.0 -> have AppController hold onto a StorageProcessor(which then holds onto a database)
+      StatusResult    dataBlock(const StringList& aIdentifierList, const StringList& aValueList);
+      StatusResult    indexBlock();
+      StatusResult    schemaBlock(const Schema* aSchema);
+      
+      bool save();
       std::string loadContents(const AttributeList& anAttributeList);
       std::string loadContents(const StringList& aIdentifierList, const StringList& aValueList);
 
     uint32_t  getFreeBlock(); //pos of next free (or new)...
+
+    bool   changed = false;  //might be helpful, or ignore if you prefer.
+    std::stringstream buffer;
+
+    Storable* storable;
+
 
     std::vector<Table> tables;
     std::vector<UniqueStorable> blocks;

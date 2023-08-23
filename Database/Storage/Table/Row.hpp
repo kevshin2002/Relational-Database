@@ -51,7 +51,7 @@ namespace ECE141 {
 
   //-------------------------------------------
 
-  using RowCollection = std::vector<std::unique_ptr<Row>>;
+  using RowCollection = std::deque<std::unique_ptr<Row>>;
 
 
 }

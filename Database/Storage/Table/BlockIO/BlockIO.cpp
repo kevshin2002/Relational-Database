@@ -11,7 +11,9 @@
 
 namespace ECE141 {
 
-  Block::Block(BlockType aType) {}
+    Block::Block(BlockType aType, uint32_t aPointer, size_t aHash) : position(aPointer) {
+        header = BlockHeader(aType, aHash);
+    }
 
   Block::Block(const Block &aCopy) {
     *this=aCopy;
@@ -34,7 +36,6 @@ namespace ECE141 {
   }
 
   bool Block::initHeader(BlockType aType, size_t hashedString) {
-      header.type = static_cast<char>(aType);
       header.name = hashedString;
       return true;
   }

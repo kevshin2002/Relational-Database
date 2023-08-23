@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <string>
-#include <vector>
+#include <deque>
 #include <optional>
 #include "../../../Misc/Types/Errors.hpp"
 
@@ -57,7 +57,7 @@ namespace ECE141 {
   };
   
   using AttributeOpt = std::optional<Attribute>;
-  using AttributeList = std::vector<Attribute>;
+  using AttributeList = std::deque<Attribute>;
 
 }
 

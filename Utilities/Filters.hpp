@@ -126,7 +126,6 @@ namespace ECE141 {
       Expressions& getExpressions() { return expressions; }
       Conditions&  getConditions() { return conditions; }
       StatusResult  parse(Tokenizer& aTokenizer, Schema& aSchema);
-
   protected:
       Expressions   expressions;
       Conditions    conditions;

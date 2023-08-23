@@ -41,9 +41,7 @@ namespace ECE141 {
         std::stringstream thePayload;
         std::memset(payload, ' ', kPayloadSize);
         thePayload << header.type << " " << header.name;
-        std::cout << thePayload.tellp(); // 21
-        std::cout << sizeof(BlockHeader);
-        // need to splice.
+        std::cout << thePayload.tellp();
         /*payload.write(contents, kBlockSize);
         while (numBlocks) {
             SchemaStorable* theSchema = new SchemaStorable();
