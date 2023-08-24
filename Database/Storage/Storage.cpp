@@ -34,8 +34,8 @@ namespace ECE141 {
     uint32_t& IndexStorable::getStorablePos() {
         return position;
     }
-    uint32_t& IndexStorable::getName() { return getBlockName(); }
-
+    uint32_t& IndexStorable::getHash() { return getHashName(); }
+    std::string& IndexStorable::getName() { return getIdentifierName(); }
     StatusResult  IndexStorable::decode(std::istream& anInput) {
         return Errors::notImplemented;
     }
@@ -62,7 +62,8 @@ namespace ECE141 {
     uint32_t& SchemaStorable::getStorablePos() {
         return position;
     }
-    uint32_t& SchemaStorable::getName() { return getBlockName(); }
+    uint32_t& SchemaStorable::getHash() { return getHashName(); }
+    std::string& SchemaStorable::getName() { return getIdentifierName(); }
     StatusResult  SchemaStorable::decode(std::istream& anInput) { return Errors::notImplemented; }
 
     StatusResult  DataStorable::encode() {
@@ -84,7 +85,8 @@ namespace ECE141 {
     uint32_t& DataStorable::getStorablePos() {
         return position;
     }
-    uint32_t& DataStorable::getName() { return getBlockName(); }
+    uint32_t& DataStorable::getHash() { return getHashName(); }
+    std::string& DataStorable::getName() { return getIdentifierName(); }
     StatusResult  DataStorable::decode(std::istream& anInput) { return Errors::notImplemented; }
 
 
@@ -146,13 +148,13 @@ namespace ECE141 {
     //    auto& theValuesList = aQuery->getValues();
         return theContents;
     }
-    Storable* Storage::makeStorable(StatementType aStmtType, std::stringstream& aPayload, uint32_t aHash) {
+    Storable* Storage::makeStorable(StatementType aStmtType, std::stringstream& aPayload, std::string aName, uint32_t aHash) {
         switch (aStmtType) {
         case StatementType::create:
-            storable = new SchemaStorable(BlockType::schema_block, aPayload, pointerIndex++, aHash);
+            storable = new SchemaStorable(BlockType::schema_block, aPayload, pointerIndex++, aName, aHash);
             break;
         case StatementType::insertTable:
-            storable = new DataStorable(BlockType::data_block, aPayload, pointerIndex++, aHash);
+            storable = new DataStorable(BlockType::data_block, aPayload, pointerIndex++, aName, aHash);
             break;
         default: break;
         }
@@ -164,9 +166,10 @@ namespace ECE141 {
     }
     StatusResult Storage::add(StatementType aStmtType, DBQuery* aQuery) {
         StatusResult theResult = Errors::noError;
+        const auto& theSchema = aQuery->getSchema();
         buffer = makePayload(aStmtType, aQuery);
         while (!buffer.eof()) {
-            if (auto* theStorable = makeStorable(aStmtType, buffer, aQuery->getSchema()->getHash())) { // 
+            if (auto* theStorable = makeStorable(aStmtType, buffer, theSchema->getName(), theSchema->getHash())) { // 
                 if (theStorable) {
                     changed = true;
                     theStorable->encode();
@@ -195,7 +198,7 @@ namespace ECE141 {
           uint32_t nextIndex = numBlocks == 1 ? kFirstBlock : pointerIndex;
           IndexStorable* theIndex = new IndexStorable(BlockType::index_block, payload, newIndex, nextIndex, static_cast<uint32_t>(std::hash<std::string>{}(kTableIndex))); // feel like i should make this more readable...
           theIndex->encode();
-          numBlocks--;
+          numBlocks--;  
           theIndex->save(stream);
       }
       return Errors::noError;

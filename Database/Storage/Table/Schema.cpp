@@ -43,8 +43,10 @@ namespace ECE141 {
   }
  
   uint32_t  Schema::hashString(const std::string& aField) {
-      size_t hashedValue = std::hash<std::string>{}(aField);
-      hashedName = static_cast<uint32_t>(hashedValue);
+      hashedName = 0;
+      for (char theChar : aField) {
+          hashedName = hashedName * 31 + static_cast<uint32_t>(theChar);
+      }
       return hashedName;
   }
 

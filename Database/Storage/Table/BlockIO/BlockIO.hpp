@@ -66,7 +66,7 @@ namespace ECE141 {
   using UniqueStorable = std::unique_ptr<Storable*>;
   class Block {
   public:
-    Block(BlockType aType=BlockType::data_block, uint32_t aPointer=1, uint32_t aHash = 0);
+    Block(BlockType aType=BlockType::data_block, uint32_t aPointer=1, std::string aName = "", uint32_t aHash = 0);
     Block(const Block& aCopy);
     
     Block& operator=(const Block& aCopy);
@@ -74,11 +74,13 @@ namespace ECE141 {
     StatusResult write(std::ostream& aStream);
     bool         initHeader(BlockType aType, uint32_t hashedString);
     uint32_t&     getPos() { return position; }
-    uint32_t&    getBlockName() { return header.name; }
+    uint32_t&    getHashName() { return header.name; }
+    std::string& getIdentifierName() { return name; }
     uint32_t      position;
 
     BlockHeader   header;
     char          payload[kPayloadSize];
+    std::string   name;
   };
 
   //------------------------------
@@ -106,7 +108,7 @@ namespace ECE141 {
     virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
     
   protected:
-    std::map<uint32_t*, size_t> indices;
+    std::map<uint32_t*, std::string> indices;
     std::deque<UniqueStorable> blocks;
 
     std::fstream stream;

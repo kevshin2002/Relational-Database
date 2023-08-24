@@ -11,7 +11,7 @@
 
 namespace ECE141 {
 
-    Block::Block(BlockType aType, uint32_t aPointer, uint32_t aHash) : position(aPointer) {
+    Block::Block(BlockType aType, uint32_t aPointer, std::string aName, uint32_t aHash) : position(aPointer), name(aName) {
         header = BlockHeader(aType, aHash);
     }
 

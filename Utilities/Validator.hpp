@@ -34,6 +34,7 @@ namespace ECE141 {
 				}
 				aValueList.pop_back();
 			}
+			return Errors::noError;
 			/*
 			
 			
@@ -42,7 +43,7 @@ namespace ECE141 {
 		}
 
 		static StatusResult select(DBQuery* aQuery) {
-
+			return Errors::noError;
 		}
 	};
 }
