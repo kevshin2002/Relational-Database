@@ -16,6 +16,8 @@
 #include "../../Utilities/Config.hpp"
 
 namespace ECE141 {
+// IndexStorable
+//--------------------------------------------------------------
     StatusResult  IndexStorable::encode() {
         std::stringstream thePayload;
         char theBuffer[kPayloadSize];
@@ -28,19 +30,22 @@ namespace ECE141 {
         thePayload.read(payload, kBlockSize);
         return Errors::noError;
     }
-    bool          IndexStorable::save(std::fstream& aFile) {
-        return write(aFile);
-    }
-    uint32_t& IndexStorable::getStorablePos() {
-        return position;
-    }
-    uint32_t& IndexStorable::getHash() { return getHashName(); }
-    std::string& IndexStorable::getName() { return getIdentifierName(); }
     StatusResult  IndexStorable::decode(std::istream& anInput) {
         return Errors::notImplemented;
     }
-    
 
+    bool          IndexStorable::save(std::fstream& aFile) {
+        return write(aFile);
+    }
+    uint32_t&     IndexStorable::getStorablePos() {
+        return position;
+    }
+    uint32_t&     IndexStorable::getHash() { return getHashName(); }
+    std::string&  IndexStorable::getName() { return getIdentifierName(); }
+ 
+
+ // SchemaStorable
+ //--------------------------------------------------------------
 
     StatusResult  SchemaStorable::encode() {
         std::stringstream thePayload;
@@ -55,16 +60,20 @@ namespace ECE141 {
         return Errors::noError;
     }
 
-    bool SchemaStorable::save(std::fstream& aFile) {
+    StatusResult  SchemaStorable::decode(std::istream& anInput) { return Errors::notImplemented; }
+    bool          SchemaStorable::save(std::fstream& aFile) {
         return write(aFile);
     }
 
-    uint32_t& SchemaStorable::getStorablePos() {
+    uint32_t&     SchemaStorable::getStorablePos() {
         return position;
     }
-    uint32_t& SchemaStorable::getHash() { return getHashName(); }
-    std::string& SchemaStorable::getName() { return getIdentifierName(); }
-    StatusResult  SchemaStorable::decode(std::istream& anInput) { return Errors::notImplemented; }
+    uint32_t&     SchemaStorable::getHash() { return getHashName(); }
+    std::string&  SchemaStorable::getName() { return getIdentifierName(); }
+
+
+ // DataStorable
+ //--------------------------------------------------------------
 
     StatusResult  DataStorable::encode() {
         std::stringstream thePayload;
@@ -78,32 +87,29 @@ namespace ECE141 {
         thePayload.read(payload, kBlockSize);
         return Errors::noError;
     }
-    bool DataStorable::save(std::fstream& aFile) {
+
+    StatusResult  DataStorable::decode(std::istream& anInput) { return Errors::notImplemented; }
+    bool          DataStorable::save(std::fstream& aFile) {
         return write(aFile);
     }
 
-    uint32_t& DataStorable::getStorablePos() {
+    uint32_t&     DataStorable::getStorablePos() {
         return position;
     }
-    uint32_t& DataStorable::getHash() { return getHashName(); }
-    std::string& DataStorable::getName() { return getIdentifierName(); }
-    StatusResult  DataStorable::decode(std::istream& anInput) { return Errors::notImplemented; }
+    uint32_t&     DataStorable::getHash() { return getHashName(); }
+    std::string&  DataStorable::getName() { return getIdentifierName(); }
 
 
-
-
+// Storage 
 //--------------------------------------------------------------
- // Storage 
-  // USE: ctor ---------------------------------------
 
     Storage::Storage(const std::string& aName, AccessMode aMode)
-        : BlockIO(aName, aMode) {}// auto load index first block with index pointing to all tables schemas only} and also count all blocks
+    : BlockIO(aName, aMode) {}// auto load index first block with index pointing to all tables schemas only} and also count all blocks
     // USE: dtor ---------------------------------------
     Storage::~Storage() {
         if (changed)
             save();
     }
-
     std::stringstream Storage::makePayload(StatementType aStmtType, DBQuery* aQuery) {
         std::stringstream thePayload;
         switch (aStmtType) {
