@@ -51,10 +51,15 @@ namespace ECE141 {
         return *this;
     }
     
+    DBQuery& setRows(RowCollection& aCollection) {
+        rows =std::move(aCollection);
+        return *this;
+    }
     StatusResult setAll() { 
         all = true; 
         return Errors::noError; 
     }
+
  //   bool Matches(const ) const {
    //   return true;
     //}
@@ -63,12 +68,14 @@ namespace ECE141 {
     const StringList& getValues() const { return values; }
     Filters& getFilters() { return filters; }
     Schema* getSchema() { return fromTable; }
-
+    RowCollection& getRows() { return rows; }
   protected:
     Schema*  fromTable;
+    RowCollection rows;
 
     StringList identifiers;
     StringList values;
+
 
     Filters  filters;
 

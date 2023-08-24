@@ -167,7 +167,8 @@ namespace ECE141 {
       {Errors::notImplemented, "Not implemented"},
       {Errors::userTerminated, "User terminated"},
       {Errors::unknownCommand, "Unknown command"},
-      {Errors::unknownError, "Unknown error"}
+      {Errors::unknownError, "Unknown error"},
+      {Errors::notNull, "cannot be null"}
       };
 
       std::string_view theMessage = theMessages.count(aResult.error) ? theMessages[aResult.error] : "Unknown Error";

@@ -15,6 +15,7 @@
 
 namespace ECE141 {
   const int32_t kNewBlock=-1; 
+  const std::string kTableIndex = "tableIndex";
   using BlockVisitor = std::function<bool(const Block&, uint32_t)>;
   using BlockList = std::deque<uint32_t>;
   struct BlockIterator {
@@ -27,24 +28,25 @@ namespace ECE141 {
   public:
       Storable(std::stringstream& aPayload) : contents(aPayload) {}
       virtual ~Storable() {}
-      virtual StatusResult  encode(std::ostream& anOutput) = 0;
+      virtual StatusResult  encode() = 0;
 
       virtual bool          save(std::fstream& aFile) = 0;
       virtual uint32_t&     getStorablePos() = 0;
 
-      virtual size_t& getName() = 0;
+      virtual uint32_t& getName() = 0;
       virtual StatusResult  decode(std::istream& anInput) = 0;
   protected:
       std::stringstream& contents;
   };
-  using UniqueStorable = std::unique_ptr<Storable*>;
+
   class IndexStorable : public Block, public Storable {
   public:
+      IndexStorable(BlockType aType, std::stringstream& aPayload, uint32_t aPointer, uint32_t nextPointer, uint32_t aHash) : Block(aType, aPointer, aHash), Storable(aPayload), nextIndex(nextPointer) {}
       ~IndexStorable() {}
-      StatusResult  encode(std::ostream& anOutput) override;
+      StatusResult  encode() override;
       bool          save(std::fstream& aFile) override;
       uint32_t&     getStorablePos() override;
-      size_t& getName() override;
+      uint32_t& getName() override;
       StatusResult  decode(std::istream& anInput) override;
 
   protected:
@@ -54,19 +56,25 @@ namespace ECE141 {
 
   class SchemaStorable : public Block, public Storable {
   public:
-      SchemaStorable(BlockType aType, std::stringstream& aPayload, uint32_t aPointer, size_t aHash) : Block(aType, aPointer, aHash) , Storable(aPayload) {}
+      SchemaStorable(BlockType aType, std::stringstream& aPayload, uint32_t aPointer, uint32_t aHash) : Block(aType, aPointer, aHash) , Storable(aPayload) {}
       ~SchemaStorable() {}
-      StatusResult  encode(std::ostream& anOutput) override;
+      StatusResult  encode() override;
       bool          save(std::fstream& aFile) override;
       uint32_t&     getStorablePos() override;
-      size_t& getName() override;
+      uint32_t& getName() override;
       StatusResult  decode(std::istream& anInput) override;
   };
-  
-/*  class DataStorable : public Block {
-      StatusResult  encode(std::ostream& anOutput) override;
+
+  class DataStorable : public Block, public Storable {
+  public:
+      DataStorable(BlockType aType, std::stringstream& aPayload, uint32_t aPointer, uint32_t aHash) : Block(aType, aPointer, aHash), Storable(aPayload) {}
+      ~DataStorable() {}
+      StatusResult  encode() override;
+      bool          save(std::fstream& aFile) override;
+      uint32_t& getStorablePos() override;
+      uint32_t& getName() override;
       StatusResult  decode(std::istream& anInput) override;
-  };*/
+  };
 
 
   class Storage : public BlockIO, public BlockIterator {
@@ -80,7 +88,7 @@ namespace ECE141 {
     StatusResult drop(StatementType aStmtType, DBQuery* aQuery);
 
     std::vector<Table>& getTables() { return tables; }
-
+    Schema* getSchema(const std::string& aName);
 
 
 
@@ -95,15 +103,13 @@ namespace ECE141 {
 
   protected:
       std::stringstream makePayload(StatementType aType, DBQuery* aQuery);
-      Storable* makeStorable(StatementType aType, std::stringstream& aPayload, size_t aHash);
+      Storable* makeStorable(StatementType aType, std::stringstream& aPayload, uint32_t aHash);
 
       std::stringstream schemaPayload(DBQuery* aQuery);
+      std::stringstream dataPayload(DBQuery* aQuery);
 
-      // API for creating specific blocks, is there a better way?
       // Maybe a StorageProcessor that creates a block type? Version 2.0 -> have AppController hold onto a StorageProcessor(which then holds onto a database)
-      StatusResult    dataBlock(const StringList& aIdentifierList, const StringList& aValueList);
       StatusResult    indexBlock();
-      StatusResult    schemaBlock(const Schema* aSchema);
       
       bool save();
       std::string loadContents(const AttributeList& anAttributeList);
@@ -116,9 +122,10 @@ namespace ECE141 {
 
     Storable* storable;
 
+    SchemaCollection schemas;
+    RowCollection    rows;
 
-    std::vector<Table> tables;
-    std::vector<UniqueStorable> blocks;
+    std::vector<Table> tables; 
     friend class Database;
   };
 

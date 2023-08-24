@@ -70,6 +70,7 @@ namespace ECE141 {
         unknownAttribute,
         invalidAttribute,
         invalidArguments,
+        notNull,
 
         // Storage/IO related
         readError = 500,

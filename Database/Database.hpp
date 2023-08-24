@@ -28,8 +28,9 @@ namespace ECE141 {
         
 
     StatusResult    dump(std::ostream &anOutput); //debug...
-    StatusResult    fetchTables(std::set<std::string> aTableList);
+    StatusResult    fetchTables(std::set<uint32_t>& aTableList);
 
+    Schema*         getSchema(const std::string& aName);
     TableOpt        getTable(Schema& aSchema);
     Storage&        getStorage()  { return storage; } // maybe make it a pointer for flexibility?
     bool            inUse(const std::string& aDBName = "") const;

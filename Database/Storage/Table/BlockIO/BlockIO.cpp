@@ -11,7 +11,7 @@
 
 namespace ECE141 {
 
-    Block::Block(BlockType aType, uint32_t aPointer, size_t aHash) : position(aPointer) {
+    Block::Block(BlockType aType, uint32_t aPointer, uint32_t aHash) : position(aPointer) {
         header = BlockHeader(aType, aHash);
     }
 
@@ -26,16 +26,13 @@ namespace ECE141 {
   }
 
   StatusResult Block::write(std::ostream &aStream) {
-      std::stringstream contents;
-      contents << header.type << " " << header.name << " ";
-      contents << payload;
       aStream.seekp(position * kBlockSize);
-      aStream.write(contents.str().c_str(), kBlockSize);
+      aStream.write(payload, kBlockSize);
       aStream.flush();
     return StatusResult{Errors::noError};
   }
 
-  bool Block::initHeader(BlockType aType, size_t hashedString) {
+  bool Block::initHeader(BlockType aType, uint32_t hashedString) {
       header.name = hashedString;
       return true;
   }

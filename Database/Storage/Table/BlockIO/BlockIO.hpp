@@ -37,7 +37,7 @@ namespace ECE141 {
   //a small header that describes the block...
   struct BlockHeader {
    
-    BlockHeader(BlockType aType=BlockType::data_block, size_t aHash = 0)
+    BlockHeader(BlockType aType=BlockType::data_block, uint32_t aHash = 0)
       : type(static_cast<char>(aType)), name(aHash) {}
 
     BlockHeader(const BlockHeader& aCopy) {
@@ -55,25 +55,26 @@ namespace ECE141 {
     }
    
     char          type;     //char version of block type
-    size_t        name;
+    uint32_t        name;
     //other properties? 
   };
 
   const size_t kBlockSize = 1024;
-  const size_t kPayloadSize = kBlockSize - sizeof(BlockHeader);
+  const size_t kPayloadSize = kBlockSize - sizeof(BlockHeader) - 2;
   const uint32_t kFirstBlock = 0;
   //block .................
+  using UniqueStorable = std::unique_ptr<Storable*>;
   class Block {
   public:
-    Block(BlockType aType=BlockType::data_block, uint32_t aPointer=1, size_t aHash = 0);
+    Block(BlockType aType=BlockType::data_block, uint32_t aPointer=1, uint32_t aHash = 0);
     Block(const Block& aCopy);
     
     Block& operator=(const Block& aCopy);
    
     StatusResult write(std::ostream& aStream);
-    bool         initHeader(BlockType aType, size_t hashedString);
+    bool         initHeader(BlockType aType, uint32_t hashedString);
     uint32_t&     getPos() { return position; }
-    size_t&    getBlockName() { return header.name; }
+    uint32_t&    getBlockName() { return header.name; }
     uint32_t      position;
 
     BlockHeader   header;
@@ -106,6 +107,7 @@ namespace ECE141 {
     
   protected:
     std::map<uint32_t*, size_t> indices;
+    std::deque<UniqueStorable> blocks;
 
     std::fstream stream;
     uint32_t pointerIndex = 1;

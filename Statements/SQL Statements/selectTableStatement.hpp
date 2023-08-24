@@ -26,7 +26,7 @@ namespace ECE141 {
 			if (theResult) {
 				TableName theName;
 				theResult = aTokenizer.skipTo(TokenType::identifier) ? theHelper.parseTableName(theName) : Errors::identifierExpected;
-				query->getSchema()->setName(theName.table);
+				query->getSchema()->setName(theName);
 				if (theResult && isConditional(aTokenizer)) {
 					theResult = query->getFilters().parse(aTokenizer, *query->getSchema());
 				}

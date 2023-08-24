@@ -77,6 +77,9 @@ namespace ECE141 {
 		aTokenizer.restart();
 		return statement;
 	}
+
+	// insert, select, update,
+	// 
 	StatusResult	    SQLProcessor::run(Statement* aStatement, ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
 
@@ -87,6 +90,14 @@ namespace ECE141 {
 		case StatementType::drop:
 			theResult = dropTable(aViewer);
 			break;
+		case StatementType::insertTable:
+			theResult = insertTable(aViewer);
+			break;
+		case StatementType::selectTable:
+			theResult = selectTable(aViewer);
+			break;
+		case StatementType::updateTable:
+			theResult = updateTable(aViewer);
 		case StatementType::describeTable:
 			theResult = describeTable(aViewer);
 			break;
@@ -99,15 +110,15 @@ namespace ECE141 {
 		return theResult;
 	}
 	StatusResult		SQLProcessor::createTable(ViewListener aViewer) {
-		StatusResult theResult = Errors::noError;
+		StatusResult theResult = Errors::tableExists;
 		auto* theDB = statement->getDatabase();
 		auto* theQuery = statement->getQuery();
-		if (!tables.count(theQuery->getSchema()->getName())) {
-			theResult =  theDB ? theDB->getStorage().add(statement->getType(), statement->getQuery()) : Errors::noDatabaseSpecified;
-			if (theResult) {
-				StringView theView = "Query OK, 0 rows affected";
-				aViewer(theView);
-			}
+		if (!tables.count(theQuery->getSchema()->getHash()))
+			theResult =  theDB ? theDB->getStorage().add(statement->getType(), theQuery) : Errors::noDatabaseSpecified;
+
+		if (theResult) {
+			StringView theView = "Query OK, 0 rows affected";
+			aViewer(theView);
 		}
 		return theResult;
 	}
@@ -125,6 +136,32 @@ namespace ECE141 {
 		return Errors::notImplemented;
 	}
 
+	StatusResult	SQLProcessor::insertTable(ViewListener aViewer) {
+		StatusResult theResult = Errors::unknownTable;
+		auto* theDB = statement->getDatabase();
+		auto* theQuery = statement->getQuery();
+		if (tables.count(theQuery->getSchema()->getHash())) {
+			if (theResult = process(statement->getType(), theQuery)) {
+				theResult = theDB ? theDB->getStorage().add(statement->getType(), theQuery) : Errors::noDatabaseSpecified;
+			}
+		}
+
+		if (theResult) {
+			std::stringstream theStream;
+			theStream << "Query Ok, " << theQuery->getSchema()->getAttributes().size() << " rows affected";
+			StringView theView(theStream.str());
+			aViewer(theView);
+		}
+		return theResult;
+	}
+
+	StatusResult	SQLProcessor::selectTable(ViewListener aViewer) {
+		return Errors::notImplemented;
+	}
+
+	StatusResult	SQLProcessor::updateTable(ViewListener aViewer) {
+		return Errors::notImplemented;
+	}
 	StatusResult		SQLProcessor::describeTable(ViewListener aViewer){ 
 		/*StatusResult theResult = Errors::noError;
 		auto* theDB = statement->getAppController()->getDB();
@@ -154,7 +191,7 @@ namespace ECE141 {
 			theStream << "| Database" << std::setfill(' ') << std::setw(theLength - 9) << "|\n";
 			theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
 			for (const auto& theTable : tables) {
-				theTableLength = theTable.length();
+				theTableLength = std::to_string(theTable).length();
 				theStream << "| " << theTable << std::setfill(' ') << std::setw(theLength - 1 - theTableLength) << "|\n";
 			}
 
@@ -167,5 +204,27 @@ namespace ECE141 {
 		else
 			theResult = Errors::noDatabaseSpecified;
 		return theResult;
+	}
+
+	StatusResult SQLProcessor::process(StatementType aType, DBQuery* aQuery) {
+		StatusResult theResult = Errors::noError;
+		auto theName = aQuery->getSchema()->getName();
+		auto theDBSchema = statement->getDatabase()->getSchema(theName);
+		//RowCollection& theRows = statement->getDatabase()->getTable(theName);
+		AttributeList& theAttributes = theDBSchema->getAttributes();
+		auto theIdentifiers = aQuery->getIdentifiers();
+		auto theValues = aQuery->getValues();
+		switch (aType) {
+		case StatementType::insertTable:
+			Validator::insert(theAttributes, theIdentifiers, theValues);
+			break;
+		case StatementType::selectTable:
+			break;
+		default:
+			break;
+		}
+
+
+		return Errors::notImplemented;
 	}
 }

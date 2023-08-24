@@ -16,9 +16,11 @@ namespace ECE141 {
 	class Table {
 	public:
 		Table(const Schema* aSchema) : schema(*aSchema) {}
+		Schema& getSchema() { return schema; }
 	protected:
 		Schema schema;
 	};
+	using Tables = std::deque<Table>;
 	using TableOpt = std::optional<Table>;
 }
 

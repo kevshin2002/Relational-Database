@@ -22,22 +22,23 @@ namespace ECE141 {
                           ~Schema();
     Schema&               setName(const std::string& aName); 
     Schema& addAttribute(const Attribute& anAttribute);
-    size_t                hashString(const std::string& aField);
+    uint32_t                hashString(const std::string& aField);
     const std::string&    getName() const {return name;}
     Attribute*            getAttribute(const std::string& aField);
     AttributeList& getAttributes() { return attributes; }
-
-    size_t         getHash() const { return hashedName; }
+    Database* getDatabase() { return database; }
+    uint32_t        getHash() const { return hashedName; }
     bool isEmpty() { return attributes.size(); }
   protected:
     Database*     database;
     AttributeList   attributes;
-    size_t          hashedName;
+    uint32_t          hashedName;
     std::string     name;
     
     //how will you manage creation of primary keys?
     
   };
+  using SchemaCollection = std::deque<Schema>;
   
 }
 #endif /* Schema_hpp */

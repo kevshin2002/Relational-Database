@@ -19,11 +19,15 @@ namespace ECE141 {
   Database::~Database() {
   }
 
-  StatusResult    Database::fetchTables(std::set<std::string> aTableList) {
+  StatusResult    Database::fetchTables(std::set<uint32_t>& aTableList) {
       return Errors::notImplemented;
   }
 
-  TableOpt        Database::getTable(Schema& aSchema) {
+  Schema* Database::getSchema(const std::string& aName) {
+      return storage.getSchema(aName);
+  }
+
+  TableOpt   Database::getTable(Schema& aSchema) {
       return std::nullopt;
   }
   bool Database::inUse(const std::string& aDBName) const {

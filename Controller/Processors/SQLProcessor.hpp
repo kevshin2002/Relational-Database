@@ -15,6 +15,8 @@
 #include "../../Statements/SQL Statements/insertTableStatement.hpp"
 #include "../../Statements/SQL Statements/selectTableStatement.hpp"
 #include "../../Statements/SQL Statements/updateTableStatement.hpp"
+#include "../../Utilities/Validator.hpp"
+
 namespace ECE141 {
 
 	class SQLProcessor : public AppProcessor {
@@ -31,11 +33,15 @@ namespace ECE141 {
 	protected:
 	StatusResult		createTable(ViewListener aViewer);
 	StatusResult		dropTable(ViewListener aViewer);
+	StatusResult		insertTable(ViewListener aViewer);
+	StatusResult		selectTable(ViewListener aViewer);
+	StatusResult		updateTable(ViewListener aViewer);
 	StatusResult		describeTable(ViewListener aViewer);
 	StatusResult		showTables(ViewListener aViewer);
 
+	StatusResult process(StatementType aType, DBQuery* aQuery);
 	private:
-	std::set<std::string> tables;
+	std::set<uint32_t> tables;
 
 	SQLStatement* statement = nullptr;
 	AppProcessor* next = nullptr;

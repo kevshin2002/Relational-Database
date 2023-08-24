@@ -42,9 +42,9 @@ namespace ECE141 {
       return theAttribute != attributes.end()  ? &(*theAttribute) : nullptr;
   }
  
-  size_t  Schema::hashString(const std::string& aField) {
-      std::hash<std::string> hashString;
-      hashedName = hashString(aField);
+  uint32_t  Schema::hashString(const std::string& aField) {
+      size_t hashedValue = std::hash<std::string>{}(aField);
+      hashedName = static_cast<uint32_t>(hashedValue);
       return hashedName;
   }
 

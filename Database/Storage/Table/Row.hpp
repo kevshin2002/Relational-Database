@@ -27,7 +27,7 @@ namespace ECE141 {
 
     Row(uint32_t entityId=0);
     Row(const Row &aRow);
-    
+    Row(Row&& aSource);
    // Row(const Attribute &anAttribute); //maybe?
     
     ~Row();
