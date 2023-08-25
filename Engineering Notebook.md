@@ -11,4 +11,4 @@ This means that when calling .each(), it must have a BlockVisitor function known
 By doing this, we create one method + one class for every new iteration we come up with.
 
 Would it not be better to pass in the BlockIterator directly to a single API such as read and use polymorphism to dictate which route to take?\
-This way, whe nwe have more than one iteration in the future, we can create more classes, and when we want to use a specific iteration pattern but only read certain blocks, we can write functions within those classes.
+This way, when we have more than one iteration in the future, we can create more classes, and when we want to use a specific iteration pattern but only read certain blocks, we can write functions within those classes.
