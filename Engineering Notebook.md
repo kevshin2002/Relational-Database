@@ -1,7 +1,7 @@
 # Abstractions
 
 ## __Storable Polymorphic Types__ ##
-In designing my database, I have created a pure interface that is to be inherited by different types of storable structures. I believe that what we're storing are not the same and all have different query information, it was best to isolate the implementation details.\
+In designing my database, I have created a pure interface that is to be inherited by different types of storable structures. I believe that what we're storing are not the same and all have different query information, and so it was best to isolate the implementation details.\
 It was also very similar to the handleInput strategy pattern, so I implemented it very similarly. This way, when a new storable type is introduced, I do not have have to change the add function and all I have to do is create a new Storable subclass.
 
 ## __BlockVisitor -> BlockIterator__ ##
