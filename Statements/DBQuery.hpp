@@ -64,11 +64,11 @@ namespace ECE141 {
    //   return true;
     //}
 
-    const StringList& getIdentifiers() const { return identifiers; }
-    const StringList& getValues() const { return values; }
-    Filters& getFilters() { return filters; }
-    Schema* getSchema() { return fromTable; }
-    RowCollection& getRows() { return rows; }
+    const StringList&   getIdentifiers() const { return identifiers; }
+    const StringList&   getValues() const { return values; }
+    Filters&            getFilters() { return filters; }
+    Schema*             getSchema() { return fromTable; }
+    RowCollection&      getRows() { return rows; }
   protected:
     Schema*  fromTable;
     RowCollection rows;

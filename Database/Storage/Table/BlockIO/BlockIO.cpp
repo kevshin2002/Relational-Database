@@ -50,31 +50,17 @@ namespace ECE141 {
       stream.open(aName.c_str(), theMode); //force truncate if...
   }
 
-  // USE: write data a given block (after seek) ---------------------------------------
-  StatusResult BlockIO::writeBlock(uint32_t aBlockNum, Block &aBlock) {
-    return StatusResult{Errors::writeError};
-  }
 
-  StatusResult BlockIO::readIndex(uint32_t aBlockNumber, Storable* aStorable) {
-      std::stringstream theContents;
+  StatusResult BlockIO::load_Payload(uint32_t aBlockNumber, std::stringstream& aContent) {
       char theBuffer[kBlockSize];
       stream.read(theBuffer, aBlockNumber * kBlockSize);
-      theContents << theBuffer;
-      
-      char theType;
-      theContents >> theType;
-    //  aStorable. // = theType == static_cast<char>(BlockType::index_block) ? theType : static_cast<char>(BlockType::unknown_block);
-      return Errors::notImplemented;
+      aContent << theBuffer;
+      return Errors::noError;
   }
-  // USE: write data a given block (after seek) ---------------------------------------
-  StatusResult BlockIO::readBlock(uint32_t aBlockNumber, Block &aBlock) {
-    std::stringstream theContents;
-    char theBuffer[kBlockSize];
-    stream.read(theBuffer, aBlockNumber * kBlockSize);
-    theContents << theBuffer;
 
-    
-    return StatusResult{Errors::readError};
+  uint32_t BlockIO::chunk(std::string aContent) {
+      uint32_t theNum = std::ceil(aContent.size() / kPayloadSize);
+      return theNum == 0 ? 1 : theNum;
   }
 
   // USE: count blocks in file ---------------------------------------
@@ -85,8 +71,4 @@ namespace ECE141 {
      return static_cast<uint32_t>(fileSize / kBlockSize);
   }
 
-  uint32_t BlockIO::chunk(std::string aContent) {
-      uint32_t theNum = std::ceil(aContent.size() / kPayloadSize);
-      return theNum == 0 ? 1 : theNum;
-  }
 }

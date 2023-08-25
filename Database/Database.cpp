@@ -19,8 +19,22 @@ namespace ECE141 {
   Database::~Database() {
   }
 
+  StatusResult Database::dump(std::ostream& anOutput) {
+      return StatusResult{ Errors::noError };
+  }
+
   StatusResult    Database::fetchTables(std::set<std::string>& aTableList) {
       return inUse() ? storage.fetchTables(aTableList) : Errors::noDatabaseSpecified;
+  }
+
+  bool Database::inUse(const std::string& aDBName) {
+      bool theResult = false;
+      if (aDBName.size() && this) {
+          theResult = aDBName == name ? true : theResult;
+      }
+      else
+          theResult = this ? true : theResult;
+      return theResult;
   }
 
   Schema* Database::getSchema(const std::string& aName) {
@@ -31,18 +45,7 @@ namespace ECE141 {
       TableOpt theTable = *storage.getTable(aName);
       return theTable;
   }
-  bool Database::inUse(const std::string& aDBName) {
-      bool theResult = false;
-      if (aDBName.size() && this) { 
-          theResult = aDBName == name ? true : theResult;
-      }
-      else
-          theResult = this ? true : theResult;
-      return theResult;
-  }
+
   // USE: Dump command for debug purposes...
-  StatusResult Database::dump(std::ostream &anOutput) {    
-    return StatusResult{Errors::noError};
-  }
 
 }

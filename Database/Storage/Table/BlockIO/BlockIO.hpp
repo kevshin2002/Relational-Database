@@ -55,7 +55,7 @@ namespace ECE141 {
     }
    
     char          type;     //char version of block type
-    uint32_t        name;
+    uint32_t      name;
     //other properties? 
   };
 
@@ -66,21 +66,22 @@ namespace ECE141 {
   using UniqueStorable = std::unique_ptr<Storable*>;
   class Block {
   public:
-    Block(BlockType aType=BlockType::data_block, uint32_t aPointer=1, std::string aName = "", uint32_t aHash = 0);
-    Block(const Block& aCopy);
-    
-    Block& operator=(const Block& aCopy);
-   
-    StatusResult write(std::ostream& aStream);
-    bool         initHeader(BlockType aType, uint32_t hashedString);
-    uint32_t&     getPos() { return position; }
-    uint32_t&    getHashName() { return header.name; }
-    std::string& getIdentifierName() { return name; }
-    uint32_t      position;
+      Block(BlockType aType = BlockType::data_block, uint32_t aPointer = 1, std::string aName = "", uint32_t aHash = 0);
+      Block(const Block& aCopy);
+      Block& operator=(const Block& aCopy);
 
-    BlockHeader   header;
-    char          payload[kPayloadSize];
-    std::string   name;
+      StatusResult  write(std::ostream& aStream);
+      bool          initHeader(BlockType aType, uint32_t hashedString);
+
+      uint32_t&     getPos() { return position; }
+      uint32_t&     getHashName() { return header.name; }
+      std::string&  getIdentifierName() { return name; }
+
+
+      BlockHeader   header;
+      char          payload[kPayloadSize];
+      std::string   name;
+      uint32_t      position;
   };
 
   //------------------------------
@@ -100,14 +101,14 @@ namespace ECE141 {
 
   class BlockIO {
   public:
-    
     BlockIO(const std::string& aName, AccessMode aMode);
-    uint32_t              chunk(std::string aContent);
-    uint32_t              getBlockCount();
 
-    StatusResult  readIndex(uint32_t aBlockNumber, Storable* aStorable);
-    StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
-    StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
+    StatusResult                        load_Payload(uint32_t aBlockNumber, std::stringstream& aContent);
+    uint32_t                            chunk(std::string aContent);
+
+    uint32_t                            getBlockCount();
+    uint32_t&                           getPointerIndex() { return pointerIndex; }
+    std::map<uint32_t*, std::string>&   getIndices() { return indices; }
     
   protected:
     std::map<uint32_t*, std::string> indices;
