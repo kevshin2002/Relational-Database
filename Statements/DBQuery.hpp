@@ -27,13 +27,13 @@ namespace ECE141 {
   class DBQuery {
   public:
 
-    DBQuery(Database* aDB, bool allFields=true) 
+    DBQuery(Database* aDB, bool allFields=true)
       :  all(allFields) {
         fromTable = new Schema(aDB);
     }
     
     DBQuery(const DBQuery &aQuery) : fromTable(aQuery.fromTable) {}
-    ~DBQuery() {}
+    ~DBQuery() { fromTable = nullptr; }
     //from (table) -- *, or a comma separated list of fields
     //where specific options...
     //offset
@@ -51,8 +51,8 @@ namespace ECE141 {
         return *this;
     }
     
-    DBQuery& setRows(RowCollection& aCollection) {
-        rows =std::move(aCollection);
+    DBQuery& setRows(RowCollection aCollection) {
+        rows = std::move(aCollection);
         return *this;
     }
     StatusResult setAll() { 

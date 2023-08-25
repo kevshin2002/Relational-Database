@@ -211,6 +211,25 @@ namespace ECE141 {
         }
     }
 
+    static const char* StmtToString(StatementType aType) {
+        switch (aType) {
+        case StatementType::about: return "about";
+        case StatementType::version: return "version";
+        case StatementType::help: return "help";
+        case StatementType::quit: return "quit";
+        case StatementType::create: return "create";
+        case StatementType::drop: return "drop";
+        case StatementType::show: return "show";
+        case StatementType::useDB: return "useDB";
+        case StatementType::dumpDB: return "dumpDB";
+        case StatementType::describeTable: return "describeTable";
+        case StatementType::insertTable: return "insertTable";
+        case StatementType::selectTable: return "selectTable";
+        case StatementType::updateTable: return "updateTable";
+        default:
+            return "unknown";
+        }
+    }
     static const char* keywordToString(Keywords aType) {
       switch(aType) {
         case Keywords::boolean_kw:    return "bool";

@@ -8,18 +8,26 @@
 #ifndef Storage_hpp
 #define Storage_hpp
 
-
 #include "../../Database/Storage/Table/BlockIO/BlockIO.hpp"
 #include "../../Database/Storage/Table/Table.hpp"
 #include "../../Statements/DBQuery.hpp"
 
 namespace ECE141 {
-  const int32_t kNewBlock=-1; 
+  const int32_t kNewBlock=-1;
+  const size_t typeError = 14;
   const std::string kTableIndex = "tableIndex";
   using BlockVisitor = std::function<bool(const Block&, uint32_t)>;
   using BlockList = std::deque<uint32_t>;
+
+  /*
+  
+  */
   struct BlockIterator {
-      virtual bool each(const BlockVisitor& aVisitor) = 0;
+      virtual std::deque<Block>& getBlocks() { return loaded_blocks; }
+      virtual bool retrieve(const BlockVisitor& aVisitor) = 0;
+
+      std::deque<Block> loaded_blocks;
+      
   };
 
   //--------------------------------------------------------------
@@ -34,6 +42,7 @@ namespace ECE141 {
 
       virtual bool          save(std::fstream& aFile) = 0;
       virtual uint32_t&     getStorablePos() = 0;
+      virtual BlockType     getType()  =0;
       virtual uint32_t&     getHash() = 0;
       virtual std::string&  getName() = 0;
 
@@ -52,6 +61,7 @@ namespace ECE141 {
 
       bool          save(std::fstream& aFile) override;
       uint32_t&     getStorablePos() override;
+      BlockType     getType() override;
       uint32_t&     getHash() override;
       std::string&  getName() override;
 
@@ -71,6 +81,7 @@ namespace ECE141 {
 
       bool          save(std::fstream& aFile) override;
       uint32_t&     getStorablePos() override;
+      BlockType     getType() override;
       uint32_t&     getHash() override;
       std::string&  getName() override;
   };
@@ -85,27 +96,32 @@ namespace ECE141 {
 
       bool          save(std::fstream& aFile) override;
       uint32_t&     getStorablePos() override;
+      BlockType     getType() override;
       uint32_t&     getHash() override;
       std::string&  getName() override;
   };
 
+  class IndexIterator : public BlockIterator {
 
-  class Storage : public BlockIO, public BlockIterator {
+  };
+
+  class Storage : public BlockIO, public BlockIterator{
   public:
         
-    Storage(const std::string& aName, AccessMode aMode);
+    Storage(const std::string& aPath, AccessMode aMode);
     ~Storage();
 
     // Create storables here (blocks)
+    StatusResult read(StatementType aStmtType, DBQuery* aQuery);
     StatusResult add(StatementType aStmtType, DBQuery* aQuery);
     StatusResult drop(StatementType aStmtType, DBQuery* aQuery);
+    bool retrieve(const BlockVisitor& aVisitor) override;
 
+    StatusResult fetchTables(std::set<std::string>& aTableList);
     std::vector<Table>& getTables() { return tables; }
+    Table* getTable(const std::string& aNacme);
     Schema* getSchema(const std::string& aName);
-
-
-
-    bool  each(const BlockVisitor& aVisitor) override;
+    
 
     //What if we also offered a "storable" interface? 
     StatusResult save(const Storable &aStorable, int32_t aStartPos=kNewBlock);
@@ -123,7 +139,7 @@ namespace ECE141 {
 
       // Maybe a StorageProcessor that creates a block type? Version 2.0 -> have AppController hold onto a StorageProcessor(which then holds onto a database)
       StatusResult    indexBlock();
-      
+      bool load_meta();
       bool save();
 
 

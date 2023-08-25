@@ -20,10 +20,10 @@ namespace ECE141 {
 //--------------------------------------------------------------
     StatusResult  IndexStorable::encode() {
         std::stringstream thePayload;
-        char theBuffer[kPayloadSize];
-        std::memset(theBuffer, ' ', kPayloadSize);
+        char theBuffer[kPayloadSize + typeError];
+        std::memset(theBuffer, ' ', kPayloadSize + typeError);
 
-        contents.read(theBuffer, kPayloadSize);
+        contents.read(theBuffer, kPayloadSize + typeError);
         thePayload << header.type << " " << nextIndex << " ";
         thePayload << theBuffer;
 
@@ -40,6 +40,7 @@ namespace ECE141 {
     uint32_t&     IndexStorable::getStorablePos() {
         return position;
     }
+    BlockType     IndexStorable::getType() { return static_cast<BlockType>(header.type); }
     uint32_t&     IndexStorable::getHash() { return getHashName(); }
     std::string&  IndexStorable::getName() { return getIdentifierName(); }
  
@@ -65,9 +66,10 @@ namespace ECE141 {
         return write(aFile);
     }
 
-    uint32_t&     SchemaStorable::getStorablePos() {
+    uint32_t& SchemaStorable::getStorablePos() {
         return position;
     }
+    BlockType     SchemaStorable::getType() { return static_cast<BlockType>(header.type); }
     uint32_t&     SchemaStorable::getHash() { return getHashName(); }
     std::string&  SchemaStorable::getName() { return getIdentifierName(); }
 
@@ -96,6 +98,7 @@ namespace ECE141 {
     uint32_t&     DataStorable::getStorablePos() {
         return position;
     }
+    BlockType     DataStorable::getType() { return static_cast<BlockType>(header.type); }
     uint32_t&     DataStorable::getHash() { return getHashName(); }
     std::string&  DataStorable::getName() { return getIdentifierName(); }
 
@@ -103,13 +106,15 @@ namespace ECE141 {
 // Storage 
 //--------------------------------------------------------------
 
-    Storage::Storage(const std::string& aName, AccessMode aMode)
-    : BlockIO(aName, aMode) {}// auto load index first block with index pointing to all tables schemas only} and also count all blocks
+    Storage::Storage(const std::string& aPath, AccessMode aMode)
+    : BlockIO(aPath, aMode){
+        load_meta();
+    }// auto load index first block with index pointing to all tables schemas only} and also count all blocks
     // USE: dtor ---------------------------------------
     Storage::~Storage() {
         if (changed)
             save();
-    }
+     }
     std::stringstream Storage::makePayload(StatementType aStmtType, DBQuery* aQuery) {
         std::stringstream thePayload;
         switch (aStmtType) {
@@ -150,8 +155,13 @@ namespace ECE141 {
 
     std::stringstream Storage::dataPayload(DBQuery* aQuery) {
         std::stringstream theContents;
-   //     auto& theIdentifierList = aQuery->getIdentifiers();
-    //    auto& theValuesList = aQuery->getValues();
+        RowCollection& theRows = aQuery->getRows();
+        for (auto& theRow : theRows) {
+            auto& theDatas = theRow.get()->getData();
+            for (auto& theData : theDatas) {
+                theContents << theData.first << ":" << std::get<std::string>(theData.second) << "\\";
+            }
+        }
         return theContents;
     }
     Storable* Storage::makeStorable(StatementType aStmtType, std::stringstream& aPayload, std::string aName, uint32_t aHash) {
@@ -166,8 +176,24 @@ namespace ECE141 {
         }
         return storable;
     }
-
+    StatusResult Storage::fetchTables(std::set<std::string>& aTableList) {
+        for (auto& theTable : tables) {
+            aTableList.insert(theTable.getSchema().getName());
+        }
+        return Errors::noError;
+    }
     Schema* Storage::getSchema(const std::string& aName) {
+        if (auto* theTable = getTable(aName)) {
+            return &theTable->getSchema();
+        }
+        return nullptr;
+    }
+
+    Table* Storage::getTable(const std::string& aName) {
+        for (auto& theTable : tables) {
+            if (theTable.getSchema().getName() == aName)
+                return &theTable;
+        }
         return nullptr;
     }
     StatusResult Storage::add(StatementType aStmtType, DBQuery* aQuery) {
@@ -188,7 +214,7 @@ namespace ECE141 {
 
   // get all blocks with that table name, call block iterator
   StatusResult Storage::drop(StatementType aStmtType, DBQuery* aQuery) { return Errors::notImplemented; }
-  bool Storage::each(const BlockVisitor &aVisitor) {
+  bool Storage::retrieve(const BlockVisitor &aVisitor) {
     return true;
   }
 
@@ -210,11 +236,23 @@ namespace ECE141 {
       return Errors::noError;
   }
 
+  bool Storage::load_meta() {
+      /*
+      do {
+          Block theBlock;
+          readIndex(kFirstBlock, theBlock);
+
+      } while ();
+      Block theBlock;
+      */
+      return true;
+  }
   bool Storage::save() {
       for (const auto& theBlock : blocks) {
           const auto& theContents = *theBlock.get();
           theContents->save(stream);
-          indices.insert(std::make_pair(&(theContents->getStorablePos()), theContents->getName()));
+          if(theContents->getType() == BlockType::schema_block)
+            indices.insert(std::make_pair(&(theContents->getStorablePos()), theContents->getName()));
       }
       indexBlock();
       return true;
@@ -237,7 +275,6 @@ namespace ECE141 {
       return contents.str();
   }
  
-
 
 
 }

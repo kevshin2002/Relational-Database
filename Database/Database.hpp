@@ -28,16 +28,17 @@ namespace ECE141 {
         
 
     StatusResult    dump(std::ostream &anOutput); //debug...
-    StatusResult    fetchTables(std::set<uint32_t>& aTableList);
-
+    StatusResult    fetchTables(std::set<std::string>& aTableList);
+    std::string&    getName() { return name; }
     Schema*         getSchema(const std::string& aName);
-    TableOpt        getTable(Schema& aSchema);
+    TableOpt        getTable(const std::string& aName);
     Storage&        getStorage()  { return storage; } // maybe make it a pointer for flexibility?
-    bool            inUse(const std::string& aDBName = "") const;
+    bool            inUse(const std::string& aDBName = "");
   protected:
     Storage         storage;
     std::string     name;
   };
+  using UniqueDatabase = std::unique_ptr<Database>;
 
 }
 #endif /* Database_hpp */

@@ -18,7 +18,6 @@
 #include "../../Utilities/Validator.hpp"
 
 namespace ECE141 {
-
 	class SQLProcessor : public AppProcessor {
 	public:
 	SQLProcessor();
@@ -26,11 +25,12 @@ namespace ECE141 {
 
 	bool				isProcessable(Keywords& aKeyword) const override;
 	AppProcessor*		findHandler(Tokenizer& aTokenizer) override;
-
 	Statement*			makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
 	StatusResult	    run(Statement* aStatement, ViewListener aViewer) override;
 
 	protected:
+    StatusResult process(StatementType aType, DBQuery* aQuery);
+
 	StatusResult		createTable(ViewListener aViewer);
 	StatusResult		dropTable(ViewListener aViewer);
 	StatusResult		insertTable(ViewListener aViewer);
@@ -39,9 +39,10 @@ namespace ECE141 {
 	StatusResult		describeTable(ViewListener aViewer);
 	StatusResult		showTables(ViewListener aViewer);
 
-	StatusResult process(StatementType aType, DBQuery* aQuery);
 	private:
-	std::set<uint32_t> tables;
+	// This is populated through the API in Storage (fetchTables).
+	// It is ran in the beginning of run only when the size of the table is zero.
+	std::set<std::string> tables;
 
 	SQLStatement* statement = nullptr;
 	AppProcessor* next = nullptr;

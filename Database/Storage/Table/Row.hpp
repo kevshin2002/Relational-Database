@@ -19,16 +19,15 @@
 namespace ECE141 {
 
   //These really shouldn't be here...
-  using Value = std::variant<bool, int, float, std::string>;
+    using Value = std::variant<bool, int, float, std::string>;
   using KeyValues = std::map<const std::string, Value>;
 
   class Row  {
   public:
 
-    Row(uint32_t entityId=0);
+    Row(uint32_t aID=0);
     Row(const Row &aRow);
     Row(Row&& aSource);
-   // Row(const Attribute &anAttribute); //maybe?
     
     ~Row();
     
@@ -46,6 +45,7 @@ namespace ECE141 {
     //uint32_t            blockNumber;
 
   protected:
+    uint32_t         rowID;
     KeyValues        data;
   };
 

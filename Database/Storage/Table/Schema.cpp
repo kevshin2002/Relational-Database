@@ -11,16 +11,16 @@ namespace ECE141 {
 
  //STUDENT: Implement this class...
 
-  Schema::Schema(Database* aDB) : database(aDB){}
+  Schema::Schema(Database* aDB) : database(aDB) {}
 
-  Schema::Schema(const Schema &aCopy) {
+  Schema::Schema(const Schema &aCopy) : database(aCopy.database) {
     name=aCopy.name;
     attributes = aCopy.attributes;
-    database = aCopy.database;
     hashedName = aCopy.hashedName;
   }
 
   Schema::~Schema() {
+      database = nullptr;
     //std::cout << "~Schema()\n";
   }
 

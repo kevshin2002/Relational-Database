@@ -29,7 +29,7 @@ namespace ECE141 {
 	// dont worry about edge cases
 	class SQLStatement : public Statement {
 	public:
-		SQLStatement(Database* aDatabase, StatementType aType) : database(aDatabase), Statement(aType) { query = new DBQuery(aDatabase); }
+		SQLStatement(UniqueDatabase& aDatabase, StatementType aType) : Statement(aType), database(aDatabase) { query = new DBQuery(aDatabase.get()); }
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			StatementType theType = getType();
@@ -70,11 +70,11 @@ namespace ECE141 {
 			}
 			return false;
 		}
-		Database* getDatabase() { return database; }
+		UniqueDatabase& getDatabase() { return database; }
 		DBQuery* getQuery()  { return query; };
 		
 	protected:
-		Database* database;
+		UniqueDatabase& database;
 		DBQuery* query; // consider making all pointers into smart pointers. reminder
 	};
 }

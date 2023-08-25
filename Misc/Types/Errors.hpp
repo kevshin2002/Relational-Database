@@ -57,6 +57,7 @@ namespace ECE141 {
         // Table/DB related
         tableExists,
         invalidTableName,
+        insertSize,
         unknownEntity,
         unknownTable,
         unknownDatabase,

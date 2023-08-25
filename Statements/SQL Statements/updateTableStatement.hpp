@@ -15,7 +15,7 @@
 namespace ECE141 {
 	class updateTableStatement : public SQLStatement {
 	public:
-		updateTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
+		updateTableStatement(UniqueDatabase& aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);

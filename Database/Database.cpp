@@ -12,25 +12,26 @@
 namespace ECE141 {
   
   Database::Database(const std::string aName, AccessMode aMode)
-    : name(aName), storage(Config::getDBPath(aName), aMode) {
+    : storage(Config::getDBPath(aName), aMode), name(aName) {
     //create for read/write
   }
 
   Database::~Database() {
   }
 
-  StatusResult    Database::fetchTables(std::set<uint32_t>& aTableList) {
-      return Errors::notImplemented;
+  StatusResult    Database::fetchTables(std::set<std::string>& aTableList) {
+      return inUse() ? storage.fetchTables(aTableList) : Errors::noDatabaseSpecified;
   }
 
   Schema* Database::getSchema(const std::string& aName) {
       return storage.getSchema(aName);
   }
 
-  TableOpt   Database::getTable(Schema& aSchema) {
-      return std::nullopt;
+  TableOpt   Database::getTable(const std::string& aName) {
+      TableOpt theTable = *storage.getTable(aName);
+      return theTable;
   }
-  bool Database::inUse(const std::string& aDBName) const {
+  bool Database::inUse(const std::string& aDBName) {
       bool theResult = false;
       if (aDBName.size() && this) { 
           theResult = aDBName == name ? true : theResult;

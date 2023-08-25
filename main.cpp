@@ -7,9 +7,9 @@
 //
 
 // visual studio code memory leak detector
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 
 #include <iostream>
 #include <sstream>
@@ -23,7 +23,7 @@
 //----------------------------------------------
 
 int main(int argc, const char* argv[]) {
-
+    //_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF);
     srand(static_cast<uint32_t>(time(0)));
 
     if (argc > 1) {
@@ -90,7 +90,7 @@ int main(int argc, const char* argv[]) {
     else {
         doManualTesting();
     }
-    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-    _CrtDumpMemoryLeaks();
+    //_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+    //_CrtDumpMemoryLeaks();
     return 0;
 }

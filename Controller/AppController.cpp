@@ -14,7 +14,6 @@ namespace ECE141 {
   AppController::AppController() : running{ true }, db(nullptr), next(new DBProcessor()) {}
   AppController::~AppController() { 
       delete next; 
-      delete db;
   }
   // USE: -----------------------------------------------------
   
@@ -101,14 +100,13 @@ namespace ECE141 {
       return Errors::noError;
   }
   
-  bool AppController::holdDB(Database* aDB) {
-      db = aDB;
+  bool AppController::holdDB(UniqueDatabase& aDB) {
+      db.reset(aDB.release());
       return true;
   }
   
   bool AppController::releaseDB() {
-      delete db;
-      db = nullptr;
+      db.reset();
       return true;
   }
 
@@ -168,7 +166,8 @@ namespace ECE141 {
       {Errors::userTerminated, "User terminated"},
       {Errors::unknownCommand, "Unknown command"},
       {Errors::unknownError, "Unknown error"},
-      {Errors::notNull, "cannot be null"}
+      {Errors::notNull, "cannot be null"},
+      {Errors::insertSize, "Mismatch size with insert values"}
       };
 
       std::string_view theMessage = theMessages.count(aResult.error) ? theMessages[aResult.error] : "Unknown Error";

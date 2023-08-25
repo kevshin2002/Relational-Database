@@ -22,13 +22,16 @@ namespace ECE141 {
 	public:
 	DBProcessor();
 	~DBProcessor();
+
 	bool				isProcessable(Keywords& aKeyword) const override;
 	AppProcessor*		findHandler(Tokenizer& aTokenizer) override;
 	Statement*			makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
 	StatusResult	    run(Statement* aStatement, ViewListener aViewer) override;
+
 	protected:
-	bool			    fetchDatabases();
+	bool			    fetchDatabases(); // Meant to be used only in the constructor
 	bool				dbExists(const std::string& aDBName) { return databases.count(statement->getDBName()); }
+
 	StatusResult		createDB(ViewListener aViewer);
 	StatusResult		dropDB(ViewListener aViewer);
 	StatusResult		useDB(ViewListener aViewer);
@@ -36,7 +39,7 @@ namespace ECE141 {
 	StatusResult		dumpDB(ViewListener aViewer);
 
 	private:
-	// Collection of databases
+	// Collection for showing databases, this is populated in the constructor using fetchDatabases().
 	std::set<std::string> databases;
 
 	DBStatement* statement = nullptr;

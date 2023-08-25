@@ -60,7 +60,7 @@ namespace ECE141 {
   };
 
   const size_t kBlockSize = 1024;
-  const size_t kPayloadSize = kBlockSize - sizeof(BlockHeader) - 2;
+  const size_t kPayloadSize = (kBlockSize - sizeof(BlockHeader)) - 3;
   const uint32_t kFirstBlock = 0;
   //block .................
   using UniqueStorable = std::unique_ptr<Storable*>;
@@ -104,8 +104,10 @@ namespace ECE141 {
     BlockIO(const std::string& aName, AccessMode aMode);
     uint32_t              chunk(std::string aContent);
     uint32_t              getBlockCount();
-    virtual StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
-    virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
+
+    StatusResult  readIndex(uint32_t aBlockNumber, Storable* aStorable);
+    StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
+    StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
     
   protected:
     std::map<uint32_t*, std::string> indices;

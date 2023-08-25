@@ -14,6 +14,7 @@ namespace ECE141 {
 	SQLProcessor::~SQLProcessor() {
 		if (next)
 			delete next;
+		statement = nullptr;
 	}
 	bool	SQLProcessor::isProcessable(Keywords& aKeyword) const {
 		switch (aKeyword) {
@@ -51,27 +52,28 @@ namespace ECE141 {
 	Statement* SQLProcessor::makeStatement(Tokenizer& aTokenizer, AppController* anAppController) {
 		aTokenizer.restart();
 		Keywords theKeyword = aTokenizer.current().keyword;
+		auto& theDB = anAppController->getDB();
 		StatementType theType = StatementType::unknown;
 		switch (theKeyword) {
 		case Keywords::create_kw:
 			theType = aTokenizer.skipTo(Keywords::table_kw) ? StatementType::create : StatementType::unknown;
-			statement = (theType == StatementType::create) ? new createTableStatement(anAppController->getDB(), theType) : nullptr;
+			statement = (theType == StatementType::create) ? new createTableStatement(theDB, theType) : nullptr;
 			break;
 		case Keywords::insert_kw:
 			theType = aTokenizer.skipTo(Keywords::into_kw) ? StatementType::insertTable : StatementType::unknown;
-			statement = (theType == StatementType::insertTable) ? new insertTableStatement(anAppController->getDB(), theType) : nullptr;
+			statement = (theType == StatementType::insertTable) ? new insertTableStatement(theDB, theType) : nullptr;
 			break;
 		case Keywords::select_kw:
 			theType = aTokenizer.skipTo(Keywords::from_kw) ? StatementType::selectTable : StatementType::unknown;
-			statement = new selectTableStatement(anAppController->getDB(), theType);
+			statement = new selectTableStatement(theDB, theType);
 			break;
 		case Keywords::update_kw:
 			theType = aTokenizer.skipTo(Keywords::set_kw) ? StatementType::updateTable : StatementType::unknown;
-			statement = new updateTableStatement(anAppController->getDB(), theType);
+			statement = new updateTableStatement(theDB, theType);
 			break;
 		default:// drop, describe, show
 			theType = Helpers::keywordToStmtType(theKeyword);
-			statement = new SQLStatement(anAppController->getDB(), theType);
+			statement = new SQLStatement(theDB, theType);
 			break;
 		}
 		aTokenizer.restart();
@@ -82,40 +84,43 @@ namespace ECE141 {
 	// 
 	StatusResult	    SQLProcessor::run(Statement* aStatement, ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
-
-		switch (aStatement->getType()) {
-		case StatementType::create:
-			theResult = createTable(aViewer);
-			break;
-		case StatementType::drop:
-			theResult = dropTable(aViewer);
-			break;
-		case StatementType::insertTable:
-			theResult = insertTable(aViewer);
-			break;
-		case StatementType::selectTable:
-			theResult = selectTable(aViewer);
-			break;
-		case StatementType::updateTable:
-			theResult = updateTable(aViewer);
-		case StatementType::describeTable:
-			theResult = describeTable(aViewer);
-			break;
-		case StatementType::show:
-			theResult = showTables(aViewer);
-			break;
-		default:
-			break;
+		tables = std::set<std::string>{};
+		statement->getDatabase()->fetchTables(tables);
+		if (theResult) {
+			switch (aStatement->getType()) {
+			case StatementType::create:
+				theResult = createTable(aViewer);
+				break;
+			case StatementType::drop:
+				theResult = dropTable(aViewer);
+				break;
+			case StatementType::insertTable:
+				theResult = insertTable(aViewer);
+				break;
+			case StatementType::selectTable:
+				theResult = selectTable(aViewer);
+				break;
+			case StatementType::updateTable:
+				theResult = updateTable(aViewer);
+			case StatementType::describeTable:
+				theResult = describeTable(aViewer);
+				break;
+			case StatementType::show:
+				theResult = showTables(aViewer);
+				break;
+			default:
+				break;
+			}
 		}
 		return theResult;
 	}
 	StatusResult		SQLProcessor::createTable(ViewListener aViewer) {
 		StatusResult theResult = Errors::tableExists;
-		auto* theDB = statement->getDatabase();
+		auto& theDB = statement->getDatabase();
 		auto* theQuery = statement->getQuery();
-		if (!tables.count(theQuery->getSchema()->getHash()))
-			theResult =  theDB ? theDB->getStorage().add(statement->getType(), theQuery) : Errors::noDatabaseSpecified;
-
+		if (!tables.count(theQuery->getSchema()->getName()))
+			theResult = theDB ? theDB->getStorage().add(statement->getType(), theQuery) : Errors::noDatabaseSpecified;
+	
 		if (theResult) {
 			StringView theView = "Query OK, 0 rows affected";
 			aViewer(theView);
@@ -138,17 +143,16 @@ namespace ECE141 {
 
 	StatusResult	SQLProcessor::insertTable(ViewListener aViewer) {
 		StatusResult theResult = Errors::unknownTable;
-		auto* theDB = statement->getDatabase();
+		auto& theDB = statement->getDatabase();
 		auto* theQuery = statement->getQuery();
-		if (tables.count(theQuery->getSchema()->getHash())) {
+		if (tables.count(theQuery->getSchema()->getName())) {
 			if (theResult = process(statement->getType(), theQuery)) {
 				theResult = theDB ? theDB->getStorage().add(statement->getType(), theQuery) : Errors::noDatabaseSpecified;
 			}
 		}
-
 		if (theResult) {
 			std::stringstream theStream;
-			theStream << "Query Ok, " << theQuery->getSchema()->getAttributes().size() << " rows affected";
+			theStream << "Query Ok, " << theQuery->getRows().size() << " rows affected";
 			StringView theView(theStream.str());
 			aViewer(theView);
 		}
@@ -179,19 +183,17 @@ namespace ECE141 {
 	}
 	StatusResult		SQLProcessor::showTables(ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
-		auto* theDB = statement->getDatabase();
-		if (theDB) {
+		auto& theDB = statement->getDatabase();
+		if (theDB.get()) {
 			std::stringstream theStream;
 			size_t theTableLength = 0;
-			size_t theLength = length + 4;
-
-			theDB->fetchTables(tables);
+			size_t theLength = length + 5;
 
 			theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
-			theStream << "| Database" << std::setfill(' ') << std::setw(theLength - 9) << "|\n";
+			theStream << "| Tables" << std::setfill(' ') << std::setw(theLength - 7) << "|\n";
 			theStream << "+" << std::setfill('-') << std::setw(theLength) << "+\n";
 			for (const auto& theTable : tables) {
-				theTableLength = std::to_string(theTable).length();
+				theTableLength = theTable.length();
 				theStream << "| " << theTable << std::setfill(' ') << std::setw(theLength - 1 - theTableLength) << "|\n";
 			}
 
@@ -200,6 +202,7 @@ namespace ECE141 {
 
 			StringView theView(theStream.str());
 			aViewer(theView);
+			return Errors::noError;
 		}
 		else
 			theResult = Errors::noDatabaseSpecified;
@@ -207,16 +210,18 @@ namespace ECE141 {
 	}
 
 	StatusResult SQLProcessor::process(StatementType aType, DBQuery* aQuery) {
-		StatusResult theResult = Errors::noError;
 		auto theName = aQuery->getSchema()->getName();
 		auto theDBSchema = statement->getDatabase()->getSchema(theName);
-		//RowCollection& theRows = statement->getDatabase()->getTable(theName);
+		auto theTable = statement->getDatabase()->getTable(theName);
 		AttributeList& theAttributes = theDBSchema->getAttributes();
+		StatusResult theResult = Errors::noError;
+
 		auto theIdentifiers = aQuery->getIdentifiers();
 		auto theValues = aQuery->getValues();
+
 		switch (aType) {
 		case StatementType::insertTable:
-			Validator::insert(theAttributes, theIdentifiers, theValues);
+			aQuery->setRows(Validator::insert(theAttributes, theIdentifiers, theValues, theResult));
 			break;
 		case StatementType::selectTable:
 			break;
@@ -225,6 +230,6 @@ namespace ECE141 {
 		}
 
 
-		return Errors::notImplemented;
+		return Errors::noError;
 	}
 }

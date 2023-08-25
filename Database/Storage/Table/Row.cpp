@@ -16,12 +16,15 @@
 
 namespace ECE141 {
   
-  Row::Row(uint32_t entityId) {}
+  Row::Row(uint32_t aID) : rowID(aID) {}
   Row::Row(const Row &aRow) {*this=aRow;}
   Row::Row(Row&& aSource) : data(std::move(aSource.data)) {}
   Row::~Row() {}
 
-  Row& Row::operator=(const Row &aRow) {return *this;}
+  Row& Row::operator=(const Row &aRow) {
+      rowID = aRow.rowID;
+      data = aRow.data;
+      return *this;}
   bool Row::operator==(Row &aCopy) const {return false;}
 
   //STUDENT: What other methods do you require?

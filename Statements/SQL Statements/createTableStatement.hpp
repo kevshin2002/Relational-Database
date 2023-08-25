@@ -15,7 +15,7 @@
 namespace ECE141 {
 	class createTableStatement : public SQLStatement {
 	public:
-		createTableStatement(Database* aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
+		createTableStatement(UniqueDatabase& aDatabase, StatementType theType) : SQLStatement(aDatabase, theType) {}
 		StatusResult  parse(Tokenizer& aTokenizer) override {
 			StatusResult theResult = Errors::noError;
 			ParseHelper theHelper(aTokenizer);

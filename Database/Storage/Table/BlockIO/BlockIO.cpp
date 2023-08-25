@@ -55,14 +55,34 @@ namespace ECE141 {
     return StatusResult{Errors::writeError};
   }
 
+  StatusResult BlockIO::readIndex(uint32_t aBlockNumber, Storable* aStorable) {
+      std::stringstream theContents;
+      char theBuffer[kBlockSize];
+      stream.read(theBuffer, aBlockNumber * kBlockSize);
+      theContents << theBuffer;
+      
+      char theType;
+      theContents >> theType;
+    //  aStorable. // = theType == static_cast<char>(BlockType::index_block) ? theType : static_cast<char>(BlockType::unknown_block);
+      return Errors::notImplemented;
+  }
   // USE: write data a given block (after seek) ---------------------------------------
   StatusResult BlockIO::readBlock(uint32_t aBlockNumber, Block &aBlock) {
+    std::stringstream theContents;
+    char theBuffer[kBlockSize];
+    stream.read(theBuffer, aBlockNumber * kBlockSize);
+    theContents << theBuffer;
+
+    
     return StatusResult{Errors::readError};
   }
 
   // USE: count blocks in file ---------------------------------------
   uint32_t BlockIO::getBlockCount()  {
-    return 0; //What should this be?
+     stream.seekg(0, std::ios::end); 
+     std::streampos fileSize = stream.tellg(); 
+     stream.seekg(0, std::ios::beg); 
+     return static_cast<uint32_t>(fileSize / kBlockSize);
   }
 
   uint32_t BlockIO::chunk(std::string aContent) {

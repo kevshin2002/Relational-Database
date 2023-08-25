@@ -8,6 +8,7 @@
 //
 
 
+
 #include "DBProcessor.hpp"
 
 namespace ECE141 {
@@ -67,7 +68,7 @@ namespace ECE141 {
 	StatusResult	DBProcessor::run(Statement* aStatement, ViewListener aViewer) {
 		StatusResult theResult = Errors::noError;
 		size_t theDBLength = statement->getDBName().length();
-
+		//std::cout << "Running " << Helpers::StmtToString(aStatement->getType()) << " " << statement->getDBName() << "\n";
 		if (theDBLength > length)
 			length = theDBLength;
 		switch (aStatement->getType()) {
@@ -130,7 +131,7 @@ namespace ECE141 {
 		AppController* theController = statement->getAppController();
 
 		if (dbExists(theDBName)) {
-			auto theDB = theController->getDB();
+			auto& theDB = theController->getDB();
 			if (theDB->inUse(theDBName))
 				theController->releaseDB();
 			fs::remove(Config::getDBPath(theDBName));
@@ -144,13 +145,20 @@ namespace ECE141 {
 	StatusResult DBProcessor::useDB(ViewListener aViewer) {
 		StatusResult theResult = Errors::unknownDatabase;
 		std::string theDBName = statement->getDBName();
+		auto theAppController = statement->getAppController();
 
 		if (dbExists(theDBName)) {
-			auto theDB = new Database(theDBName, OpenFile());
-			auto theAppController = statement->getAppController();
-			theAppController->holdDB(theDB);
-			StringView theView = "Database changed";
-			aViewer(theView);
+			auto& theCurrDB = theAppController->getDB();
+			if (!theCurrDB->inUse(theDBName)) {
+				auto theDB = std::make_unique<Database>(theDBName, OpenFile());
+				theAppController->holdDB(theDB);
+				StringView theView = "Database changed";
+				aViewer(theView);
+			}
+			else {
+				StringView theView = "Already using this database";
+			    aViewer(theView);
+			}
 			theResult = Errors::noError;
 		}
 		return theResult;
@@ -185,7 +193,7 @@ namespace ECE141 {
 		std::string theDBName = statement->getDBName();
 
 		if (dbExists(theDBName)) {
-			auto theDB = new Database(theDBName, OpenFile());
+			auto theDB = std::make_unique<Database>(theDBName, OpenFile());
 			theController->holdDB(theDB);
 			theResult = theDB->dump(theStream);
 			StringView theView(theStream.str());
