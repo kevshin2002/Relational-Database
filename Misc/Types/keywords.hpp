@@ -10,7 +10,6 @@
 #ifndef keywords_h
 #define keywords_h
 
-#include <string>
 #include <map>
 #include "Errors.hpp"
 

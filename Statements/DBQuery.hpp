@@ -32,7 +32,7 @@ namespace ECE141 {
         fromTable = new Schema(aDB);
     }
     
-    DBQuery(const DBQuery &aQuery) : fromTable(aQuery.fromTable) {}
+    DBQuery(const DBQuery &aQuery) : fromTable(aQuery.fromTable), all(false) {}
     ~DBQuery() { fromTable = nullptr; }
     //from (table) -- *, or a comma separated list of fields
     //where specific options...
@@ -52,7 +52,7 @@ namespace ECE141 {
     }
     
     DBQuery& setRows(RowCollection aCollection) {
-        rows = std::move(aCollection);
+        rows = aCollection; // std::move(aCollection);
         return *this;
     }
     StatusResult setAll() { 

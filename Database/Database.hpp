@@ -8,13 +8,7 @@
 #ifndef Database_hpp
 #define Database_hpp
 
-#include <stdio.h>
-#include <fstream> 
-#include <string>
-#include <iostream>
 #include <iomanip>
-#include <map>
-#include "../Utilities/Config.hpp"
 #include "Storage/Storage.hpp"
 
 namespace ECE141 {

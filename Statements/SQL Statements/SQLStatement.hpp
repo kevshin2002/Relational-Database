@@ -11,7 +11,6 @@
 #define SQLStatement_hpp
 
 #include "../../Controller/AppController.hpp"
-#include "../DBQuery.hpp"
 #include "../Statement.hpp"
 
 namespace ECE141 {

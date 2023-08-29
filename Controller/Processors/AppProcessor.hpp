@@ -11,13 +11,9 @@
 #ifndef AppProcessor_hpp
 #define AppProcessor_hpp
 
-#include <stdio.h>
-#include <set>
-#include "../../View/Views/StringView.hpp"
-#include "../../Database/Database.hpp"
-#include "../../Utilities/Tokenizer/Tokenizer.hpp"
 #include "../../Statements/Statement.hpp"
-#include "../../Utilities/Config.hpp"
+#include "../../Database/Database.hpp"
+#include "../../View/Views/StringView.hpp"
 
 namespace ECE141 {
 	class AppController;

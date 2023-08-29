@@ -6,14 +6,7 @@
 //
 
 
-#include <sstream>
-#include <cmath>
-#include <cstdlib>
-#include <optional>
-#include <cstring>
-#include <iostream>
 #include "Storage.hpp"
-#include "../../Utilities/Config.hpp"
 
 namespace ECE141 {
 // IndexStorable
@@ -31,7 +24,7 @@ namespace ECE141 {
         return Errors::noError;
     }
     StatusResult  IndexStorable::decode(Storage& aStorage) {
-        auto& theIndices = aStorage.getIndices();
+    //    auto& theIndices = aStorage.getIndices();
         char theType;
         uint32_t nextPos = 0;
 
@@ -52,6 +45,7 @@ namespace ECE141 {
     bool          IndexStorable::save(std::fstream& aFile) {
         return write(aFile);
     }
+
     uint32_t&     IndexStorable::getStorablePos() {
         return position;
     }
@@ -265,7 +259,7 @@ namespace ECE141 {
           std::stringstream theContents;
           load_Payload(position, theContents);
           IndexStorable* theStorable = new IndexStorable(BlockType::index_block, theContents, position, next, static_cast<uint32_t>(std::hash<std::string>{}(kTableIndex)));
-          
+          theStorable->decode(*this);
 
       } while (next);
       Block theBlock;

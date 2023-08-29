@@ -10,9 +10,9 @@
 #ifndef Statement_hpp
 #define Statement_hpp
 
+#include <memory>
 #include "../Utilities/Tokenizer/Tokenizer.hpp"
 #include "../Utilities/FolderReader.hpp"
-#include <memory>
 
 namespace ECE141 {
 	class Statement {

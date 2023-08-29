@@ -1,0 +1,199 @@
+main.cpp:
+#include "TestManually.hpp"
+#include "TestAutomatic.hpp"
+
+TestManually:
+#include "AppController.hpp"
+	#include "Processors/DBProcessor.hpp"
+		#include "SQLProcessor.hpp"
+			#include "AppProcessor.hpp"
+				#include "../../View/Views/StringView.hpp"
+					#include "View.hpp"
+						#include <iostream>
+						#include <functional>
+						#include <map>
+						#include "../../Utilities/Config.hpp"
+							#include <sstream>
+							#include "Timer.hpp"
+								#include <ctime>
+								#include <chrono>
+							#include <filesystem>
+				#include "../../Database/Database.hpp"
+					#include <iomanip>
+					#include "Storage/Storage.hpp"
+						#include <cmath>
+						#include <cstdlib>
+						#include "../../Database/Storage/Table/BlockIO/BlockIO.hpp"
+							#include <stdio.h>
+							#include <iostream>
+							#include <fstream>
+							#include <variant>
+							#include <functional>
+							#include <cstring>
+							#include <deque>
+							#include <stack>
+							#include <set>
+							#include "../../Utilities/Config.hpp"
+								#include <sstream>
+								#include "Timer.hpp"
+									#include <ctime>
+									#include <chrono>
+								#include <filesystem>
+							#include "../../Utilities/Helpers.hpp"
+								#include "../Misc/Types/keywords.hpp"
+									#include <map>
+									#include "Errors.hpp"
+										#include "BasicTypes.hpp"				
+											#include <optional>
+											#include <string>
+								#include <algorithm>
+						#include "../../Database/Storage/Table/Table.hpp"
+							#include "Schema.hpp"
+								#include "Row.hpp"								
+									#include <utility>
+									#include <variant>
+									#include <memory>
+									#include <map>
+									#include <vector>
+									#include "Attribute.hpp"
+										#include <stdio.h>
+										#include <deque>
+										#include "../../../Misc/Types/Errors.hpp"
+											#include "BasicTypes.hpp"				
+												#include <optional>
+												#include <string>
+						#include "../../Statements/DBQuery.hpp"
+							#include "../Utilities/Filters.hpp"
+								#include <limits>
+								#include "../Utilities/Tokenizer/Tokenizer.hpp"
+									#include <vector>
+									#include <cstring>
+									#include <functional>
+									#include <exception>
+									#include "../Helpers.hpp"
+										#include "../Misc/Types/keywords.hpp"
+											#include <map>
+											#include "Errors.hpp"
+												#include "BasicTypes.hpp"				
+													#include <optional>
+													#include <string>
+										#include <algorithm>
+									#include "Scanner.hpp"	
+										#include <iostream>
+								#include "../Database/Storage/Table/Schema.hpp"
+									#include "Row.hpp"								
+										#include <utility>
+										#include <variant>
+										#include <memory>
+										#include <map>
+										#include <vector>
+										#include "Attribute.hpp"
+											#include <stdio.h>
+											#include <deque>
+											#include "../../../Misc/Types/Errors.hpp"
+												#include "BasicTypes.hpp"				
+													#include <optional>
+													#include <string>
+									#include "../../../Misc/Types/Errors.hpp"
+										#include "BasicTypes.hpp"				
+												#include <optional>
+												#include <string>
+								#include "Compare.hpp"
+									#include <sstream>
+									#include <type_traits>
+				#include "../../Statements/Statement.hpp"
+					#include <memory>
+					#include "../Utilities/Tokenizer/Tokenizer.hpp"
+						#include <vector>
+						#include <cstring>
+						#include <functional>
+						#include <exception>
+						#include "../Helpers.hpp"
+							#include "../Misc/Types/keywords.hpp"
+								#include <map>
+								#include "Errors.hpp"
+									#include "BasicTypes.hpp"				
+										#include <optional>
+										#include <string>
+							#include <algorithm>
+						#include "Scanner.hpp"	
+							#include <iostream>
+					#include "../Utilities/FolderReader.hpp"
+						#include <string>
+						#include <filesystem>
+						#include <fstream>
+						#include <functional>
+			#include "../../Statements/SQL Statements/createTableStatement.hpp"
+				#include "SQLStatement.hpp"
+					#include "../../Controller/AppController.hpp"
+					#include "../Statement.hpp"
+						#include "../Utilities/Tokenizer/Tokenizer.hpp"
+						#include "../Utilities/FolderReader.hpp"
+						#include <memory>
+			#include "../../Statements/SQL Statements/insertTableStatement.hpp"
+				#include "SQLStatement.hpp"
+					#include "../../Controller/AppController.hpp"
+					#include "../Statement.hpp"
+						#include "../Utilities/Tokenizer/Tokenizer.hpp"
+						#include "../Utilities/FolderReader.hpp"
+						#include <memory>
+			#include "../../Statements/SQL Statements/selectTableStatement.hpp"
+				#include "SQLStatement.hpp"
+					#include "../../Controller/AppController.hpp"
+					#include "../Statement.hpp"
+						#include "../Utilities/Tokenizer/Tokenizer.hpp"
+						#include "../Utilities/FolderReader.hpp"
+						#include <memory>
+			#include "../../Statements/SQL Statements/updateTableStatement.hpp"
+				#include "SQLStatement.hpp"
+					#include "../../Controller/AppController.hpp"
+					#include "../Statement.hpp"
+						#include "../Utilities/Tokenizer/Tokenizer.hpp"
+						#include "../Utilities/FolderReader.hpp"
+						#include <memory>
+			#include "../../Utilities/Validator.hpp"
+				#include "../Statements/DBQuery.hpp"
+	#include "../../Statements/DBStatement.hpp"
+		#include "Statement.hpp"
+
+
+
+TestAutomatic
+#include <random>
+#include <stack>
+#include "TestSequencer.hpp"
+	#include "../../Utilities/Tokenizer/Tokenizer.hpp"
+		#include <vector>
+		#include <cstring>
+		#include <functional>
+		#include <exception>
+		#include "../Helpers.hpp"
+			#include "../Misc/Types/keywords.hpp"
+				#include <map>
+				#include "Errors.hpp"
+					#include "BasicTypes.hpp"				
+						#include <optional>
+						#include <string>
+			#include <algorithm>
+		#include "Scanner.hpp"	
+			#include <iostream>
+	#include <initializer_list>
+#include "../Scripts/ScriptRunner.hpp"
+	#include <fstream>
+	#include <sstream>
+	#include <string>
+	#include "../../Controller/AppController.hpp"
+#include "../../Utilities/FolderReader.hpp"
+	#include <string>
+	#include <filesystem>
+	#include <fstream>
+	#include <functional>
+#include "../Test Utilities/Faked.hpp"
+	#include <stdio.h>
+	#include <string>
+	#include <sstream>
+	#include <ctime>
+	#include <map>
+	#include <algorithm>
+	#include <cmath>
+	#include <iostream>

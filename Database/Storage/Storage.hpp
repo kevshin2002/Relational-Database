@@ -8,6 +8,8 @@
 #ifndef Storage_hpp
 #define Storage_hpp
 
+#include <cmath>
+#include <cstdlib>
 #include "../../Database/Storage/Table/BlockIO/BlockIO.hpp"
 #include "../../Database/Storage/Table/Table.hpp"
 #include "../../Statements/DBQuery.hpp"

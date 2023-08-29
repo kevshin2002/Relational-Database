@@ -9,12 +9,12 @@
 #ifndef Tokenizer_hpp
 #define Tokenizer_hpp
 
-#include <iostream>
 #include <vector>
 #include <cstring>
 #include <functional>
-#include "../../Misc/Types/keywords.hpp"
+#include <exception>
 #include "Scanner.hpp"
+#include "../Helpers.hpp"
 
 namespace ECE141 {
 

@@ -9,17 +9,10 @@
 #ifndef Filters_hpp
 #define Filters_hpp
 
-#include <stdio.h>
-#include <vector>
-#include <memory>
-#include <string>
 #include <limits>
-
+#include "Compare.hpp"
 #include "../Utilities/Tokenizer/Tokenizer.hpp"
 #include "../Database/Storage/Table/Schema.hpp"
-#include "../Utilities/Helpers.hpp"
-#include "../Misc/Types/keywords.hpp"
-#include "Compare.hpp"
 
 
 namespace ECE141 {

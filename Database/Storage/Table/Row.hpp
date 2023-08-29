@@ -12,6 +12,7 @@
 #include <variant>
 #include <memory>
 #include <map>
+#include <vector>
 #include "Attribute.hpp"
 
 //feel free to use this, or create your own version...
@@ -27,7 +28,7 @@ namespace ECE141 {
 
     Row(uint32_t aID=0);
     Row(const Row &aRow);
-    Row(Row&& aSource);
+   // Row(Row&& aSource);
     
     ~Row();
     
@@ -51,7 +52,7 @@ namespace ECE141 {
 
   //-------------------------------------------
 
-  using RowCollection = std::deque<std::unique_ptr<Row>>;
+  using RowCollection = std::deque<std::shared_ptr<Row>>;
 
 
 }

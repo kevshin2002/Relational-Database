@@ -10,7 +10,6 @@
 #ifndef DBStatement_hpp
 #define DBStatement_hpp
 
-#include "../Database/Database.hpp"
 #include "Statement.hpp"
 
 namespace ECE141 {

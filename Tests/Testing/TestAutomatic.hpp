@@ -10,20 +10,11 @@
 #ifndef TestAutomatic_h
 #define TestAutomatic_h
 
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <initializer_list>
-#include <algorithm>
 #include <random>
-#include <functional>
-#include <filesystem>
 #include <stack>
-
-#include "../Scripts/ScriptRunner.hpp"
-#include "../../Misc/Types/Errors.hpp"
-#include "../../Utilities/FolderReader.hpp"
 #include "TestSequencer.hpp"
+#include "../Scripts/ScriptRunner.hpp"
+#include "../../Utilities/FolderReader.hpp"
 #include "../Test Utilities/Faked.hpp"
 
 using namespace ECE141;

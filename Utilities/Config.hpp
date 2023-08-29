@@ -8,6 +8,7 @@
 
 #ifndef Config_h
 #define Config_h
+
 #include <sstream>
 #include "Timer.hpp"
 #include <filesystem>

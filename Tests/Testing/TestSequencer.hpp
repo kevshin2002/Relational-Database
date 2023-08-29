@@ -10,9 +10,8 @@
 #ifndef TestSequencer_h
 #define TestSequencer_h
 
-#include "../../Utilities/Tokenizer/Tokenizer.hpp"
-#include "../../Misc/Types/keywords.hpp"
 #include <initializer_list>
+#include "../../Utilities/Tokenizer/Tokenizer.hpp"
 
 namespace ECE141 {
 

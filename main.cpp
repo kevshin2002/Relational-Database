@@ -11,12 +11,6 @@
 //#include <stdlib.h>
 //#include <crtdbg.h>
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <map>
-#include <algorithm>
-
 #include "Tests/Testing/TestManually.hpp"
 #include "Tests/Testing/TestAutomatic.hpp"
 

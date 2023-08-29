@@ -10,9 +10,7 @@
 #define Attribute_hpp
 
 #include <stdio.h>
-#include <string>
 #include <deque>
-#include <optional>
 #include "../../../Misc/Types/Errors.hpp"
 
 namespace ECE141 {

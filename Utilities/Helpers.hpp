@@ -10,8 +10,8 @@
 #ifndef Helpers_h
 #define Helpers_h
 
-#include "../Misc/Types/keywords.hpp"
 #include <algorithm>
+#include "../Misc/Types/keywords.hpp"
 
 namespace ECE141 {
 

@@ -10,8 +10,6 @@
 #define Schema_hpp
 
 #include "Row.hpp"
-#include "../../../Misc/Types/Errors.hpp"
-
 
 namespace ECE141 {
   class Database;

@@ -6,12 +6,7 @@
 //
 
 #include "Faked.hpp"
-#include <sstream>
-#include <ctime>
-#include <map>
-#include <algorithm>
-#include <cmath>
-#include <iostream>
+
 
 namespace ECE141 {
 

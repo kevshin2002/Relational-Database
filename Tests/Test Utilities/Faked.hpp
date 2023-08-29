@@ -10,6 +10,12 @@
 
 #include <stdio.h>
 #include <string>
+#include <sstream>
+#include <ctime>
+#include <map>
+#include <algorithm>
+#include <cmath>
+#include <iostream>
 
 namespace ECE141 {
 
