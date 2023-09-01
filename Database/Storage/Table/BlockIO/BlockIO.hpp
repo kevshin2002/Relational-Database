@@ -17,9 +17,8 @@
 #include <deque>
 #include <stack>
 #include <set>
-#include "../../Utilities/Config.hpp"
-#include "../../Utilities/Helpers.hpp"
-
+#include "../../../../Utilities/Config.hpp"
+#include "../../../../Utilities/Helpers.hpp"
 
 namespace ECE141 {
     class Storable;
