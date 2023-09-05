@@ -9,116 +9,15 @@
 #include "Storage.hpp"
 
 namespace ECE141 {
-// IndexStorable
-//--------------------------------------------------------------
-    StatusResult  IndexStorable::encode() {
-        std::stringstream thePayload;
-        char theBuffer[kPayloadSize + typeError];
-        std::memset(theBuffer, ' ', kPayloadSize + typeError);
-
-        contents.read(theBuffer, kPayloadSize + typeError);
-        thePayload << header.type << " " << nextIndex << " ";
-        thePayload << theBuffer;
-
-        thePayload.read(payload, kBlockSize);
-        return Errors::noError;
-    }
-    StatusResult  IndexStorable::decode(Storage& aStorage) {
-    //    auto& theIndices = aStorage.getIndices();
-        char theType;
-        uint32_t nextPos = 0;
-
-        contents >> theType;
-        if (theType == static_cast<char>(BlockType::index_block)) {
-            contents >> nextPos;
-            nextIndex = nextPos;
-       //     while(!contents.eof())
-         //   contents >> theTableName;
-            
-        }
-        nextIndex = nextPos;
-
-
-        return Errors::notImplemented;
-    }
-
-    bool          IndexStorable::save(std::fstream& aFile) {
-        return write(aFile);
-    }
-
-    uint32_t&     IndexStorable::getStorablePos() {
-        return position;
-    }
-    BlockType     IndexStorable::getType() { return static_cast<BlockType>(header.type); }
-    uint32_t&     IndexStorable::getHash() { return getHashName(); }
-    std::string&  IndexStorable::getName() { return getIdentifierName(); }
- 
-
- // SchemaStorable
- //--------------------------------------------------------------
-
-    StatusResult  SchemaStorable::encode() {
-        std::stringstream thePayload;
-        char theBuffer[kPayloadSize];
-        std::memset(theBuffer, ' ', kPayloadSize);
-
-        contents.read(theBuffer, kPayloadSize); 
-        thePayload << header.type << " " << header.name << " ";
-        thePayload << theBuffer;
-
-        thePayload.read(payload, kBlockSize);
-        return Errors::noError;
-    }
-
-    StatusResult  SchemaStorable::decode(Storage& aStorage) { return Errors::notImplemented; }
-    bool          SchemaStorable::save(std::fstream& aFile) {
-        return write(aFile);
-    }
-
-    uint32_t& SchemaStorable::getStorablePos() {
-        return position;
-    }
-    BlockType     SchemaStorable::getType() { return static_cast<BlockType>(header.type); }
-    uint32_t&     SchemaStorable::getHash() { return getHashName(); }
-    std::string&  SchemaStorable::getName() { return getIdentifierName(); }
-
-
- // DataStorable
- //--------------------------------------------------------------
-
-    StatusResult  DataStorable::encode() {
-        std::stringstream thePayload;
-        char theBuffer[kPayloadSize];
-        std::memset(theBuffer, ' ', kPayloadSize);
-
-        contents.read(theBuffer, kPayloadSize);
-        thePayload << header.type << " " << header.name << " ";
-        thePayload << theBuffer;
-
-        thePayload.read(payload, kBlockSize);
-        return Errors::noError;
-    }
-
-    StatusResult  DataStorable::decode(Storage& aStorage) { return Errors::notImplemented; }
-    bool          DataStorable::save(std::fstream& aFile) {
-        return write(aFile);
-    }
-
-    uint32_t&     DataStorable::getStorablePos() {
-        return position;
-    }
-    BlockType     DataStorable::getType() { return static_cast<BlockType>(header.type); }
-    uint32_t&     DataStorable::getHash() { return getHashName(); }
-    std::string&  DataStorable::getName() { return getIdentifierName(); }
-
 
 // Storage 
 //--------------------------------------------------------------
-
+    // auto load index first block with index pointing to all tables schemas only} and also count all blocks
     Storage::Storage(const std::string& aPath, AccessMode aMode)
-    : BlockIO(aPath, aMode){
-        load_meta();
-    }// auto load index first block with index pointing to all tables schemas only} and also count all blocks
+        : BlockIO(aPath, aMode), buffer(tables) {
+        if (std::filesystem::file_size(aPath))
+            initialize();
+    }
     // USE: dtor ---------------------------------------
     Storage::~Storage() {
         if (changed)
@@ -126,15 +25,20 @@ namespace ECE141 {
      }
 
     StatusResult Storage::read(StatementType aStmtType, DBQuery* aQuery) {
+        /*
+        
+        */
         return Errors::notImplemented;
     }
 
     StatusResult Storage::add(StatementType aStmtType, DBQuery* aQuery) {
         StatusResult theResult = Errors::noError;
         const auto& theSchema = aQuery->getSchema();
-        buffer = makePayload(aStmtType, aQuery);
-        while (!buffer.eof()) {
-            if (auto* theStorable = makeStorable(aStmtType, buffer, theSchema->getName(), theSchema->getHash())) { // 
+        const auto& theBuffer = buffer.getOutput();
+        buffer.makePayload(aStmtType, aQuery);
+        
+        while (!theBuffer.eof()) {
+            if (auto* theStorable = buffer.makeStorable(aStmtType, pointerIndex, theSchema->getName(), theSchema->getHash())) { // 
                 if (theStorable) {
                     changed = true;
                     theStorable->encode();
@@ -171,80 +75,19 @@ namespace ECE141 {
 
     // Non-exposed API
     //--------------------------------------------------------------
-    std::stringstream Storage::makePayload(StatementType aStmtType, DBQuery* aQuery) {
-        std::stringstream thePayload;
-        switch (aStmtType) {
-        case StatementType::create:
-            thePayload = schemaPayload(aQuery);
-            break;
-        case StatementType::insertTable:
-            thePayload = dataPayload(aQuery);
-            break;
-        default:
-            break;
-        }
-        return thePayload;
-    }
-
-    Storable* Storage::makeStorable(StatementType aStmtType, std::stringstream& aPayload, std::string aName, uint32_t aHash) {
-        switch (aStmtType) {
-        case StatementType::create:
-            storable = new SchemaStorable(BlockType::schema_block, aPayload, pointerIndex++, aName, aHash);
-            break;
-        case StatementType::insertTable:
-            storable = new DataStorable(BlockType::data_block, aPayload, pointerIndex++, aName, aHash);
-            break;
-        default: break;
-        }
-        return storable;
-    }
-
-    std::stringstream Storage::schemaPayload(DBQuery* aQuery) {
-        std::stringstream theContents;
-        auto* theSchema = aQuery->getSchema();
-        auto& theAttributeList = theSchema->getAttributes();
-        for (const auto& theAttribute : theAttributeList) {
-            theContents << theAttribute.getName() << " ";
-
-            if (theAttribute.getType() == DataTypes::varchar_type)
-                theContents << Helpers::dataTypeToString(theAttribute.getType()) << " " << theAttribute.getSize() << " ";
-            else
-                theContents << Helpers::dataTypeToString(theAttribute.getType()) << " ";
-
-            theContents << "primary:" << theAttribute.isPrimary() << " "
-                << "increment:" << theAttribute.isIncrement() << " "
-                << "nullable:" << theAttribute.isNull() << " "
-                << "unique:" << theAttribute.isUnique() << " \\ ";
-        }
-        
-        Table theTable(theSchema);
-        getTables().push_back(theTable);
-        return theContents;
-    }
-
-    std::stringstream Storage::dataPayload(DBQuery* aQuery) {
-        std::stringstream theContents;
-        RowCollection& theRows = aQuery->getRows();
-        for (auto& theRow : theRows) {
-            auto& theDatas = theRow.get()->getData();
-            for (auto& theData : theDatas) {
-                theContents << theData.first << ":" << std::get<std::string>(theData.second) << " \\ ";
-            }
-        }
-        return theContents;
-    }
+   
 
   StatusResult  Storage::indexBlock() {
-      std::stringstream payload;
+      auto& theBuffer = buffer.getInput();
       for (const auto& thePair : indices) {
-          payload << thePair.second << " " << *thePair.first << " \\ ";
+          theBuffer << thePair.second << " " << *thePair.first << " \\ ";
       }
 
-      uint32_t numBlocks = chunk(payload.str());
+      uint32_t numBlocks = chunk(theBuffer.str());
       for (uint32_t theCount = 1; theCount <= numBlocks; theCount++) {
           uint32_t newIndex = theCount == 1 ? kFirstBlock : pointerIndex++;
           uint32_t nextIndex = numBlocks == 1 ? kFirstBlock : pointerIndex;
-          IndexStorable* theIndex = new IndexStorable(BlockType::index_block, payload, newIndex, nextIndex, static_cast<uint32_t>(std::hash<std::string>{}(kTableIndex))); // feel like i should make this more readable...
+          IndexBlock* theIndex = new IndexBlock(BlockType::index_block, theBuffer, newIndex, nextIndex, static_cast<uint32_t>(std::hash<std::string>{}(kTableIndex))); // feel like i should make this more readable...
           theIndex->encode();
           numBlocks--;  
           theIndex->save(stream);
@@ -252,23 +95,22 @@ namespace ECE141 {
       return Errors::noError;
   }
 
-  bool Storage::load_meta() {
-      uint32_t position = kFirstBlock;
-      uint32_t next = 0;
-      do {
-          std::stringstream theContents;
-          load_Payload(position, theContents);
-          IndexStorable* theStorable = new IndexStorable(BlockType::index_block, theContents, position, next, static_cast<uint32_t>(std::hash<std::string>{}(kTableIndex)));
-          theStorable->decode(*this);
-
-      } while (next);
-      Block theBlock;
-      
+  bool Storage::initialize() {
+  uint32_t thePos = kFirstBlock;
+  auto& theBuffer = buffer.getInput();
+  Index:
+      std::unique_ptr<IndexBlock> theIndex = std::make_unique<IndexBlock>(BlockType::index_block, theBuffer, thePos);
+      load(*theIndex);
+      theBuffer << theIndex->getPayload();
+      if (!theIndex->getNextPos()) {
+          thePos = theIndex->getNextPos();;
+          goto Index;
+      }
       return true;
   }
   bool Storage::save() {
       for (const auto& theBlock : blocks) {
-          const auto& theContents = *theBlock.get();
+          auto& theContents = *theBlock.get();
           theContents->save(stream);
           if (theContents->getType() == BlockType::schema_block)
               indices.insert(std::make_pair(&(theContents->getStorablePos()), theContents->getName()));
@@ -276,10 +118,12 @@ namespace ECE141 {
       indexBlock();
       return true;
   }
- 
-  bool Storage::retrieve(const BlockVisitor& aVisitor) {
-      return true;
+
+  bool Storage::load(BlockIterator& anIterator) {
+      return anIterator.retrieve(stream);
   }
+ 
+
 
 
 }

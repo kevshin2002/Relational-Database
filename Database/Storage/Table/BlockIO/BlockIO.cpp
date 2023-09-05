@@ -30,6 +30,12 @@ namespace ECE141 {
     return StatusResult{Errors::noError};
   }
 
+  StatusResult Block::read(std::istream& aStream) {
+      aStream.seekg(position * kBlockSize);
+      aStream.read(payload, kBlockSize);
+      return StatusResult{ Errors::noError };
+  }
+
   bool Block::initHeader(BlockType aType, uint32_t hashedString) {
       header.name = hashedString;
       return true;
@@ -46,14 +52,6 @@ namespace ECE141 {
       auto  theMode = std::visit(modeToInt(), aMode);
       stream.clear(); // Clear flag just-in-case...
       stream.open(aName.c_str(), theMode); //force truncate if...
-  }
-
-
-  StatusResult BlockIO::load_Payload(uint32_t aBlockNumber, std::stringstream& aContent) {
-      char theBuffer[kBlockSize];
-      stream.read(theBuffer, aBlockNumber * kBlockSize);
-      aContent << theBuffer;
-      return Errors::noError;
   }
 
   uint32_t BlockIO::chunk(std::string aContent) {

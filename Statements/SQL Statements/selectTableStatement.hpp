@@ -35,8 +35,6 @@ namespace ECE141 {
 				theResult = Errors::invalidCommand;
 			return theResult;
 		}
-
-		
 	};
 }
 #endif // selectTableStatement.hpp

@@ -20,7 +20,9 @@ namespace ECE141 {
   }
 
   StatusResult Database::dump(std::ostream& anOutput) {
-      return StatusResult{ Errors::noError };
+    //  auto& theIndices = storage.getIndices();
+      //storage.retrieve();
+      return Errors::notImplemented;
   }
 
   StatusResult    Database::fetchTables(std::set<std::string>& aTableList) {

@@ -22,7 +22,12 @@
 
 
 namespace ECE141 {
-    class Storable;
+  const int32_t kNewBlock = -1;
+  const size_t typeError = 14;
+  const std::string kTableIndex = "tableIndex";
+
+  class Storable;
+
   enum class BlockType {
     data_block='D',
     free_block='F',
@@ -64,16 +69,18 @@ namespace ECE141 {
   using UniqueStorable = std::unique_ptr<Storable*>;
   class Block {
   public:
-      Block(BlockType aType = BlockType::data_block, uint32_t aPointer = 1, std::string aName = "", uint32_t aHash = 0);
+      Block(BlockType aType = BlockType::unknown_block, uint32_t aPointer = 1, std::string aName = "", uint32_t aHash = 0);
       Block(const Block& aCopy);
       Block& operator=(const Block& aCopy);
 
       StatusResult  write(std::ostream& aStream);
+      StatusResult  read(std::istream& aStream);
       bool          initHeader(BlockType aType, uint32_t hashedString);
 
       uint32_t&     getPos() { return position; }
       uint32_t&     getHashName() { return header.name; }
       std::string&  getIdentifierName() { return name; }
+      std::string   getPayload() { return payload; }
 
 
       BlockHeader   header;
@@ -81,7 +88,8 @@ namespace ECE141 {
       std::string   name;
       uint32_t      position;
   };
-
+  using BlockVisitor = std::function<bool(const Block&)>;
+  using BlockList = std::deque<uint32_t>;
   //------------------------------
 
    struct CreateFile {
@@ -97,11 +105,9 @@ namespace ECE141 {
 
   using AccessMode=std::variant<CreateFile, OpenFile>;
 
-  class BlockIO {
+  class BlockIO{
   public:
     BlockIO(const std::string& aName, AccessMode aMode);
-
-    StatusResult                        load_Payload(uint32_t aBlockNumber, std::stringstream& aContent);
     uint32_t                            chunk(std::string aContent);
 
     uint32_t                            getBlockCount();

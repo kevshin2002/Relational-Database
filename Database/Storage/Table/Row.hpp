@@ -28,7 +28,7 @@ namespace ECE141 {
 
     Row(uint32_t aID=0);
     Row(const Row &aRow);
-   // Row(Row&& aSource);
+    Row(Row&& aSource);
     
     ~Row();
     
