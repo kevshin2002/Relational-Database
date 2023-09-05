@@ -50,3 +50,26 @@ x64/Debug/main.obj
 *.enc
 *.recipe
 *.tlog
+*.json
+.vs/CMake Overview
+*.lock
+.vs/CMake/v17/.wsuo
+*.sqlite
+out/build/x64-debug/.ninja_deps
+out/build/x64-debug/.ninja_log
+*.ninja
+*.cmake
+*.exe
+*.manifest
+*.pdb
+*.lib
+*.h
+*.c
+*.log
+out/build/x64-debug/VSInheritEnvironments.txt
+out/build/x64-debug/CMakeFiles/TargetDirectories.txt
+*.check_cache
+*.bin
+out/build/x64-debug/CMakeFiles/3.24.202208181-MSVC_2/CompilerIdCXX/CMakeCXXCompilerId.cpp
+out/build/x64-debug/CMakeFiles/MyApp.dir/manifest.rc
+out/build/x64-debug/CMakeFiles/MyApp.dir/manifest.res

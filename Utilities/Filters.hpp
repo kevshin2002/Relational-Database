@@ -11,9 +11,8 @@
 
 #include <limits>
 #include "Compare.hpp"
-#include "../Utilities/Tokenizer/Tokenizer.hpp"
+#include "Tokenizer/Tokenizer.hpp"
 #include "../Database/Storage/Table/Schema.hpp"
-
 
 namespace ECE141 {
   using StringList = std::vector<std::string>;
