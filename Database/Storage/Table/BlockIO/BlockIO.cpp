@@ -9,7 +9,7 @@
 
 namespace ECE141 {
 
-    Block::Block(BlockType aType, uint32_t aPointer, std::string aName, uint32_t aHash) : position(aPointer), name(aName) {
+    Block::Block(BlockType aType, uint32_t aPointer, std::string aName, uint32_t aHash) : name(aName) {
         header = BlockHeader(aType, aHash);
     }
 
@@ -23,23 +23,7 @@ namespace ECE141 {
     return *this;
   }
 
-  StatusResult Block::write(std::ostream &aStream) {
-      aStream.seekp(position * kBlockSize);
-      aStream.write(payload, kBlockSize);
-      aStream.flush();
-    return StatusResult{Errors::noError};
-  }
 
-  StatusResult Block::read(std::istream& aStream) {
-      aStream.seekg(position * kBlockSize);
-      aStream.read(payload, kBlockSize);
-      return StatusResult{ Errors::noError };
-  }
-
-  bool Block::initHeader(BlockType aType, uint32_t hashedString) {
-      header.name = hashedString;
-      return true;
-  }
   //---------------------------------------------------
 
   struct modeToInt {
@@ -54,9 +38,18 @@ namespace ECE141 {
       stream.open(aName.c_str(), theMode); //force truncate if...
   }
 
-  uint32_t BlockIO::chunk(std::string aContent) {
-      uint32_t theNum = std::ceil(aContent.size() / kPayloadSize);
-      return theNum == 0 ? 1 : theNum;
+  StatusResult BlockIO::writeBlock(uint32_t aBlockNum, Block& aBlock) {
+      std::stringstream theStream;
+      theStream << aBlock.header.type << " " << aBlock.header.name << " ";
+      theStream << aBlock.payload;
+      stream.seekp(aBlockNum * kBlockSize);
+      stream.write(theStream.str().c_str(), kBlockSize);
+      stream.flush();
+      return Errors::noError;
+  }
+
+  StatusResult BlockIO::readBlock(uint32_t aBlockNumber, Block& aBlock) {
+      return StatusResult{ Errors::readError };
   }
 
   // USE: count blocks in file ---------------------------------------
@@ -64,7 +57,8 @@ namespace ECE141 {
      stream.seekg(0, std::ios::end); 
      std::streampos fileSize = stream.tellg(); 
      stream.seekg(0, std::ios::beg); 
-     return static_cast<uint32_t>(fileSize / kBlockSize);
+     pointerIndex = static_cast<uint32_t>(fileSize / kBlockSize);
+     return pointerIndex;
   }
 
 }

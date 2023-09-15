@@ -118,12 +118,12 @@ namespace ECE141 {
 		StatusResult theResult = Errors::tableExists;
 		auto& theDB = statement->getDatabase();
 		auto* theQuery = statement->getQuery();
-		if (!tables.count(theQuery->getSchema()->getName()))
+		if (!tables.count(theQuery->getSchema()->getName())){
 			theResult = theDB ? theDB->getStorage().add(statement->getType(), theQuery) : Errors::noDatabaseSpecified;
-	
-		if (theResult) {
-			StringView theView = "Query OK, 0 rows affected";
-			aViewer(theView);
+			if (theResult) {
+				StringView theView = "Query OK, 0 rows affected";
+				aViewer(theView);
+			}
 		}
 		return theResult;
 	}
@@ -221,7 +221,7 @@ namespace ECE141 {
 
 		switch (aType) {
 		case StatementType::insertTable:
-			aQuery->setRows(Validator::insert(theAttributes, theIdentifiers, theValues, theResult));
+			aQuery->setRows(Validator::insert(theDBSchema->getHash(), theAttributes, theIdentifiers, theValues, theResult));
 			break;
 		case StatementType::selectTable:
 			break;

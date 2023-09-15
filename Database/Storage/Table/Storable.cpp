@@ -9,7 +9,7 @@
 #include "Storable.hpp"
 
 namespace ECE141 {
-    // IndexStorable
+ /*   // IndexStorable
 //--------------------------------------------------------------
     StatusResult  IndexBlock::encode() {
         std::stringstream thePayload;
@@ -101,4 +101,5 @@ namespace ECE141 {
     BlockType     DataBlock::getType() { return static_cast<BlockType>(header.type); }
     uint32_t&     DataBlock::getHash() { return getHashName(); }
     std::string&  DataBlock::getName() { return getIdentifierName(); }
+    */
 }

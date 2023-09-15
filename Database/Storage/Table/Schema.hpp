@@ -13,14 +13,18 @@
 
 namespace ECE141 {
   class Database;
-  class Schema {
+  class Schema : public Storable {
   public:
-                          Schema(Database* aDB);
-                          Schema(const Schema &aCopy);
-                          ~Schema();
+    Schema(Database* aDB);
+    Schema(const Schema &aCopy);
+    ~Schema();
+    std::istream& operator<<(std::istream& anInput) override;
+    std::ostream& operator>>(std::ostream& anOutput) override;
+    BlockHeader initHeader() override;
+
     Schema&               setName(const std::string& aName); 
-    Schema& addAttribute(const Attribute& anAttribute);
-    uint32_t                hashString(const std::string& aField);
+    Schema&               addAttribute(const Attribute& anAttribute);
+    uint32_t              hashString(const std::string& aField);
     const std::string&    getName() const {return name;}
     Attribute*            getAttribute(const std::string& aField);
     AttributeList& getAttributes() { return attributes; }

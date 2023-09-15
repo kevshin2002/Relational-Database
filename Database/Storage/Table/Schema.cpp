@@ -24,6 +24,28 @@ namespace ECE141 {
     //std::cout << "~Schema()\n";
   }
 
+  std::istream& Schema::operator<<(std::istream& anInput) {
+      return anInput;
+  }
+  std::ostream& Schema::operator>>(std::ostream& anOutput) {
+      for (const auto& theAttribute : attributes) {
+          anOutput << theAttribute.getName() << " ";
+
+          if (theAttribute.getType() == DataTypes::varchar_type)
+              anOutput << Helpers::dataTypeToString(theAttribute.getType()) << " " << theAttribute.getSize() << " ";
+          else
+              anOutput << Helpers::dataTypeToString(theAttribute.getType()) << " ";
+
+          anOutput << "primary:" << theAttribute.isPrimary() << " "
+              << "increment:" << theAttribute.isIncrement() << " "
+              << "nullable:" << theAttribute.isNull() << " "
+              << "unique:" << theAttribute.isUnique() << " \\ ";
+      }
+      return anOutput;
+  }
+  BlockHeader Schema::initHeader() {return BlockHeader(BlockType::schema_block, hashedName); }
+
+
   Schema& Schema::addAttribute(const Attribute& anAttribute) {
       attributes.push_back(anAttribute);
       return *this;

@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 #include "Attribute.hpp"
+#include "Storable.hpp"
 
 //feel free to use this, or create your own version...
 
@@ -23,7 +24,7 @@ namespace ECE141 {
     using Value = std::variant<bool, int, float, std::string>;
   using KeyValues = std::map<const std::string, Value>;
 
-  class Row  {
+  class Row {
   public:
 
     Row(uint32_t aID=0);
@@ -33,7 +34,7 @@ namespace ECE141 {
     ~Row();
     
     Row& operator=(const Row &aRow);
-    bool operator==(Row &aCopy) const;
+    bool operator==(const Row &aCopy) const;
     
       //STUDENT: What other methods do you require?
                           
@@ -51,8 +52,27 @@ namespace ECE141 {
   };
 
   //-------------------------------------------
+  class RowCollection : public Storable {
+  public:
+      RowCollection(uint32_t aSchemaID = 0);
+      RowCollection(const RowCollection& aCollection);
+      ~RowCollection();
 
-  using RowCollection = std::deque<std::shared_ptr<Row>>;
+      RowCollection& operator=(const RowCollection& aCollection);
+
+      std::istream& operator<<(std::istream& anInput) override;
+      std::ostream& operator>>(std::ostream& anOutput) override;
+      BlockHeader initHeader() override;
+      
+
+      bool add(Row& aRow);
+      bool remove(Row& aRow);
+      size_t size() { return rows.size(); }
+
+  protected:
+      uint32_t schemaID;
+      std::vector<Row> rows;
+  };
 
 
 }

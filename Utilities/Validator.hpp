@@ -15,8 +15,8 @@
 namespace ECE141 {
 	struct Validator {
 		// To check for uniqueness, we must pass in the entire table (schema + rows)
-		static RowCollection insert(AttributeList aAttributeList, StringList& aIdentifierList, StringList& aValueList, StatusResult aResult) {
-			RowCollection theRows;
+		static RowCollection insert(uint32_t aSchemaID, AttributeList aAttributeList, StringList& aIdentifierList, StringList& aValueList, StatusResult aResult) {
+			RowCollection theRows(aSchemaID);
 			aResult = aValueList.size() % aIdentifierList.size() == 0 ? combine(aIdentifierList, aValueList, theRows) : Errors::insertSize;
 			if (aIdentifierList.size() != aAttributeList.size()) {
 				for (auto& theIdentifier : aIdentifierList) {
@@ -52,7 +52,7 @@ namespace ECE141 {
 					theData.insert(std::make_pair(aIdentifierList[theCount], aValueList.back()));
 					aValueList.pop_back();
 				}
-				aRowList.push_back(std::make_unique<Row>(theRow));
+				aRowList.add(theRow);
 			}
 			return Errors::noError;
 		}

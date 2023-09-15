@@ -10,48 +10,49 @@
 
 #include <cmath>
 #include <cstdlib>
-#include "BufferManager.hpp"
+#include <bitset>
+#include "Table/Table.hpp"
+#include "Table/BlockIO/Chunker.hpp"
+#include "../../Statements/DBQuery.hpp"
 
 namespace ECE141 {
 
-  class Storage : public BlockIO {
+  class Storage : public BlockIO, public BlockIterator {
   public:
         
     Storage(const std::string& aPath, AccessMode aMode);
     ~Storage();
 
     StatusResult        read(StatementType aStmtType, DBQuery* aQuery); // call load
-
     StatusResult        add(StatementType aStmtType, DBQuery* aQuery);
     StatusResult        drop(StatementType aStmtType, DBQuery* aQuery);
+
+    bool each(const BlockVisitor& aVisitor) override;
 
     StatusResult        fetchTables(std::set<std::string>& aTableList);
 
     Schema*             getSchema(const std::string& aName);
     Table*              getTable(const std::string& aNacme);
-    Tables& getTables() { return tables; }
+    Tables&             getTables() { return tables; }
     
     
      //StatusResult markBlockAsFree(uint32_t aPos); maybe?
-     //uint32_t     getFreeBlock(); //pos of next free (or new)...
+     
 
   protected:
-
+     uint32_t&  getFreeBlock(size_t aCount);
+     bool initialize();
+     bool save();
       
-      // Maybe a StorageProcessor that creates a block type? Version 2.0 -> have AppController hold onto a StorageProcessor(which then holds onto a database)
-      StatusResult    indexBlock();
-
-      bool load(BlockIterator& anIterator);
-      bool initialize();
-      bool save();
 
 
-
-    uint32_t  getFreeBlock(); //pos of next free (or new)...
+   //pos of next free (or new)...
 
   private:
     bool   changed = false;  //might be helpful, or ignore if you prefer.
-    BufferManager buffer;
+
+    BlockList freeBlocks;
+    std::vector<Storable*> storables;
 
     //BlockIterator* iterator = nullptr;
 

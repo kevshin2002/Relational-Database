@@ -72,11 +72,6 @@ namespace ECE141 {
       Block(const Block& aCopy);
       Block& operator=(const Block& aCopy);
 
-      StatusResult  write(std::ostream& aStream);
-      StatusResult  read(std::istream& aStream);
-      bool          initHeader(BlockType aType, uint32_t hashedString);
-
-      uint32_t&     getPos() { return position; }
       uint32_t&     getHashName() { return header.name; }
       std::string&  getIdentifierName() { return name; }
       std::string   getPayload() { return payload; }
@@ -85,10 +80,10 @@ namespace ECE141 {
       BlockHeader   header;
       char          payload[kPayloadSize];
       std::string   name;
-      uint32_t      position;
   };
-  using BlockVisitor = std::function<bool(const Block&)>;
+  using BlockVisitor = std::function<bool(uint32_t, Block&)>;
   using BlockList = std::deque<uint32_t>;
+  using Blocks = std::vector<Block>;
   //------------------------------
 
    struct CreateFile {
@@ -113,6 +108,9 @@ namespace ECE141 {
     uint32_t&                           getPointerIndex() { return pointerIndex; }
     std::map<uint32_t*, std::string>&   getIndices() { return indices; }
     
+    virtual StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
+    virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
+
   protected:
     std::map<uint32_t*, std::string> indices;
     std::deque<UniqueStorable> blocks;
