@@ -27,8 +27,9 @@ namespace ECE141 {
 
     std::string&    getName() { return name; }
     Schema*         getSchema(const std::string& aName);
-    TableOpt        getTable(const std::string& aName);
+
     Storage&        getStorage()  { return storage; } // maybe make it a pointer for flexibility?
+
   protected:
     Storage         storage;
     std::string     name;

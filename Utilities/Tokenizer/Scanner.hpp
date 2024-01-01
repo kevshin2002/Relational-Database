@@ -29,7 +29,7 @@ namespace ECE141 {
   const char apostrophe = '\'';
   const char quote = '"';
   const char all = '*';
-
+  const char backslash = '\\';
 
   class Scanner {
   public:

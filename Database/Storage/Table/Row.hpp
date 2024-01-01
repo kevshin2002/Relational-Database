@@ -62,12 +62,15 @@ namespace ECE141 {
 
       std::istream& operator<<(std::istream& anInput) override;
       std::ostream& operator>>(std::ostream& anOutput) override;
+
       BlockHeader initHeader() override;
-      
+      std::string getName() override { return std::to_string(schemaID); }
+      uint32_t    getSize() override { return kPayloadSize; }
 
       bool add(Row& aRow);
       bool remove(Row& aRow);
       size_t size() { return rows.size(); }
+      RowCollection& clear() { rows.clear(); return *this; }
 
   protected:
       uint32_t schemaID;

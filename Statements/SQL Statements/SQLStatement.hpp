@@ -47,11 +47,14 @@ namespace ECE141 {
 						aTokenizer.skipTo(TokenType::identifier) ? theResult : Errors::identifierExpected :
 						Errors::invalidCommand;
 				}
-				else{
+				else {
 					theResult = aTokenizer.skipTo(TokenType::identifier) ? Errors::noError : Errors::identifierExpected;
 				}
 				break;
 			}
+
+			if (theResult)
+				identifier = aTokenizer.current().data;
 			return theResult;
 		}
 		bool isConditional(Tokenizer& aTokenizer) {
@@ -71,9 +74,10 @@ namespace ECE141 {
 		}
 		UniqueDatabase& getDatabase() { return database; }
 		DBQuery* getQuery()  { return query; };
-		
+		std::string& getIdentifier() { return identifier; }
 	protected:
 		UniqueDatabase& database;
+		std::string identifier;
 		DBQuery* query; // consider making all pointers into smart pointers. reminder
 	};
 }

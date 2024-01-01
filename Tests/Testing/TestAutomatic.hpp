@@ -331,7 +331,7 @@ namespace ECE141 {
                         }
                     }
                     else if (theSeq.clear().nextIs(dumpDB)) {
-                        if (theSeq.skipPast(Keywords::query_kw)) {
+                        if (theSeq.skipPast(Keywords::rows_kw)) {
                             if (theTokenizer.skipTo(TokenType::number)) {
                                 theSeq.getNumber(theValue).skipPast(')');
                                 aResults.push_back({ Commands::dumpDB,theValue });

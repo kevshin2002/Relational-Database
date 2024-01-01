@@ -7,19 +7,13 @@
 //
 
 #include "AppController.hpp"
-// create #show include parser cause these circular dependencies are going crazy
 
 namespace ECE141 {
   
   AppController::AppController() : running{ true }, db(nullptr), next(new DBProcessor()) {}
-  AppController::~AppController() { 
-      delete next; 
-  }
-  // USE: -----------------------------------------------------
-  
-  //build a tokenizer, tokenize input, ask processors to handle...
-  StatusResult AppController::handleInput(std::istream& anInput,
-                                        ViewListener aViewer){
+  AppController::~AppController() { delete next; }
+
+  StatusResult AppController::handleInput(std::istream& anInput, ViewListener aViewer){
     Config::getTimer().reset();
     Tokenizer theTokenizer(anInput);
     StatusResult theResult=theTokenizer.tokenize(terminator);
@@ -100,15 +94,9 @@ namespace ECE141 {
       return Errors::noError;
   }
   
-  bool AppController::holdDB(UniqueDatabase& aDB) {
-      db.reset(aDB.release());
-      return true;
-  }
+  void AppController::holdDB(UniqueDatabase& aDB) { db.reset(aDB.release()); }
   
-  bool AppController::releaseDB() {
-      db.reset();
-      return true;
-  }
+  void AppController::releaseDB() { db.reset(); }
 
   OptString AppController::getError(StatusResult& aResult) const {
 

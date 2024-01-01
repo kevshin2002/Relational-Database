@@ -11,9 +11,10 @@
 #include <cmath>
 #include <cstdlib>
 #include <bitset>
-#include "Table/Table.hpp"
+#include "Index.hpp"
 #include "Table/BlockIO/Chunker.hpp"
 #include "../../Statements/DBQuery.hpp"
+#include "Table/Schema.hpp"
 
 namespace ECE141 {
 
@@ -21,28 +22,28 @@ namespace ECE141 {
   public:
         
     Storage(const std::string& aPath, AccessMode aMode);
+    Storage(const Storage& aStorage);
     ~Storage();
 
     StatusResult        read(StatementType aStmtType, DBQuery* aQuery); // call load
     StatusResult        add(StatementType aStmtType, DBQuery* aQuery);
-    StatusResult        drop(StatementType aStmtType, DBQuery* aQuery);
-
+    StatusResult        drop(const std::string& aName, DBQuery* aQuery);             
     bool each(const BlockVisitor& aVisitor) override;
 
-    StatusResult        fetchTables(std::set<std::string>& aTableList);
 
     Schema*             getSchema(const std::string& aName);
-    Table*              getTable(const std::string& aNacme);
-    Tables&             getTables() { return tables; }
-    
+    RowCollection& getRows(const std::string& aName) { return rows; }
     
      //StatusResult markBlockAsFree(uint32_t aPos); maybe?
      
 
   protected:
-     uint32_t&  getFreeBlock(size_t aCount);
+     StatusResult        fetchTables(std::set<std::string>& aTableList);
+     uint32_t&           getFreeBlock(size_t aCount);
+     StatusResult        getData(std::string aName);
      bool initialize();
      bool save();
+     bool index(bool aConfig);
       
 
 
@@ -61,7 +62,6 @@ namespace ECE141 {
     RowCollection    rows;
 
 
-    Tables tables; 
     friend class Database;
   };
 

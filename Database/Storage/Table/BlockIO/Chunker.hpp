@@ -21,7 +21,9 @@ namespace ECE141 {
 	protected:
 		std::stringstream contents;
 		Storable* storable;
+
 		BlockHeader header;
+		std::string name;
 	};
 }
 

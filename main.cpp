@@ -24,15 +24,15 @@ int main(int argc, const char* argv[]) {
 
         ECE141::TestAutomatic run;
         static ECE141::TestCalls theCalls{
-          {"about", [&](std::stringstream& anOut) {
+          {"about", [&](std::stringstream& anOut) { // done
             return run.aboutTest(anOut); }},
           {"cache", [&](std::stringstream& anOut) {
             return run.cacheCommandTest(anOut); }},
           {"compile", [&](std::stringstream& anOut) {
             return run.compileTest(anOut); }},
-          {"delete", [&](std::stringstream& anOut) {
+          {"delete", [&](std::stringstream& anOut) { 
             return run.deleteCommandTest(anOut); }},
-          {"db", [&](std::stringstream& anOut) {
+          {"db", [&](std::stringstream& anOut) { // done
             return run.dbCommandsTest(anOut); }},
           {"drop", [&](std::stringstream& anOut) {
             return run.dropCommandTest(anOut); }},
@@ -40,11 +40,11 @@ int main(int argc, const char* argv[]) {
             return run.dojoTest(anOut); }},
           {"filter", [&](std::stringstream& anOut) {
             return run.filterCommandTest(anOut); }},
-          {"help",   [&](std::stringstream& anOut) {
+          {"help",   [&](std::stringstream& anOut) { // done
             return run.helpTest(anOut); }},
           {"index", [&](std::stringstream& anOut) {
             return run.indexCommandTest(anOut); }},
-          {"insert", [&](std::stringstream& anOut) {
+          {"insert", [&](std::stringstream& anOut) { // done
             return run.insertCommandTest(anOut); }},
           {"join", [&](std::stringstream& anOut) {
             return run.joinCommandTest(anOut); }},
@@ -54,15 +54,15 @@ int main(int argc, const char* argv[]) {
             return run.insertCommandTest(anOut,20); }},
           {"select", [&](std::stringstream& anOut) {
             return run.selectCommandTest(anOut); }},
-          {"table", [&](std::stringstream& anOut) {
+          {"table", [&](std::stringstream& anOut) { // done
             return run.tableCommandsTest(anOut); }},
-          {"parse", [&](std::stringstream& anOut) {
+          {"parse", [&](std::stringstream& anOut) { // done
             return run.parseTest(anOut); }},
           {"update", [&](std::stringstream& anOut) {
             return run.updateCommandTest(anOut); }},
           {"quit", [&](std::stringstream& anOut) {
             return run.quitTest(anOut); }},
-          {"version", [&](std::stringstream& anOut) {
+          {"version", [&](std::stringstream& anOut) { //done
             return run.versionTest(anOut); }},
         };
         int* myInt = new int;
@@ -71,14 +71,14 @@ int main(int argc, const char* argv[]) {
         std::string theCmd(argv[1]);
         std::transform(theCmd.begin(), theCmd.end(), theCmd.begin(),
             [](unsigned char c) { return std::tolower(c); });
-
+        // consider adding in manual to call automatic tests
         if (theCalls.count(theCmd)) {
             std::stringstream theOutput;
             bool theResult = theCalls[theCmd](theOutput);
             const char* theStatus[] = { "FAIL","PASS" };
             std::cout << theCmd << " test " << theStatus[theResult] << "\n";
             std::cout << "---------------------------------\n" << theOutput.str() << "\n";
-        }
+            }
         else std::cout << "Unknown test\n";
     }
     else {

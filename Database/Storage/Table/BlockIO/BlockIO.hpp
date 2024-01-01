@@ -17,11 +17,13 @@
 #include <deque>
 #include <stack>
 #include <set>
+#include "../../../../Utilities/Tokenizer/Scanner.hpp"
 #include "../../../../Utilities/Config.hpp"
 #include "../../../../Utilities/Helpers.hpp"
 
 namespace ECE141 {
   const int32_t kNewBlock = -1;
+  const uint32_t Offset_One = 1;
   const size_t typeError = 14;
   const std::string kTableIndex = "tableIndex";
 
@@ -30,6 +32,7 @@ namespace ECE141 {
   enum class BlockType {
     data_block='D',
     free_block='F',
+    glossary_block='G',
     index_block='I',
     schema_block = 'S',
     unknown_block='U',
@@ -53,35 +56,37 @@ namespace ECE141 {
     BlockHeader& operator=(const BlockHeader& aCopy) {
       type=aCopy.type;
       name = aCopy.name;
+      offset = aCopy.offset;
       return *this;
     }
    
     char          type;     //char version of block type
     uint32_t      name;
+    uint32_t      offset = 0;
     //other properties? 
   };
 
   const size_t kBlockSize = 1024;
-  const size_t kPayloadSize = (kBlockSize - sizeof(BlockHeader)) - 3;
+  const size_t kPayloadSize = (kBlockSize - sizeof(BlockHeader)) - 1;
   const uint32_t kFirstBlock = 0;
   //block .................
-  using UniqueStorable = std::unique_ptr<Storable*>;
   class Block {
   public:
       Block(BlockType aType = BlockType::unknown_block, uint32_t aPointer = 1, std::string aName = "", uint32_t aHash = 0);
       Block(const Block& aCopy);
       Block& operator=(const Block& aCopy);
 
-      uint32_t&     getHashName() { return header.name; }
-      std::string&  getIdentifierName() { return name; }
+      uint32_t&  getHashName() { return header.name; }
       std::string   getPayload() { return payload; }
-
+      bool          setName(std::string& aName) { name = aName; return true; }
+      bool          setOffset(uint32_t anOffset) { header.offset = anOffset; return true; } // magic number, not sure 
 
       BlockHeader   header;
       char          payload[kPayloadSize];
       std::string   name;
   };
-  using BlockVisitor = std::function<bool(uint32_t, Block&)>;
+
+  using BlockVisitor = std::function<bool(uint32_t&, Block&)>;
   using BlockList = std::deque<uint32_t>;
   using Blocks = std::vector<Block>;
   //------------------------------
@@ -98,22 +103,23 @@ namespace ECE141 {
   };
 
   using AccessMode=std::variant<CreateFile, OpenFile>;
-
-  class BlockIO{
+  using IndexID = std::pair<uint32_t, std::string>;
+  using Indices = std::map<IndexID, char>;
+  class BlockIO : public Scanner {
   public:
     BlockIO(const std::string& aName, AccessMode aMode);
-    uint32_t                            chunk(std::string aContent);
-
-    uint32_t                            getBlockCount();
+    BlockIO(const BlockIO& aBlockIO);
+    uint32_t&                            getBlockCount();
     uint32_t&                           getPointerIndex() { return pointerIndex; }
-    std::map<uint32_t*, std::string>&   getIndices() { return indices; }
+    Indices&   getIndices() { return indices; }
     
+    bool    isBlockType(BlockType aType);
     virtual StatusResult  readBlock(uint32_t aBlockNumber, Block& aBlock);
     virtual StatusResult  writeBlock(uint32_t aBlockNumber, Block& aBlock);
 
   protected:
-    std::map<uint32_t*, std::string> indices;
-    std::deque<UniqueStorable> blocks;
+
+    Indices indices;
 
     std::fstream stream;
     uint32_t pointerIndex = 1;

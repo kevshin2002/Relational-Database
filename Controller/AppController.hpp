@@ -24,9 +24,9 @@ namespace ECE141 {
     Statement*          makeStatement(Tokenizer& aTokenizer, AppController* anAppController) override;
     StatusResult        run(Statement* aStatement, ViewListener aViewer) override;
 
-    bool                holdDB(UniqueDatabase& aDB);
-    bool                releaseDB();
-    UniqueDatabase& getDB() { return db; }
+    UniqueDatabase&     getDB() { return db; }
+    void                holdDB(UniqueDatabase& aDB);
+    void                releaseDB();
 
   protected:
     OptString           getError(StatusResult& aResult) const;
@@ -34,6 +34,7 @@ namespace ECE141 {
   private:
     char terminator = ';';
     bool running = false;
+
     UniqueDatabase db;
     AppProcessor* next = nullptr;
   };

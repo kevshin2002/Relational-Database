@@ -13,7 +13,7 @@
 
 namespace ECE141 {
 	DBProcessor::DBProcessor() : next(new SQLProcessor()) { fetchDatabases(); }
-	DBProcessor::~DBProcessor() {delete next;}
+	DBProcessor::~DBProcessor() { delete next; }
 	bool	DBProcessor::isProcessable(Keywords& aKeyword) const{
 		switch (aKeyword) {
 		case Keywords::create_kw:
@@ -191,11 +191,11 @@ namespace ECE141 {
 		std::stringstream theStream;
 		auto theController = statement->getAppController();
 		std::string theDBName = statement->getDBName();
-
 		if (dbExists(theDBName)) {
+			theController->releaseDB();
 			auto theDB = std::make_unique<Database>(theDBName, OpenFile());
 			theController->holdDB(theDB);
-			theResult = theDB->dump(theStream);
+			theResult = theController->getDB()->dump(theStream);
 			StringView theView(theStream.str());
 			aViewer(theView);
 		}

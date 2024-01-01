@@ -43,7 +43,20 @@ namespace ECE141 {
       schemaID = aCollection.schemaID;
       return *this;
   }
-  std::istream& RowCollection::operator<<(std::istream& anInput) { return anInput; }
+  std::istream& RowCollection::operator<<(std::istream& anInput) { 
+      uint32_t theCount = static_cast<uint32_t>(rows.size());
+      std::string theData, theKey, theValue;
+      while (anInput >> theData) {
+          Row theRow(theCount++);
+          size_t thePos = theData.find(':');
+          if (thePos != std::string::npos) {
+              theKey = theData.substr(0, thePos);
+              theValue = theData.substr(thePos + 1);
+          }
+          theRow.set(theKey, theValue);
+      }
+      return anInput; 
+  }
   std::ostream& RowCollection::operator>>(std::ostream& anOutput) {
       for (auto& theRow : rows) {
           auto& theDatas = theRow.getData();
@@ -54,10 +67,13 @@ namespace ECE141 {
       return anOutput;
   }
   BlockHeader RowCollection::initHeader() { return BlockHeader(BlockType::data_block, schemaID); }
+
   bool RowCollection::add(Row& aRow) {
       rows.push_back(aRow);
       return true;
   }
+
+  
 
   bool RowCollection::remove(Row& aRow) {
       bool theResult = false;

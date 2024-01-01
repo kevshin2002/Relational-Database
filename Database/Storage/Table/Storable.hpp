@@ -24,6 +24,9 @@ namespace ECE141 {
         virtual std::istream& operator<<(std::istream& anInput) = 0;
         virtual std::ostream& operator>>(std::ostream& anOutput) = 0;
         virtual BlockHeader initHeader() = 0;
+        virtual std::string getName() = 0;
+        virtual uint32_t    getSize() = 0;
+
     };
 }
 

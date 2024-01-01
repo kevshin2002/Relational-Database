@@ -73,6 +73,14 @@ namespace ECE141 {
 
   };
 
+  static std::map<std::string_view, DataTypes> gDataTypes = {
+      std::make_pair("bool", DataTypes::bool_type),
+      std::make_pair("datetime", DataTypes::datetime_type),
+      std::make_pair("float", DataTypes::float_type),
+      std::make_pair("int", DataTypes::int_type),
+      std::make_pair("varchar", DataTypes::varchar_type),
+      std::make_pair("none", DataTypes::no_type),
+  };
   //This (incomplete) map binds keyword-string to Keyword (token)...
   static std::map<std::string_view,  Keywords> gDictionary = {
     std::make_pair("about",     Keywords::about_kw),
@@ -186,6 +194,19 @@ namespace ECE141 {
         default:                    return DataTypes::no_type;
         }
     }
+
+    static const char* blockTypeToString(char aChar) {
+        switch (aChar) {
+        case 'G':
+            return "Meta";
+        case 'S':
+            return "Schema";
+        case 'D':
+            return "Data";
+        default:
+            return "Unknown";
+        }
+    }
     //convert from char to keyword...
     static Keywords charToKeyword(char aChar) {
       switch(toupper(aChar)) {
@@ -196,6 +217,16 @@ namespace ECE141 {
         case 'V': return Keywords::varchar_kw;
         default:  return Keywords::unknown_kw;
       }
+    }
+
+    static Keywords charToExtra(char aChar) {
+        switch (toupper(aChar)) {
+        case 'P': return Keywords::primary_kw;
+        case 'I': return Keywords::auto_increment_kw;
+        case 'N': return Keywords::null_kw;
+        case 'U': return Keywords::unique_kw;
+        default:  return Keywords::unknown_kw;
+        }
     }
       
     static const char* dataTypeToString(DataTypes aType) {
@@ -256,6 +287,12 @@ namespace ECE141 {
                StatementType::unknown;
     }
 
+    static DataTypes stringToDataType(std::string& aString) {
+        return gDataTypes.count(aString) ?
+            gDataTypes[aString] :
+            DataTypes::no_type;
+    }
+
     // USE: ---validate that given keyword is a datatype...
     static bool isDatatype(Keywords aKeyword) {
       switch(aKeyword) {
@@ -291,6 +328,14 @@ namespace ECE141 {
         if(aKeyword==k) return true;
       }
       return false;
+    }
+
+    static uint32_t hashString(const std::string& aField) {
+        uint32_t hashedName = 0;
+        for (char theChar : aField) {
+            hashedName = hashedName * 31 + static_cast<uint32_t>(theChar) % 100000000;
+        }
+        return hashedName;
     }
  /*      
   static ECE141::Keywords gJoinTypes[]={

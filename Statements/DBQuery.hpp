@@ -69,6 +69,7 @@ namespace ECE141 {
     Filters&            getFilters() { return filters; }
     Schema*             getSchema() { return fromTable; }
     RowCollection&      getRows() { return rows; }
+    bool                isAll() { return all; }
   protected:
     Schema*  fromTable;
     RowCollection rows;
@@ -80,7 +81,6 @@ namespace ECE141 {
     Filters  filters;
 
     bool     all; //if user used SELECT * FROM...
-
     //e.g. what if the user says, "SELECT name, age FROM students WHERE..."
 
   };

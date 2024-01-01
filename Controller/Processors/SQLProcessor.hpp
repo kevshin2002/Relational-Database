@@ -30,7 +30,7 @@ namespace ECE141 {
 
 	protected:
     StatusResult process(StatementType aType, DBQuery* aQuery);
-
+	StatusResult initialize();
 	StatusResult		createTable(ViewListener aViewer);
 	StatusResult		dropTable(ViewListener aViewer);
 	StatusResult		insertTable(ViewListener aViewer);
@@ -43,6 +43,7 @@ namespace ECE141 {
 	// This is populated through the API in Storage (fetchTables).
 	// It is ran in the beginning of run only when the size of the table is zero.
 	std::set<std::string> tables;
+	std::string name = "none";
 
 	SQLStatement* statement = nullptr;
 	AppProcessor* next = nullptr;

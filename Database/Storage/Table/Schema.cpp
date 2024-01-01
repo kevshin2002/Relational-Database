@@ -9,8 +9,8 @@
 
 namespace ECE141 {
 
- //STUDENT: Implement this class...
-
+    //STUDENT: Implement this class...
+  Schema::Schema(const std::string& aName) : name(aName), hashedName(Helpers::hashString(aName)) {}
   Schema::Schema(Database* aDB) : database(aDB) {}
 
   Schema::Schema(const Schema &aCopy) : database(aCopy.database) {
@@ -25,6 +25,30 @@ namespace ECE141 {
   }
 
   std::istream& Schema::operator<<(std::istream& anInput) {
+      while (anInput) {
+          Attribute theAttribute;
+          std::string theValue;
+
+          anInput >> theValue;
+          theAttribute.setName(theValue);
+
+          anInput >> theValue;
+          theAttribute.setDataType(Helpers::stringToDataType(theValue));
+          if (theAttribute.getType() == DataTypes::varchar_type) {
+              anInput >> theValue;
+              theAttribute.setSize(std::stoi(theValue));
+          }
+          anInput >> theValue;
+          while (anInput) {
+              setAttribute(theAttribute, theValue);
+              if (theValue[0] == '\\')
+                  break;
+              anInput >> theValue;
+          }
+          if(theAttribute.getType() != DataTypes::no_type)
+            attributes.push_back(theAttribute);
+      }
+
       return anInput;
   }
   std::ostream& Schema::operator>>(std::ostream& anOutput) {
@@ -45,7 +69,6 @@ namespace ECE141 {
   }
   BlockHeader Schema::initHeader() {return BlockHeader(BlockType::schema_block, hashedName); }
 
-
   Schema& Schema::addAttribute(const Attribute& anAttribute) {
       attributes.push_back(anAttribute);
       return *this;
@@ -53,7 +76,26 @@ namespace ECE141 {
 
   Schema& Schema::setName(const std::string& aName) {
       name = aName;
-      hashString(aName);
+      hashedName = Helpers::hashString(aName);
+      return *this;
+  }
+
+  Schema& Schema::setAttribute(Attribute& aAttribute, const std::string& aString) {
+      // fix *(aString.end() - 1) == '1' ? true : false
+      switch (Helpers::charToExtra(aString[0])) {
+      case Keywords::primary_kw:
+          aAttribute.setPrimaryKey(*(aString.end() - 1) == '1' ? true : false);
+          break;
+      case Keywords::auto_increment_kw:
+          aAttribute.setAutoIncrement(*(aString.end() - 1) == '1' ? true : false);
+          break;
+      case Keywords::null_kw:
+          aAttribute.setNullable(*(aString.end() - 1) == '1' ? true : false);
+          break;
+      case Keywords::unique_kw:
+          aAttribute.setUnique(*(aString.end() - 1) == '1' ? true : false);
+          break;
+      }
       return *this;
   }
   Attribute* Schema::getAttribute(const std::string& aField) {
@@ -64,12 +106,6 @@ namespace ECE141 {
       return theAttribute != attributes.end()  ? &(*theAttribute) : nullptr;
   }
  
-  uint32_t  Schema::hashString(const std::string& aField) {
-      hashedName = 0;
-      for (char theChar : aField) {
-          hashedName = hashedName * 31 + static_cast<uint32_t>(theChar);
-      }
-      return hashedName;
-  }
+  
 
 }
